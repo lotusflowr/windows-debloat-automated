@@ -1,0 +1,1954 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+	<!--https://schneegans.de/windows/unattend-generator/?LanguageMode=Unattended&UILanguage=en-US&Locale=en-CA&Keyboard=00011009&GeoLocation=39&ProcessorArchitecture=amd64&BypassRequirementsCheck=true&BypassNetworkCheck=true&UseConfigurationSet=true&HidePowerShellWindows=true&ComputerNameMode=Script&ComputerNameScript=%23+Generate+a+computer+name+in+the+format%3A+WIN%5B10%2F11%2FXX%5D-%5B3+random+alphanumeric+characters%5D%0D%0A%23+Example%3A+WIN10-4F6%2C+WIN11-XZ2%0D%0A%0D%0A%24osVersion+%3D+%28Get-CimInstance+Win32_OperatingSystem%29.Version.Split%28%27.%27%29%5B0%5D%0D%0A%24randomSuffix+%3D+-join+%28%2865..90+%2B+48..57%29+%7C+Get-Random+-Count+3+%7C+ForEach-Object+%7B+%5Bchar%5D%24_+%7D%29%0D%0Areturn+%22WIN%24osVersion-%24randomSuffix%22%0D%0A%0D%0A%3C%23%0D%0A%23+Generates+a+computer+name+like%3A%0D%0A%23+WIN10-ABC%2C+WIN11-XYZ%2C+WINSRV19-Q7P%2C+WINSRV25-T6L%0D%0A%0D%0A%23+Get+the+OS+product+name+%28e.g.%2C+%22Windows+Server+2022+Standard%22%29%0D%0A%24productName+%3D+%28Get-ItemProperty+%27HKLM%3A%5CSOFTWARE%5CMicrosoft%5CWindows+NT%5CCurrentVersion%27%29.ProductName%0D%0A%0D%0A%23+Initialize+prefix%0D%0A%24prefix+%3D+%22WIN%3F%3F%22%0D%0A%0D%0A%23+Try+to+extract+4-digit+year+if+present+%28e.g.%2C+2019%2C+2022%2C+2025%29%0D%0Aif+%28%24productName+-like+%22*Server*%22%29+%7B%0D%0A++++if+%28%24productName+-match+%2220%5Cd%7B2%7D%22%29+%7B%0D%0A++++++++%24year+%3D+%24Matches%5B0%5D%0D%0A++++++++%24prefix+%3D+%22WINSRV%24%28%24year.Substring%282%29%29%22++%23+use+last+two+digits+%28e.g.%2C+%2222%22%29%0D%0A++++%7D+else+%7B%0D%0A++++++++%24prefix+%3D+%22WINSRV%22%0D%0A++++%7D%0D%0A%7D%0D%0Aelseif+%28%24productName+-match+%22Windows+%28%5Cd%2B%29%22%29+%7B%0D%0A++++%24prefix+%3D+%22WIN%24%28%24Matches%5B1%5D%29%22%0D%0A%7D%0D%0A%0D%0A%23+Generate+random+3-character+alphanumeric+suffix+%28A%E2%80%93Z%2C+0%E2%80%939%29%0D%0A%24random+%3D+-join+%28%2865..90+%2B+48..57%29+%7C+Get-Random+-Count+3+%7C+ForEach-Object+%7B+%5Bchar%5D%24_+%7D%29%0D%0A%0D%0A%23+Return+computer+name%0D%0Areturn+%22%24prefix-%24random%22%0D%0A%0D%0A%23%3E&CompactOsMode=Default&TimeZoneMode=Implicit&PartitionMode=Unattended&PartitionLayout=GPT&EspSize=300&RecoveryMode=Partition&RecoverySize=1000&DiskAssertionMode=Script&DiskAssertionScript=On+Error+Resume+Next%0D%0ASet+wmi+%3D+GetObject%28%22winmgmts%3A%5C%5C.%5Croot%5Ccimv2%22%29%0D%0ASet+drive+%3D+wmi.Get%28%22Win32_DiskDrive.DeviceID%3D%27%5C%5C.%5CPHYSICALDRIVE0%27%22%29%0D%0AIf+Err.Number+%3C%3E+0+Then%0D%0A++++Msgbox+Err.Description%0D%0A++++WScript.Quit+1%0D%0AEnd+If%0D%0AIf+drive.InterfaceType+%3D+%22IDE%22+Or+drive.InterfaceType+%3D+%22SCSI%22+Then%0D%0A++++WScript.Quit+0%0D%0AElse%0D%0A++++MsgBox+%22Assertion+failed.%22%0D%0A++++WScript.Quit+1%0D%0AEnd+If&WindowsEditionMode=Generic&WindowsEdition=pro&UserAccountMode=Unattended&AccountName0=user&AccountDisplayName0=&AccountPassword0=root&AccountGroup0=Administrators&AccountName1=&AccountName2=&AccountName3=&AutoLogonMode=Own&PasswordExpirationMode=Unlimited&LockoutMode=Default&HideFiles=HiddenSystem&ShowFileExtensions=true&ClassicContextMenu=true&LaunchToThisPC=true&TaskbarSearch=Icon&TaskbarIconsMode=Custom&TaskbarIconsXml=%3CLayoutModificationTemplate%0D%0A++++xmlns%3D%22http%3A%2F%2Fschemas.microsoft.com%2FStart%2F2014%2FLayoutModification%22%0D%0A++++xmlns%3Adefaultlayout%3D%22http%3A%2F%2Fschemas.microsoft.com%2FStart%2F2014%2FFullDefaultLayout%22%0D%0A++++xmlns%3Astart%3D%22http%3A%2F%2Fschemas.microsoft.com%2FStart%2F2014%2FStartLayout%22%0D%0A++++xmlns%3Ataskbar%3D%22http%3A%2F%2Fschemas.microsoft.com%2FStart%2F2014%2FTaskbarLayout%22%0D%0A++++Version%3D%221%22%3E%0D%0A++%3CCustomTaskbarLayoutCollection%3E%0D%0A++++%3Cdefaultlayout%3ATaskbarLayout%3E%0D%0A++++++%3Ctaskbar%3ATaskbarPinList%3E%0D%0A%0D%0A++++++++%3C%21%2D%2D+File+Explorer+%2D%2D%3E%0D%0A++++++++%3Ctaskbar%3ADesktopApp+DesktopApplicationID%3D%22Microsoft.Windows.Explorer%22%2F%3E%0D%0A%0D%0A++++++++%3C%21%2D%2D+Firefox+%2D%2D%3E%0D%0A++++++++%3Ctaskbar%3ADesktopApp+DesktopApplicationLinkPath%3D%22C%3A%5CProgram+Files%5CMozilla+Firefox%5Cfirefox.exe%22%2F%3E%0D%0A%0D%0A++++++++%3C%21%2D%2D+PowerShell+7+%2D%2D%3E%0D%0A++++++++%3Ctaskbar%3ADesktopApp+DesktopApplicationLinkPath%3D%22C%3A%5CProgram+Files%5CPowerShell%5C7%5Cpwsh.exe%22%2F%3E%0D%0A%0D%0A++++++%3C%2Ftaskbar%3ATaskbarPinList%3E%0D%0A++++%3C%2Fdefaultlayout%3ATaskbarLayout%3E%0D%0A++%3C%2FCustomTaskbarLayoutCollection%3E%0D%0A%3C%2FLayoutModificationTemplate%3E&DisableWidgets=true&LeftTaskbar=true&HideTaskViewButton=true&DisableBingResults=true&StartTilesMode=Empty&StartPinsMode=Empty&DisableWindowsUpdate=true&DisableSmartScreen=true&DisableFastStartup=true&DisableSystemRestore=true&EnableLongPaths=true&PreventAutomaticReboot=true&DisableAppSuggestions=true&HideEdgeFre=true&MakeEdgeUninstallable=true&DisablePointerPrecision=true&EffectsMode=Custom&ControlAnimations=true&DWMAeroPeekEnabled=true&SelectionFade=true&DWMSaveThumbnailEnabled=true&ListviewShadow=true&ThumbnailsOrIcon=true&ListviewAlphaSelect=true&ComboBoxAnimation=true&FontSmoothing=true&ListBoxSmoothScrolling=true&DesktopIconsMode=Custom&IconControlPanel=true&IconRecycleBin=true&VMwareTools=true&VirtIoGuestTools=true&WifiMode=Skip&ExpressSettings=DisableAll&KeysMode=Configure&CapsLockInitial=Off&CapsLockBehavior=Toggle&NumLockInitial=On&NumLockBehavior=Toggle&ScrollLockInitial=Off&ScrollLockBehavior=Toggle&ColorMode=Custom&SystemColorTheme=Dark&AppsColorTheme=Dark&AccentColor=%23cf05a7&WallpaperMode=Default&Remove3DViewer=true&RemoveBingSearch=true&RemoveCalculator=true&RemoveCamera=true&RemoveClipchamp=true&RemoveClock=true&RemoveCopilot=true&RemoveCortana=true&RemoveDevHome=true&RemoveFamily=true&RemoveFeedbackHub=true&RemoveGetHelp=true&RemoveHandwriting=true&RemoveInternetExplorer=true&RemoveMailCalendar=true&RemoveMaps=true&RemoveMathInputPanel=true&RemoveMediaFeatures=true&RemoveMixedReality=true&RemoveZuneVideo=true&RemoveNews=true&RemoveNotepad=true&RemoveOffice365=true&RemoveOneDrive=true&RemoveOneNote=true&RemoveOneSync=true&RemoveOpenSSHClient=true&RemoveOutlook=true&RemovePaint=true&RemovePaint3D=true&RemovePeople=true&RemovePhotos=true&RemovePowerAutomate=true&RemovePowerShell2=true&RemoveQuickAssist=true&RemoveRecall=true&RemoveRdpClient=true&RemoveSkype=true&RemoveSolitaire=true&RemoveSpeech=true&RemoveStepsRecorder=true&RemoveStickyNotes=true&RemoveTeams=true&RemoveGetStarted=true&RemoveToDo=true&RemoveVoiceRecorder=true&RemoveWallet=true&RemoveWeather=true&RemoveFaxAndScan=true&RemoveWindowsHello=true&RemoveWindowsMediaPlayer=true&RemoveZuneMusic=true&RemoveWordPad=true&RemoveXboxApps=true&RemoveYourPhone=true&SystemScript0=%23+%3D%3D%3D+LOGGING+%3D%3D%3D%0D%0AStart-Transcript+-Path+%22%24env%3ATEMP%5C00_SystemSetup.log%22+-Append+-Force%0D%0A%0D%0A%3C%23%0D%0A.TITLE%0D%0A++++Script+04+%E2%80%93+System-Level+Performance%2C+Privacy%2C+and+Gaming+Optimizations%0D%0A%0D%0A.SYNOPSIS%0D%0A++++Applies+deep+system+tweaks+focused+on+performance%2C+telemetry+reduction%2C+power+tuning%2C%0D%0A++++and+gaming+responsiveness.+Designed+to+run+in+SYSTEM+context.%0D%0A%0D%0A.DESCRIPTION%0D%0A++++-+Disables+telemetry-related+scheduled+tasks+and+services%0D%0A++++-+Enables+the+Ultimate+Performance+power+plan%0D%0A++++-+Applies+CPU+and+GPU+tuning+for+gaming%0D%0A++++-+Blocks+unnecessary+features+like+error+reporting+and+Store+taskbar+pins%0D%0A++++-+Removes+pinned+Start+menu+tiles+and+disables+taskbar+feeds%0D%0A++++-+Opens+up+ICMP+traffic+for+network+diagnostics%0D%0A%0D%0A.NOTES%0D%0A++++%E2%9A%A0%EF%B8%8F+Must+be+run+as+SYSTEM+%28e.g.+via+SetupComplete+or+Task+Scheduler%29%0D%0A++++%E2%9C%85+Safe+to+run+repeatedly+%28idempotent+registry+and+scheduled+task+commands%29%0D%0A++++%F0%9F%93%81+Logs+actions+to+%24env%3ATEMP%5C00_SystemSetup.log%0D%0A%23%3E%0D%0A%0D%0Afunction+Try-Run+%7B%0D%0A++++param+%28%0D%0A++++++++%5Bscriptblock%5D%24Script%2C%0D%0A++++++++%5Bstring%5D%24Description%0D%0A++++%29%0D%0A++++Write-Host+%22%60n%5BINFO%5D+%24Description%22%0D%0A++++try+%7B%0D%0A++++++++%26+%24Script%0D%0A++++++++Write-Host+%22%5BSUCCESS%5D+%24Description+applied.%22%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Host+%22%5BERROR%5D+%24Description+failed%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+WINDOWS+UPDATE+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CDriverSearching%22+%2Fv+SearchOrderConfig+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%7D+%22Setting+Windows+Update+to+prioritize+driver+searches%22%0D%0A%0D%0A%23+%3D%3D%3D+SCHEDULED+TASKS%3A+TELEMETRY+CLEANUP+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++%24tasks+%3D+%40%28%0D%0A++++++++%22Microsoft%5CWindows%5CApplication+Experience%5CMicrosoft+Compatibility+Appraiser%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CApplication+Experience%5CProgramDataUpdater%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CAutochk%5CProxy%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CCustomer+Experience+Improvement+Program%5CConsolidator%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CCustomer+Experience+Improvement+Program%5CUsbCeip%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CDiskDiagnostic%5CMicrosoft-Windows-DiskDiagnosticDataCollector%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CFeedback%5CSiuf%5CDmClient%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CFeedback%5CSiuf%5CDmClientOnScenarioDownload%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CWindows+Error+Reporting%5CQueueReporting%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CApplication+Experience%5CMareBackup%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CApplication+Experience%5CStartupAppTask%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CApplication+Experience%5CPcaPatchDbTask%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CMaps%5CMapsUpdateTask%22%2C%0D%0A++++++++%22Microsoft%5CWindows%5CWindows+Feeds%5CUpdateFeeds%22%0D%0A++++%29%0D%0A++++foreach+%28%24task+in+%24tasks%29+%7B%0D%0A++++++++schtasks+%2FChange+%2FTN+%24task+%2FDisable+%7C+Out-Null%0D%0A++++%7D%0D%0A%7D+%22Disabling+telemetry+and+customer+experience+tasks%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++%24taskGUIDs+%3D+%40%28%0D%0A++++++++%22%7B0600DD45-FAF2-4131-A006-0B17509B9F78%7D%22%2C%0D%0A++++++++%22%7B4738DE7A-BCC1-4E2D-B1B0-CADB044BFA81%7D%22%2C%0D%0A++++++++%22%7B6FAC31FA-4A85-4E64-BFD5-2154FF4594B3%7D%22%2C%0D%0A++++++++%22%7BFC931F16-B50A-472E-B061-B6F79A71EF59%7D%22%2C%0D%0A++++++++%22%7B0671EB05-7D95-4153-A32B-1426B9FE61DB%7D%22%2C%0D%0A++++++++%22%7B87BF85F4-2CE1-4160-96EA-52F554AA28A2%7D%22%2C%0D%0A++++++++%22%7B8A9C643C-3D74-4099-B6BD-9C6D170898B1%7D%22%2C%0D%0A++++++++%22%7BE3176A65-4E44-4ED3-AA73-3283660ACB9C%7D%22%0D%0A++++%29%0D%0A++++foreach+%28%24guid+in+%24taskGUIDs%29+%7B%0D%0A++++++++reg.exe+delete+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindows+NT%5CCurrentVersion%5CSchedule%5CTaskCache%5CTasks%5C%24guid%22+%2Ff+%7C+Out-Null%0D%0A++++%7D%0D%0A%7D+%22Clearing+telemetry+task+cache+from+registry%22%0D%0A%0D%0A%23+%3D%3D%3D+POWER+%26+PERFORMANCE+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++%24guid+%3D+%28powercfg.exe+%2FDUPLICATESCHEME+e9a42b02-d5df-448d-aa00-03f14749eb61%29+-match+%27%5Cs%28%5Ba-f0-9-%5D%7B36%7D%29%5Cs%27%0D%0A++++powercfg.exe+%2FSETACTIVE+%24Matches%5B1%5D%0D%0A%7D+%22Activating+Ultimate+Performance+power+plan%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSYSTEM%5CCurrentControlSet%5CServices%5CLanmanServer%5CParameters%22+%2Fv+IRPStackSize+%2Ft+REG_DWORD+%2Fd+30+%2Ff%0D%0A%7D+%22Increasing+IRP+Stack+Size+for+better+network+performance%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++%24ramKB+%3D+%28Get-CimInstance+Win32_PhysicalMemory+%7C+Measure-Object+Capacity+-Sum%29.Sum+%2F+1KB%0D%0A++++Set-ItemProperty+-Path+HKLM%3A%5CSYSTEM%5CCurrentControlSet%5CControl+-Name+SvcHostSplitThresholdInKB+-Value+%5Bint%5D%24ramKB+-Force%0D%0A%7D+%22Optimizing+svchost+split+threshold+based+on+system+RAM%22%0D%0A%0D%0ATry-Run+%7B+powercfg+-hibernate+off+%7D+%22Disabling+hibernation%22%0D%0ATry-Run+%7B+powercfg+%2Fchange+standby-timeout-ac+0+%7D+%22Disabling+AC+standby+timeout%22%0D%0ATry-Run+%7B+powercfg+%2Fchange+standby-timeout-dc+0+%7D+%22Disabling+DC+standby+timeout%22%0D%0ATry-Run+%7B+powercfg+%2Fchange+monitor-timeout-ac+0+%7D+%22Disabling+monitor+timeout+%28AC%29%22%0D%0ATry-Run+%7B+powercfg+%2Fchange+monitor-timeout-dc+0+%7D+%22Disabling+monitor+timeout+%28DC%29%22%0D%0A%0D%0A%23+%3D%3D%3D+GAMING+PRIORITY+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindows+NT%5CCurrentVersion%5CMultimedia%5CSystemProfile%5CTasks%5CGames%22+%2Fv+%22GPU+Priority%22+%2Ft+REG_DWORD+%2Fd+8+%2Ff%0D%0A%7D+%22Setting+GPU+priority+to+8+for+gaming%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindows+NT%5CCurrentVersion%5CMultimedia%5CSystemProfile%5CTasks%5CGames%22+%2Fv+Priority+%2Ft+REG_DWORD+%2Fd+6+%2Ff%0D%0A%7D+%22Setting+CPU+scheduling+priority+to+6+for+games%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindows+NT%5CCurrentVersion%5CMultimedia%5CSystemProfile%5CTasks%5CGames%22+%2Fv+%22Scheduling+Category%22+%2Ft+REG_SZ+%2Fd+%22High%22+%2Ff%0D%0A%7D+%22Setting+scheduling+category+to+High+for+gaming+tasks%22%0D%0A%0D%0A%23+%3D%3D%3D+POLICY+HARDENING+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindows%5CWindows+Error+Reporting%22+%2Fv+Disabled+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%7D+%22Disabling+Windows+Error+Reporting%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CPolicies%5CMicrosoft%5CWindows%5CAdvertisingInfo%22+%2Fv+DisabledByGroupPolicy+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%7D+%22Disabling+Advertising+ID+globally%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CPolicies%5CMicrosoft%5CWindows%5CExplorer%22+%2Fv+NoPinningStoreToTaskbar+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%7D+%22Preventing+Microsoft+Store+from+being+pinned+to+taskbar%22%0D%0A%0D%0A%23+%3D%3D%3D+START+MENU+%26+FEEDS+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CPolicyManager%5CCurrent%5CDevice%5CStart%22+%2Fv+ConfigureStartPins+%2Ft+REG_SZ+%2Fd+%27%7B+%22pinnedList%22%3A+%5B%5D+%7D%27+%2Ff%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CPolicyManager%5CCurrent%5CDevice%5CStart%22+%2Fv+ConfigureStartPins_ProviderSet+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CMicrosoft%5CPolicyManager%5CCurrent%5CDevice%5CStart%22+%2Fv+ConfigureStartPins_WinningProvider+%2Ft+REG_SZ+%2Fd+B5292708-1619-419B-9923-E5D9F3925E71+%2Ff%0D%0A%7D+%22Clearing+Start+menu+pinned+tiles%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++reg.exe+add+%22HKLM%5CSOFTWARE%5CPolicies%5CMicrosoft%5CWindows%5CWindows+Feeds%22+%2Fv+EnableFeeds+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%7D+%22Disabling+News+and+Interests+from+taskbar%22%0D%0A%0D%0A%23+%3D%3D%3D+FIREWALL+ALLOW+ICMP+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++New-NetFirewallRule+-DisplayName+%27ICMPv4%27+-Profile+Any+-Protocol+ICMPv4%0D%0A++++New-NetFirewallRule+-DisplayName+%27ICMPv6%27+-Profile+Any+-Protocol+ICMPv6%0D%0A%7D+%22Allowing+ICMP+ping+%28v4+%2B+v6%29+through+the+firewall%22%0D%0A%0D%0A%23+%3D%3D%3D+DONE+%3D%3D%3D%0D%0AWrite-Host+%22%60n%5BINFO%5D+Script+completed+successfully.+Log+saved+to+%24env%3ATEMP%5C00_SystemSetup.log%22%0D%0AStop-Transcript&SystemScriptType0=Ps1&FirstLogonScript0=%23+%3D%3D%3D+LOGGING+%3D%3D%3D%0D%0AStart-Transcript+-Path+%22%24env%3ATEMP%5C01_UI_Tweaks.log%22+-Append+-Force%0D%0A%0D%0A%3C%23%0D%0A.TITLE%0D%0A++++Script+01+%E2%80%93+UI%2C+Taskbar%2C+and+Privacy+Tweaks%0D%0A%0D%0A.SYNOPSIS%0D%0A++++Applies+Explorer+and+taskbar+behavior+tweaks+and+disables+various+telemetry+and+ad-related+settings+via+the+registry.%0D%0A%0D%0A.DESCRIPTION%0D%0A++++-+Optimizes+File+Explorer+and+taskbar+behavior%0D%0A++++-+Removes+unwanted+UI+components+%28e.g.+Widgets%2C+Meet+Now%29%0D%0A++++-+Disables+suggestions%2C+feedback%2C+and+advertising+telemetry%0D%0A++++-+Hardens+privacy+for+first-logon+or+automated+Windows+deployments%0D%0A%0D%0A.NOTES%0D%0A++++%E2%9C%85+Safe+to+run+repeatedly+%28idempotent+registry+writes%29%0D%0A++++%F0%9F%9B%A0%EF%B8%8F+Intended+for+use+during+FirstLogon+or+SetupComplete%0D%0A++++%F0%9F%93%81+Logs+all+actions+to+%24env%3ATEMP%5C01_UI_Tweaks.log%0D%0A%23%3E%0D%0A%0D%0A%23+%3D%3D%3D+FUNCTION%3A+EXECUTION+WRAPPER+%3D%3D%3D%0D%0Afunction+Try-Run+%7B%0D%0A++++param+%28%0D%0A++++++++%5Bscriptblock%5D%24Block%2C%0D%0A++++++++%5Bstring%5D%24Description%0D%0A++++%29%0D%0A++++Write-Host+%22%60n%5BINFO%5D+%24Description%22%0D%0A++++try+%7B%0D%0A++++++++%26+%24Block%0D%0A++++++++Write-Host+%22%5BSUCCESS%5D+%24Description+completed.%60n%22%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Host+%22%5BERROR%5D+%24Description+failed%3A+%24%28%24_.Exception.Message%29%60n%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+EXPLORER+%26+UI+TWEAKS+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%E2%86%92+Removing+Widgets%22%0D%0A++++reg.exe+add+%22HKCU%5CSoftware%5CMicrosoft%5CWindows%5CCurrentVersion%5CExplorer%5CAdvanced%22+%2Fv+TaskbarDa+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Removing+Store+banner+in+Notepad%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CNotepad%22+%2Fv+ShowStoreBanner+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Setting+File+Explorer+to+open+%27This+PC%27%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CExplorer%5CAdvanced%22+%2Fv+LaunchTo+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Setting+Alt%2BTab+to+show+only+open+windows%22%0D%0A++++reg.exe+add+%22HKCU%5CSoftware%5CMicrosoft%5CWindows%5CCurrentVersion%5CExplorer%5CAdvanced%22+%2Fv+MultiTaskingAltTabFilter+%2Ft+REG_DWORD+%2Fd+3+%2Ff%0D%0A++++reg.exe+add+%22HKCU%5CSoftware%5CMicrosoft%5CWindows%5CCurrentVersion%5CExplorer%22+%2Fv+AltTabSettings+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Disabling+Snap+Assist+Flyout%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CExplorer%5CAdvanced%22+%2Fv+SnapAssist+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Preventing+Store+app+pinning+to+taskbar%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CPolicies%5CMicrosoft%5CWindows%5CExplorer%22+%2Fv+NoPinningStoreToTaskbar+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%7D+%22Applying+File+Explorer+and+taskbar+behavior+tweaks%22%0D%0A%0D%0A%23+%3D%3D%3D+TASKBAR+ICONS+%26+NEWS+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%E2%86%92+Disabling+News+and+Interests+panel%22%0D%0A++++reg.exe+add+%22HKCU%5CSoftware%5CMicrosoft%5CWindows%5CCurrentVersion%5CFeeds%22+%2Fv+ShellFeedsEnabled+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Disabling+News+and+Interests+hover+popup%22%0D%0A++++reg.exe+add+%22HKCU%5CSoftware%5CMicrosoft%5CWindows%5CCurrentVersion%5CFeeds%22+%2Fv+ShellFeedsTaskbarOpenOnHover+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Hiding+Meet+Now+button+from+taskbar%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CPolicies%5CExplorer%22+%2Fv+HideSCAMeetNow+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%7D+%22Disabling+taskbar+news%2C+widgets%2C+and+chat+icons%22%0D%0A%0D%0A%23+%3D%3D%3D+PRIVACY+%26+TELEMETRY+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%E2%86%92+Disabling+language+list+sharing+with+websites%22%0D%0A++++reg.exe+add+%22HKCU%5CControl+Panel%5CInternational%5CUser+Profile%22+%2Fv+HttpAcceptLanguageOptOut+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Disabling+personalization+consent%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CPersonalization%5CSettings%22+%2Fv+AcceptedPrivacyPolicy+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Disabling+collection+of+typed+text+and+handwriting%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CInputPersonalization%22+%2Fv+RestrictImplicitTextCollection+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CInputPersonalization%22+%2Fv+RestrictImplicitInkCollection+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Disabling+feedback+sampling+and+related+services%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CFeedback%22+%2Fv+AutoSample+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CFeedback%22+%2Fv+ServiceEnabled+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%0D%0A++++Write-Host+%22%E2%86%92+Disabling+telemetry+and+advertising+ID+features%22%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CSiuf%5CRules%22+%2Fv+NumberOfSIUFInPeriod+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CPolicies%5CMicrosoft%5CWindows%5CCloudContent%22+%2Fv+DisableTailoredExperiencesWithDiagnosticData+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CPolicies%5CMicrosoft%5CWindows%5CCloudContent%22+%2Fv+DisableWindowsConsumerFeatures+%2Ft+REG_DWORD+%2Fd+1+%2Ff%0D%0A++++reg.exe+add+%22HKCU%5CSOFTWARE%5CMicrosoft%5CWindows%5CCurrentVersion%5CAdvertisingInfo%22+%2Fv+Enabled+%2Ft+REG_DWORD+%2Fd+0+%2Ff%0D%0A%7D+%22Applying+privacy+and+telemetry+restrictions%22%0D%0A%0D%0A%23+%3D%3D%3D+DONE+%3D%3D%3D%0D%0AWrite-Host+%22%60n%5BINFO%5D+All+registry+tweaks+applied.+Log+saved+to+%24env%3ATEMP%5C01_UI_Tweaks.log%22%0D%0AStop-Transcript%0D%0A&FirstLogonScriptType0=Ps1&FirstLogonScript1=%23+%3D%3D%3D+LOGGING+%3D%3D%3D%0D%0AStart-Transcript+-Path+%22%24env%3ATEMP%5C02_SysPrep_Debloater.log%22+-Append+-Force%0D%0A%0D%0A%3C%23%0D%0A.TITLE%0D%0A++++Script+02+%E2%80%93+Sysprep+Debloater+%26+Cleanup%0D%0A%0D%0A.SYNOPSIS%0D%0A++++Post-setup+script+to+clean+Windows+from+unnecessary+preinstalled+software%2C+apps%2C+and+features.%0D%0A%0D%0A.DESCRIPTION%0D%0A++++-+Strips+common+PUWs+%28Provisioned+Windows+Apps%29%0D%0A++++-+Removes+optional+Windows+features%0D%0A++++-+Fully+uninstalls+Microsoft+Teams%0D%0A++++-+Blocks+Dev+Home+and+New+Outlook+auto-installation%0D%0A++++-+Removes+OneDrive+using+asheroto%27s+PowerShell+script%0D%0A%0D%0A.NOTES%0D%0A++++%E2%9C%85+Internet+access+is+required+for+online+components+%28OneDrive+removal%29%0D%0A++++%F0%9F%91%A4+Safe+to+run+under+a+standard+user+context+%28FirstLogonCommands%29%0D%0A++++%F0%9F%93%81+Logs+are+saved+to+%24env%3ATEMP%5C02_SysPrep_Debloater.log%0D%0A%0D%0A.LINK%0D%0A++++https%3A%2F%2Fgithub.com%2Fasheroto%2FUninstallOneDrive%0D%0A%23%3E%0D%0A%0D%0A%23+%3D%3D%3D+UTILITY%3A+Safe+Execution+Wrapper+%3D%3D%3D%0D%0Afunction+Try-Run+%7B%0D%0A++++param+%28%0D%0A++++++++%5Bscriptblock%5D%24Script%2C%0D%0A++++++++%5Bstring%5D%24Description%0D%0A++++%29%0D%0A++++Write-Host+%22%60n%5BINFO%5D+%24Description%22%0D%0A++++try+%7B%0D%0A++++++++%26+%24Script%0D%0A++++++++Write-Host+%22%5BSUCCESS%5D+%24Description+completed.%22%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Host+%22%5BERROR%5D+%24Description+failed%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+REMOVE+BLOATWARE+%28PUWs%29+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%5BDETAIL%5D+Removing+provisioned+apps...%22%0D%0A++++%24provisionedApps+%3D+%40%28%0D%0A++++++++%27Microsoft.Microsoft3DViewer%27%0D%0A++++++++%27Microsoft.BingSearch%27%0D%0A++++++++%27Microsoft.BingFinance%27%0D%0A++++++++%27Microsoft.BingSports%27%0D%0A++++++++%27Microsoft.BingNews%27%0D%0A++++++++%27Microsoft.BingWeather%27%0D%0A++++++++%27Microsoft.BingTravel%27%0D%0A++++++++%27Microsoft.BingFoodAndDrink%27%0D%0A++++++++%27Microsoft.BingHealthAndFitness%27%0D%0A++++++++%27Microsoft.BingTranslator%27%0D%0A++++++++%27Microsoft.Wallet%27%0D%0A++++++++%27Microsoft.WindowsCamera%27%0D%0A++++++++%27Clipchamp.Clipchamp%27%0D%0A++++++++%27Microsoft.549981C3F5F10%27%0D%0A++++++++%27Microsoft.Windows.DevHome%27%0D%0A++++++++%27MicrosoftCorporationII.MicrosoftFamily%27%0D%0A++++++++%27Microsoft.WindowsFeedbackHub%27%0D%0A++++++++%27Microsoft.GetHelp%27%0D%0A++++++++%27microsoft.windowscommunicationsapps%27%0D%0A++++++++%27Microsoft.WindowsMaps%27%0D%0A++++++++%27Microsoft.ZuneVideo%27%0D%0A++++++++%27Microsoft.MicrosoftOfficeHub%27%0D%0A++++++++%27Microsoft.Office.OneNote%27%0D%0A++++++++%27Microsoft.OutlookForWindows%27%0D%0A++++++++%27Microsoft.MSPaint%27%0D%0A++++++++%27Microsoft.People%27%0D%0A++++++++%27Microsoft.Windows.Photos%27%0D%0A++++++++%27Microsoft.PowerAutomateDesktop%27%0D%0A++++++++%27MicrosoftCorporationII.QuickAssist%27%0D%0A++++++++%27Microsoft.SkypeApp%27%0D%0A++++++++%27Microsoft.ScreenSketch%27%0D%0A++++++++%27Microsoft.MicrosoftSolitaireCollection%27%0D%0A++++++++%27MSTeams%27%0D%0A++++++++%27Microsoft.Getstarted%27%0D%0A++++++++%27Microsoft.WindowsSoundRecorder%27%0D%0A++++++++%27Microsoft.ZuneMusic%27%0D%0A++++++++%27Microsoft.Xbox.TCUI%27%0D%0A++++++++%27Microsoft.XboxGameOverlay%27%0D%0A++++++++%27Microsoft.XboxGamingOverlay%27%0D%0A++++++++%27Microsoft.XboxSpeechToTextOverlay%27%0D%0A++++++++%27Microsoft.GamingApp%27%0D%0A++++++++%27Microsoft.YourPhone%27%0D%0A++++++++%27Microsoft.OneDrive%27%0D%0A++++++++%27Microsoft.MixedReality.Portal%27%0D%0A++++++++%27Microsoft.Windows.Ai.Copilot.Provider%27%0D%0A++++++++%27Microsoft.WindowsMeetNow%27%0D%0A++++++++%27Microsoft.Office.Lens%27%0D%0A++++++++%27*CandyCrush*%27%0D%0A++++++++%27*Netflix*%27%0D%0A++++%29%0D%0A++++Get-AppxProvisionedPackage+-Online+%7C+Where-Object+%7B%0D%0A++++++++%24provisionedApps+-contains+%24_.DisplayName+-or+%28%24provisionedApps+%7C+Where-Object+%7B+%24_+-like+%22*%22+%7D%29%0D%0A++++%7D+%7C+Remove-AppxProvisionedPackage+-AllUsers+-Online%0D%0A%7D+%22Removing+provisioned+apps+%28PUWs%29%22%0D%0A%0D%0A%23+%3D%3D%3D+REMOVE+OPTIONAL+FEATURES+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%5BDETAIL%5D+Uninstalling+legacy+and+optional+features...%22%0D%0A++++%24optionalFeatures+%3D+%40%28%0D%0A++++++++%27Browser.InternetExplorer%27%0D%0A++++++++%27MathRecognizer%27%0D%0A++++++++%27OpenSSH.Client%27%0D%0A++++++++%27Microsoft.Windows.PowerShell.ISE%27%0D%0A++++++++%27App.StepsRecorder%27%0D%0A++++++++%27Microsoft.Windows.WordPad%27%0D%0A++++%29%0D%0A++++Get-WindowsCapability+-Online+%7C+Where-Object+%7B%0D%0A++++++++%28%24_.Name+-split+%27%7E%27%29%5B0%5D+-in+%24optionalFeatures%0D%0A++++%7D+%7C+Remove-WindowsCapability+-Online%0D%0A%7D+%22Removing+optional+Windows+features%22%0D%0A%0D%0A%23+%3D%3D%3D+UNINSTALL+MICROSOFT+TEAMS+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%5BDETAIL%5D+Stopping+Teams+processes+and+uninstalling+Teams...%22%0D%0A++++Stop-Process+-Name+%22*teams*%22+-Force+-ErrorAction+SilentlyContinue%0D%0A%0D%0A++++%24TeamsPath+%3D+Join-Path+%24env%3ALOCALAPPDATA+%27Microsoft%5CTeams%27%0D%0A++++%24TeamsUpdateExePath+%3D+Join-Path+%24TeamsPath+%27Update.exe%27%0D%0A%0D%0A++++if+%28Test-Path+%24TeamsUpdateExePath%29+%7B%0D%0A++++++++%24proc+%3D+Start-Process+%24TeamsUpdateExePath+%22-uninstall+-s%22+-PassThru%0D%0A++++++++%24proc.WaitForExit%28%29%0D%0A++++%7D%0D%0A%0D%0A++++Get-AppxPackage+%22*Teams*%22+%7C+Remove-AppxPackage+-ErrorAction+SilentlyContinue%0D%0A++++Get-AppxPackage+%22*Teams*%22+-AllUsers+%7C+Remove-AppxPackage+-AllUsers+-ErrorAction+SilentlyContinue%0D%0A%0D%0A++++if+%28Test-Path+%24TeamsPath%29+%7B%0D%0A++++++++Remove-Item+%24TeamsPath+-Recurse+-Force+-ErrorAction+SilentlyContinue%0D%0A++++%7D%0D%0A%7D+%22Fully+uninstalling+Microsoft+Teams%22%0D%0A%0D%0A%23+%3D%3D%3D+BLOCK+DEV+HOME+%26+OUTLOOK+AUTO-INSTALL+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%5BDETAIL%5D+Removing+registry+entries+that+trigger+Dev+Home+and+Outlook...%22%0D%0A++++reg.exe+delete+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindowsUpdate%5COrchestrator%5CUScheduler_Oobe%5CDevHomeUpdate%22+%2Ff+%7C+Out-Null%0D%0A++++reg.exe+delete+%22HKLM%5CSOFTWARE%5CMicrosoft%5CWindowsUpdate%5COrchestrator%5CUScheduler_Oobe%5COutlookUpdate%22+%2Ff+%7C+Out-Null%0D%0A%7D+%22Blocking+Dev+Home+and+New+Outlook+installation%22%0D%0A%0D%0A%23+%3D%3D%3D+UNINSTALL+ONEDRIVE+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%5BDETAIL%5D+Downloading+and+executing+OneDrive+removal+script...%22%0D%0A++++%26+%7B+irm+https%3A%2F%2Fgithub.com%2Fasheroto%2FUninstallOneDrive%2Freleases%2Fdownload%2F1.0.2%2FUninstallOneDrive.ps1+%7C+iex+%7D+*%3E%24null%0D%0A%7D+%22Uninstalling+Microsoft+OneDrive%22%0D%0A%0D%0A%23+%3D%3D%3D+WRAP+UP+%3D%3D%3D%0D%0AWrite-Host+%22%60n%5BINFO%5D+Debloating+and+cleanup+complete.+Log+saved+to+%24env%3ATEMP%5C02_SysPrep_Debloater.log%22%0D%0AStop-Transcript%0D%0A&FirstLogonScriptType1=Ps1&FirstLogonScript2=%23+%3D%3D%3D+LOGGING+%3D%3D%3D%0D%0AStart-Transcript+-Path+%22%24env%3ATEMP%5C03_Winget_Apps.log%22+-Append+-Force%0D%0A%0D%0A%3C%23%0D%0A.TITLE%0D%0A++++Script+03+%E2%80%93+Install+Applications+via+Winget%0D%0A%0D%0A.SYNOPSIS%0D%0A++++Installs+Winget+if+not+present%2C+ensures+required+dependencies%2C+and+installs+a+set+of+applications.%0D%0A++++Optionally+removes+desktop+shortcuts+created+by+those+apps.%0D%0A%0D%0A.DESCRIPTION%0D%0A++++-+Downloads+and+installs+Microsoft.VCLibs+and+Microsoft.UI.Xaml+if+not+already+installed.%0D%0A++++-+Automatically+fetches+the+latest+version+of+winget+from+GitHub.%0D%0A++++-+Installs+all+listed+apps+via+winget+using+their+IDs.%0D%0A++++-+Optionally+deletes+desktop+shortcuts+to+keep+a+clean+environment.%0D%0A%0D%0A.NOTES%0D%0A++++%E2%9C%85+Internet+connection+required%0D%0A++++%F0%9F%A7%AA+Customize+%60%24appList%60+for+your+software+stack%0D%0A++++%F0%9F%93%81+Logs+actions+to+%24env%3ATEMP%5C03_Winget_Apps.log%0D%0A%0D%0A.LINK%0D%0A++++https%3A%2F%2Flearn.microsoft.com%2Fen-us%2Fwindows%2Fpackage-manager%2F%0D%0A++++https%3A%2F%2Fwinget.run%2F%0D%0A++++https%3A%2F%2Fwinstall.app%0D%0A++++https%3A%2F%2Fwinget.ragerworks.com%0D%0A%23%3E%0D%0A%0D%0A%23+%3D%3D%3D+CONFIGURATION+%3D%3D%3D%0D%0A%0D%0A%23+Remove+.lnk+shortcuts+after+installing%3F%0D%0A%24RemoveShortcuts+%3D+%24true%0D%0A%0D%0A%23+Applications+to+install+via+winget+%28use+IDs%29%0D%0A%24appList+%3D+%40%28%0D%0A++++%22Notepad%2B%2B.Notepad%2B%2B%22%0D%0A++++%22Mozilla.Firefox%22%0D%0A++++%22Microsoft.WindowsTerminal%22%0D%0A++++%22voidtools.Everything%22%0D%0A%29%0D%0A%0D%0A%23+Extract+fragment+of+names+for+shortcut+detection%0D%0A%24shortcutFragments+%3D+%24appList+%7C+ForEach-Object+%7B+%28%24_+-split+%27%5C.%27%29%5B1%5D+%7D+%7C+Where-Object+%7B+%24_+%7D%0D%0A%0D%0A%23+%3D%3D%3D+FUNCTIONS+%3D%3D%3D%0D%0A%0D%0Afunction+Try-Run+%7B%0D%0A++++param+%28%0D%0A++++++++%5Bscriptblock%5D%24Script%2C%0D%0A++++++++%5Bstring%5D%24Description%0D%0A++++%29%0D%0A++++Write-Host+%22%60n%5BINFO%5D+%24Description%22%0D%0A++++try+%7B%0D%0A++++++++%26+%24Script%0D%0A++++++++Write-Host+%22%5BSUCCESS%5D+%24Description+completed.%22%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Host+%22%5BERROR%5D+%24Description+failed%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0Afunction+Remove-Shortcut+%7B%0D%0A++++param+%28%0D%0A++++++++%5BParameter%28Mandatory+%3D+%24true%29%5D%0D%0A++++++++%5Bstring%5B%5D%5D%24NameFragments%0D%0A++++%29%0D%0A%0D%0A++++%24shortcutPaths+%3D+%40%28%0D%0A++++++++%22%24env%3AUSERPROFILE%5CDesktop%22%2C%0D%0A++++++++%22C%3A%5CUsers%5CPublic%5CDesktop%22%0D%0A++++%29%0D%0A%0D%0A++++foreach+%28%24path+in+%24shortcutPaths%29+%7B%0D%0A++++++++foreach+%28%24fragment+in+%24NameFragments%29+%7B%0D%0A++++++++++++Get-ChildItem+-Path+%24path+-Filter+*.lnk+-ErrorAction+SilentlyContinue+%7C%0D%0A++++++++++++++++Where-Object+%7B+%24_.Name+-match+%5Bregex%5D%3A%3AEscape%28%24fragment%29+%7D+%7C%0D%0A++++++++++++++++ForEach-Object+%7B%0D%0A++++++++++++++++++++Write-Host+%22%60n%5BINFO%5D+Found+shortcut+matching+%27%24fragment%27%3A+%24%28%24_.FullName%29%22%0D%0A++++++++++++++++++++Try-Run+%7B%0D%0A++++++++++++++++++++++++Remove-Item+%24_.FullName+-Force+-ErrorAction+SilentlyContinue%0D%0A++++++++++++++++++++%7D+%22Removing+shortcut%3A+%24%28%24_.Name%29%22%0D%0A++++++++++++++++%7D%0D%0A++++++++%7D%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+INSTALLER+PATHS+%26+URLs+%3D%3D%3D%0D%0A%0D%0A%24VCLibs+++++++%3D+%22%24env%3ATEMP%5CMicrosoft.VCLibs.x64.14.00.Desktop.appx%22%0D%0A%24UIXaml+++++++%3D+%22%24env%3ATEMP%5CMicrosoft.UI.Xaml.2.8.x64.appx%22%0D%0A%24winget+++++++%3D+%22%24env%3ATEMP%5Cwinget.msixbundle%22%0D%0A%0D%0A%24VCLibsUrl++++%3D+%22https%3A%2F%2Faka.ms%2FMicrosoft.VCLibs.x64.14.00.Desktop.appx%22%0D%0A%24UIXamlUrl++++%3D+%22https%3A%2F%2Fgithub.com%2Fmicrosoft%2Fmicrosoft-ui-xaml%2Freleases%2Fdownload%2Fv2.8.6%2FMicrosoft.UI.Xaml.2.8.x64.appx%22%0D%0A%24wingetUrl++++%3D+%22https%3A%2F%2Fapi.github.com%2Frepos%2Fmicrosoft%2Fwinget-cli%2Freleases%2Flatest%22%0D%0A%0D%0A%23+%3D%3D%3D+INSTALL+DEPENDENCIES+%3D%3D%3D%0D%0A%0D%0ATry-Run+%7B%0D%0A++++%26+curl.exe+-L+-o+%24VCLibs+%24VCLibsUrl%0D%0A++++Add-AppxPackage+-Path+%24VCLibs%0D%0A%7D+%22Installing+Microsoft.VCLibs+%28UWP+C%2B%2B+runtime%29%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++%26+curl.exe+-L+-o+%24UIXaml+%24UIXamlUrl%0D%0A++++Add-AppxPackage+-Path+%24UIXaml%0D%0A%7D+%22Installing+Microsoft.UI.Xaml+%28UI+framework%29%22%0D%0A%0D%0A%23+%3D%3D%3D+INSTALL+WINGET+%3D%3D%3D%0D%0A%0D%0ATry-Run+%7B%0D%0A++++%5BNet.ServicePointManager%5D%3A%3ASecurityProtocol+%3D+%5BNet.SecurityProtocolType%5D%3A%3ATls12%0D%0A++++%24bundle+%3D+%28Invoke-RestMethod+%24wingetUrl%29.assets+%7C+Where-Object+%7B+%24_.name+-like+%22*.msixbundle%22+%7D+%7C+Select-Object+-First+1%0D%0A++++%26+curl.exe+-L+-J+-o+%24winget+%24bundle.browser_download_url%0D%0A%0D%0A++++if+%28-Not+%28Test-Path+%24winget%29%29+%7B%0D%0A++++++++throw+%22Download+failed%3A+%24winget+was+not+created.%22%0D%0A++++%7D%0D%0A%0D%0A++++Add-AppxPackage+-Path+%24winget%0D%0A%7D+%22Installing+winget+%28Windows+Package+Manager%29%22%0D%0A%0D%0A%23+%3D%3D%3D+VERIFY+WINGET+%3D%3D%3D%0D%0A%0D%0ASet-Variable+-Name+wingetAvailable+-Value+%24false+-Scope+Script%0D%0ATry-Run+%7B%0D%0A++++winget+%2D%2Dversion+%7C+Out-Null%0D%0A++++%24script%3AwingetAvailable+%3D+%24true%0D%0A%7D+%22Verifying+winget+is+available%22%0D%0A%0D%0Aif+%28%24wingetAvailable%29+%7B%0D%0A%0D%0A++++%23+%3D%3D%3D+CLEANUP+TEMP+FILES+%3D%3D%3D%0D%0A++++Try-Run+%7B%0D%0A++++++++Remove-Item+-LiteralPath+%24winget+-Force+-ErrorAction+SilentlyContinue%0D%0A++++++++Remove-Item+-LiteralPath+%24UIXaml+-Force+-ErrorAction+SilentlyContinue%0D%0A++++++++Remove-Item+-LiteralPath+%24VCLibs+-Force+-ErrorAction+SilentlyContinue%0D%0A++++%7D+%22Cleaning+up+temporary+installer+files%22%0D%0A%0D%0A++++%23+%3D%3D%3D+INSTALL+APPLICATIONS+%3D%3D%3D%0D%0A++++foreach+%28%24app+in+%24appList%29+%7B%0D%0A++++++++Try-Run+%7B%0D%0A++++++++++++winget+install+%2D%2Did%3D%24app+-e+%2D%2Daccept-source-agreements+%2D%2Daccept-package-agreements%0D%0A++++++++%7D+%22Installing+%24app%22%0D%0A++++%7D%0D%0A%0D%0A++++%23+%3D%3D%3D+OPTIONAL+SHORTCUT+CLEANUP+%3D%3D%3D%0D%0A++++if+%28%24RemoveShortcuts%29+%7B%0D%0A++++++++Try-Run+%7B%0D%0A++++++++++++Remove-Shortcut+-NameFragments+%24shortcutFragments%0D%0A++++++++%7D+%22Removing+desktop+shortcuts+for+installed+apps%22%0D%0A++++%7D%0D%0A%0D%0A%7D+else+%7B%0D%0A++++Write-Host+%22%60n%5BWARNING%5D+winget+is+not+available.+Skipping+app+installations+and+cleanup.%22%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+WRAP+UP+%3D%3D%3D%0D%0AWrite-Host+%22%60n%5BINFO%5D+Winget+Apps+script+completed.+Log+saved+to+%24env%3ATEMP%5C03_Winget_Apps.log%22%0D%0AStop-Transcript&FirstLogonScriptType2=Ps1&FirstLogonScript3=%23+%3D%3D%3D+LOGGING+%3D%3D%3D%0D%0AStart-Transcript+-Path+%22%24env%3ATEMP%5C04_UserSetup.log%22+-Append+-Force%0D%0A%0D%0A%3C%23%0D%0A.TITLE%0D%0A++++Script+04+%E2%80%93+Unattended+Desktop+Customization+%26+Activation%0D%0A%0D%0A.SYNOPSIS%0D%0A++++Configures+keyboard+layout%2C+sets+default+wallpaper%2C+removes+clutter%2C%0D%0A++++adds+helpful+shortcuts%2C+and+activates+Windows+automatically.%0D%0A%0D%0A.DESCRIPTION%0D%0A++++-+Applies+a+preferred+keyboard+layout+%28customizable%29%0D%0A++++-+Sets+default+wallpaper+from+Windows+stock+backgrounds%0D%0A++++-+Removes+Microsoft+Edge+shortcut%0D%0A++++-+Adds+shortcuts+for+Network+Connections+and+Sysinternals+Autologon%0D%0A++++-+Activates+Windows+using+TSForge+%28via+MAS+scripts%29%0D%0A%0D%0A.NOTES%0D%0A++++%E2%9C%85+Internet+required+for+TSForge+activation+and+Autologon+download%0D%0A++++%F0%9F%93%81+Logs+actions+to+%24env%3ATEMP%5C04_UserSetup.log%0D%0A++++%F0%9F%9B%A0%EF%B8%8F+Use+%60Get-WinUserLanguageList%60+to+discover+language%2Finput+codes%0D%0A%0D%0A.LINK%0D%0A++++https%3A%2F%2Flearn.microsoft.com%2Fen-us%2Fsysinternals%2Fdownloads%2Fautologon%0D%0A++++https%3A%2F%2Fgithub.com%2Fmassgravel%2FMicrosoft-Activation-Scripts%0D%0A%23%3E%0D%0A%0D%0A%0D%0Afunction+Try-Run+%7B%0D%0A++++param+%28%0D%0A++++++++%5Bscriptblock%5D%24Script%2C%0D%0A++++++++%5Bstring%5D%24Description%0D%0A++++%29%0D%0A++++Write-Host+%22%60n%5BINFO%5D+%24Description%22%0D%0A++++try+%7B%0D%0A++++++++%26+%24Script%0D%0A++++++++Write-Host+%22%5BSUCCESS%5D+%24Description+completed.%22%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Host+%22%5BERROR%5D+%24Description+failed%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+KEYBOARD+LAYOUT+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++%23+To+customize%3A+Run+Get-WinUserLanguageList+to+view+input%2Flanguage+codes%0D%0A++++%23+Replace+%27en-CA%27+and+%271009%3A00011009%27+with+your+own+layout+if+desired%0D%0A++++%24langList+%3D+New-WinUserLanguageList+%22en-CA%22%0D%0A++++%24langList%5B0%5D.InputMethodTips.Clear%28%29%0D%0A++++%24langList%5B0%5D.InputMethodTips.Add%28%221009%3A00011009%22%29++%23+Canadian+Multilingual+Standard%0D%0A++++Set-WinUserLanguageList+%24langList+-Force%0D%0A%7D+%22Setting+keyboard+layout+to+English+%28Canada%29+-+Canadian+Multilingual%22%0D%0A%0D%0A%23+%3D%3D%3D+WALLPAPER+%3D%3D%3D%0D%0A%24W10_Wallpaper+%3D+%22C%3A%5CWindows%5CWeb%5CWallpaper%5CTheme1%5Cimg4.jpg%22%0D%0A%24W11_Wallpaper+%3D+%22C%3A%5CWindows%5CWeb%5CWallpaper%5CThemeA%5Cimg20.jpg%22%0D%0A%0D%0ATry-Run+%7B%0D%0A++++%24wallpaperToApply+%3D+if+%28Test-Path+%24W10_Wallpaper%29+%7B%0D%0A++++++++Write-Host+%22%5BINFO%5D+Using+Windows+10+wallpaper.%22%0D%0A++++++++%24W10_Wallpaper%0D%0A++++%7D+elseif+%28Test-Path+%24W11_Wallpaper%29+%7B%0D%0A++++++++Write-Host+%22%5BINFO%5D+Using+Windows+11+fallback+wallpaper.%22%0D%0A++++++++%24W11_Wallpaper%0D%0A++++%7D+else+%7B%0D%0A++++++++Write-Warning+%22No+suitable+wallpaper+found.%22%0D%0A++++++++return%0D%0A++++%7D%0D%0A%0D%0A++++Set-ItemProperty+-Path+%27HKCU%3A%5CControl+Panel%5CDesktop%27+-Name+WallPaper+-Value+%24wallpaperToApply%0D%0A++++Set-ItemProperty+-Path+%27HKCU%3A%5CControl+Panel%5CDesktop%27+-Name+WallpaperStyle+-Value+%2210%22++%23+Fill%0D%0A++++Set-ItemProperty+-Path+%27HKCU%3A%5CControl+Panel%5CDesktop%27+-Name+TileWallpaper+-Value+%220%22+++++%23+No+Tile%0D%0A++++Start-Process+-FilePath+rundll32.exe+-ArgumentList+%27user32.dll%2CUpdatePerUserSystemParameters%27+-NoNewWindow+-Wait%0D%0A%7D+%22Applying+default+wallpaper%22%0D%0A%0D%0A%23+%3D%3D%3D+REMOVE+MICROSOFT+EDGE+SHORTCUT+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Remove-Item+%22%24env%3AUSERPROFILE%5CDesktop%5CMicrosoft+Edge.lnk%22+-Force+-ErrorAction+SilentlyContinue%0D%0A%7D+%22Removing+Microsoft+Edge+shortcut+from+Desktop%22%0D%0A%0D%0A%23+%3D%3D%3D+NETWORK+CONNECTIONS+SHORTCUT+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++%24ncpa+%3D+%28New-Object+-ComObject+WScript.Shell%29.CreateShortcut%28%22%24env%3AUSERPROFILE%5CDesktop%5CNetwork+Connections.lnk%22%29%0D%0A++++%24ncpa.TargetPath+++++++%3D+%22%24env%3Awindir%5Cexplorer.exe%22%0D%0A++++%24ncpa.Arguments++++++++%3D+%22shell%3A%3A%3A%7B992CFFA0-F557-101A-88EC-00DD010CCC48%7D%22%0D%0A++++%24ncpa.WorkingDirectory+%3D+%22%24env%3Awindir%22%0D%0A++++%24ncpa.IconLocation+++++%3D+%22%24env%3ASystemRoot%5CSystem32%5Cnetshell.dll%22%0D%0A++++%24ncpa.Save%28%29%0D%0A%7D+%22Creating+%27Network+Connections%27+shortcut+on+Desktop%22%0D%0A%0D%0A%23+%3D%3D%3D+AUTOLOGON+TOOL+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++curl.exe+-L+-s+https%3A%2F%2Flive.sysinternals.com%2FAutologon.exe+-o+%22%24env%3AUSERPROFILE%5CDesktop%5CAutologon.exe%22%0D%0A%7D+%22Downloading+Sysinternals+Autologon+to+Desktop%22%0D%0A%0D%0A%23+%3D%3D%3D+ACTIVATE+WINDOWS+VIA+TSFORGE+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Write-Host+%22%5BDETAIL%5D+Downloading+and+running+TSForge+activation+script...%22%0D%0A++++%24tsPath+%3D+%22%24env%3ATEMP%5CTSforge_Activation.cmd%22%0D%0A++++curl.exe+-L+-s+https%3A%2F%2Fraw.githubusercontent.com%2Fmassgravel%2FMicrosoft-Activation-Scripts%2Fmaster%2FMAS%2FSeparate-Files-Version%2FActivators%2FTSforge_Activation.cmd+-o+%24tsPath%0D%0A++++%26+%24tsPath+%2FZ-Windows%0D%0A++++Remove-Item+%24tsPath+-Force+-ErrorAction+SilentlyContinue%0D%0A%7D+%22Running+TSForge+activation%22%0D%0A%0D%0A%23+%3D%3D%3D+RESTART+EXPLORER+TO+APPLY+CHANGES+%3D%3D%3D%0D%0AWrite-Host+%22%E2%86%92+Restarting+Explorer+to+apply+changes%22%0D%0Ataskkill+%2Ff+%2Fim+explorer.exe+%7C+Out-Null%0D%0AStart-Process+explorer.exe%0D%0A%0D%0A%23+%3D%3D%3D+WRAP+UP+%3D%3D%3D%0D%0AWrite-Host+%22%60n%5BINFO%5D+Script+completed.+Log+saved+to+%24env%3ATEMP%5C04_UserSetup.log%22%0D%0AStop-Transcript&FirstLogonScriptType3=Ps1&FirstLogonScript4=%23+%3D%3D%3D+LOGGING+%3D%3D%3D%0D%0AStart-Transcript+-Path+%22%24env%3ATEMP%5C05_CTT_Winutil_Tweaks.log%22+-Append+-Force%0D%0A%0D%0A%3C%23%0D%0A.TITLE%0D%0A++++Script+05+%E2%80%93+CTT+WinUtil+Setup+and+Tweaks%0D%0A%0D%0A.SYNOPSIS%0D%0A++++Executes+Chris+Titus+Tech%27s+WinUtil+tool+with+a+predefined+JSON+config+for+system+debloating+and+tweaking.%0D%0A%0D%0A.DESCRIPTION%0D%0A++++-+Downloads+the+latest+WinUtil+script+from+the+official+source%0D%0A++++-+Applies+user-defined+tweaks+from+an+embedded+JSON+config%0D%0A++++-+Auto-patches+script+to+skip+feature+installations+and+auto-close+when+done%0D%0A%0D%0A.HOW+TO+CUSTOMIZE+CONFIG%3A%0D%0A++++1.+Open+PowerShell+and+run%3A%0D%0A+++++++++irm+%27https%3A%2F%2Fchristitus.com%2Fwin%27+%7C+iex%0D%0A++++2.+Go+to+the+%22Tweaks%22+tab+and+select+the+tweaks+you+want+%28avoid+installing+software+here%29.%0D%0A++++3.+Click+the+%E2%9A%99%EF%B8%8F+gear+icon+in+the+top-right+and+export+your+config+as+JSON.%0D%0A++++4.+Replace+the+%60%24configJson%60+block+below+with+your+exported+content.%0D%0A%0D%0A.NOTES%0D%0A++++%E2%9C%85+Internet+required+for+downloading+script%0D%0A++++%F0%9F%93%9D+Config+saved+to+%24env%3ATEMP%5Cwinutil_config.json%0D%0A++++%F0%9F%93%81+Logs+saved+to+%24env%3ATEMP%5C05_CTT_Winutil_Tweaks.log%0D%0A%0D%0A.LINK%0D%0A++++https%3A%2F%2Fgithub.com%2FChrisTitusTech%2Fwinutil%0D%0A%23%3E%0D%0A%0D%0Afunction+Try-Run+%7B%0D%0A++++param+%28%0D%0A++++++++%5Bscriptblock%5D%24Script%2C%0D%0A++++++++%5Bstring%5D%24Description%0D%0A++++%29%0D%0A++++Write-Host+%22%60n%5BINFO%5D+%24Description%22%0D%0A++++try+%7B%0D%0A++++++++%26+%24Script%0D%0A++++++++Write-Host+%22%5BSUCCESS%5D+%24Description+completed.%22%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Host+%22%5BERROR%5D+%24Description+failed%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+CONFIG+JSON+%3D%3D%3D%0D%0A%24configJson+%3D+%40%27%0D%0A%7B%0D%0A++%22WPFFeature%22%3A+%5B%0D%0A++++%22WPFFeatureDisableSearchSuggestions%22%0D%0A++%5D%2C%0D%0A++%22WPFInstall%22%3A+%5B%5D%2C%0D%0A++%22Install%22%3A+%5B%5D%2C%0D%0A++%22WPFTweaks%22%3A+%5B%0D%0A++++%22WPFTweaksRemoveHomeGallery%22%2C%0D%0A++++%22WPFTweaksDVR%22%2C%0D%0A++++%22WPFTweaksEdgeDebloat%22%2C%0D%0A++++%22WPFTweaksConsumerFeatures%22%2C%0D%0A++++%22WPFTweaksDisableipsix%22%2C%0D%0A++++%22WPFTweaksHome%22%2C%0D%0A++++%22WPFTweaksDisableBGapps%22%2C%0D%0A++++%22WPFTweaksStorage%22%2C%0D%0A++++%22WPFTweaksHiber%22%2C%0D%0A++++%22WPFTweaksRemoveCopilot%22%2C%0D%0A++++%22WPFTweaksLoc%22%2C%0D%0A++++%22WPFTweaksPowershell7Tele%22%2C%0D%0A++++%22WPFTweaksWifi%22%2C%0D%0A++++%22WPFTweaksServices%22%2C%0D%0A++++%22WPFTweaksRecallOff%22%2C%0D%0A++++%22WPFTweaksTele%22%2C%0D%0A++++%22WPFTweaksIPv46%22%2C%0D%0A++++%22WPFTweaksDisableNotifications%22%0D%0A++%5D%0D%0A%7D%0D%0A%27%40%0D%0A%0D%0A%23+%3D%3D%3D+PATH+SETUP+%3D%3D%3D%0D%0A%24configPath++%3D+%22%24env%3ATEMP%5Cwinutil_config.json%22%0D%0A%24winutilPath+%3D+%22%24env%3ATEMP%5Cwinutil.ps1%22%0D%0A%0D%0A%23+%3D%3D%3D+SAVE+CONFIG+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++%24configJson+%7C+Out-File+-FilePath+%24configPath+-Encoding+utf8+-Force%0D%0A%7D+%22Saving+WinUtil+configuration+to+%24configPath%22%0D%0A%0D%0A%23+%3D%3D%3D+DOWNLOAD+%2B+PATCH+SCRIPT+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++irm+%27https%3A%2F%2Fchristitus.com%2Fwin%27+-OutFile+%24winutilPath%0D%0A%0D%0A++++if+%28-not+%28Test-Path+%24winutilPath%29%29+%7B%0D%0A++++++++throw+%22Failed+to+download+WinUtil+script.%22%0D%0A++++%7D%0D%0A++++Write-Host+%22%5BINFO%5D+Script+saved+to+%24winutilPath%22%0D%0A%0D%0A++++%23+Remove+feature+install+block%0D%0A++++%24featureRegex++%3D+%27%28%3Fms%29%28%3F%3C%3D%5E%5Cs*Write-Host+%22Installing+features...%22%5Cs*%29.*%3F%28%3F%3D%5Cs*Write-Host+%22Done.%22%29%27%0D%0A++++%24patchedScript+%3D+%28Get-Content+-Raw+%24winutilPath%29+-replace+%24featureRegex%2C+%27%27%0D%0A++++Set-Content+-Path+%24winutilPath+-Value+%24patchedScript%0D%0A++++Write-Host+%22%5BINFO%5D+Removed+feature+installation+block.%22%0D%0A%0D%0A++++%23+Auto-close+patch%0D%0A++++%24exitPatch+%3D+%27Write-Host+%22%2D%2D+++++Tweaks+are+Finished++++%2D%2D-%22%3B+Start-Sleep+-Seconds+1%3B+Stop-Process+-Id+%24PID+-Force%27%0D%0A++++%24patchedScript+%3D+%28Get-Content+-Raw+%24winutilPath%29+-replace+%27Write-Host+%22%2D%2D+++++Tweaks+are+Finished++++%2D%2D-%22%27%2C+%24exitPatch%0D%0A++++Set-Content+-Path+%24winutilPath+-Value+%24patchedScript%0D%0A++++Write-Host+%22%5BINFO%5D+Applied+auto-close+patch.%22%0D%0A%7D+%22Downloading+and+patching+WinUtil+script%22%0D%0A%0D%0A%23+%3D%3D%3D+RUN+WINUTIL+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Start-Process+powershell.exe+-ArgumentList+%22-ExecutionPolicy+Bypass+-WindowStyle+Hidden+-File+%60%22%24winutilPath%60%22+-Config+%60%22%24configPath%60%22+-Run%22+-Wait%0D%0A%7D+%22Running+WinUtil+with+configuration%22%0D%0A%0D%0A%23+%3D%3D%3D+FALLBACK+TO+LOCAL+%3D%3D%3D%0D%0Aif+%28-not+%28Test-Path+%24winutilPath%29%29+%7B%0D%0A++++Write-Host+%22%5BWARN%5D+Remote+script+failed.+Trying+fallback.%22%0D%0A++++Try-Run+%7B%0D%0A++++++++%24exitPatch+%3D+%27Write-Host+%22%2D%2D+++++Tweaks+are+Finished++++%2D%2D-%22%3B+Start-Sleep+-Seconds+1%3B+Stop-Process+-Id+%24PID+-Force%27%0D%0A++++++++%28Get-Content+-Raw+%24winutilPath%29+-replace+%27Write-Host+%22%2D%2D+++++Tweaks+are+Finished++++%2D%2D-%22%27%2C+%24exitPatch+%7C+Set-Content+%24winutilPath%0D%0A++++++++Start-Process+powershell.exe+-ArgumentList+%22-ExecutionPolicy+Bypass+-WindowStyle+Hidden+-File+%60%22%24winutilPath%60%22+-Config+%60%22%24configPath%60%22+-Run%22+-Wait%0D%0A++++%7D+%22Running+local+WinUtil+fallback%22%0D%0A%7D%0D%0A%0D%0A%23+%3D%3D%3D+CLEANUP+%3D%3D%3D%0D%0ATry-Run+%7B%0D%0A++++Remove-Item+-LiteralPath+%24winutilPath+-Force+-ErrorAction+SilentlyContinue%0D%0A%7D+%22Deleting+WinUtil+script%22%0D%0A%0D%0A%23+%3D%3D%3D+WRAP+UP+%3D%3D%3D%0D%0AWrite-Host+%22%60n%5BINFO%5D+Winutil+execution+completed.+Log+saved+to+%24env%3ATEMP%5C05_CTT_Winutil_Tweaks.log%22%0D%0AStop-Transcript%0D%0ARestart-Computer+-Force%0D%0A&FirstLogonScriptType4=Ps1&RestartExplorer=true&WdacMode=Skip-->
+	<settings pass="offlineServicing"></settings>
+	<settings pass="windowsPE">
+		<component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<SetupUILanguage>
+				<UILanguage>en-US</UILanguage>
+			</SetupUILanguage>
+			<InputLocale>1009:00011009</InputLocale>
+			<SystemLocale>en-CA</SystemLocale>
+			<UILanguage>en-US</UILanguage>
+			<UserLocale>en-CA</UserLocale>
+		</component>
+		<component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<ImageInstall>
+				<OSImage>
+					<InstallTo>
+						<DiskID>0</DiskID>
+						<PartitionID>3</PartitionID>
+					</InstallTo>
+				</OSImage>
+			</ImageInstall>
+			<UserData>
+				<ProductKey>
+					<Key>VK7JG-NPHTM-C97JM-9MPGT-3V66T</Key>
+					<WillShowUI>OnError</WillShowUI>
+				</ProductKey>
+				<AcceptEula>true</AcceptEula>
+			</UserData>
+			<UseConfigurationSet>true</UseConfigurationSet>
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\assert.vbs" (echo On Error Resume Next&amp;echo Set wmi = GetObject("winmgmts:\\.\root\cimv2"^)&amp;echo Set drive = wmi.Get("Win32_DiskDrive.DeviceID='\\.\PHYSICALDRIVE0'"^)&amp;echo If Err.Number ^&lt;^&gt; 0 Then)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\assert.vbs" (echo Msgbox Err.Description&amp;echo WScript.Quit 1&amp;echo End If&amp;echo If drive.InterfaceType = "IDE" Or drive.InterfaceType = "SCSI" Then&amp;echo WScript.Quit 0&amp;echo Else)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\assert.vbs" (echo MsgBox "Assertion failed."&amp;echo WScript.Quit 1&amp;echo End If)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>cscript.exe //E:vbscript "X:\assert.vbs"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo SELECT DISK=0&amp;echo CLEAN&amp;echo CONVERT GPT&amp;echo CREATE PARTITION EFI SIZE=300&amp;echo FORMAT QUICK FS=FAT32 LABEL="System"&amp;echo CREATE PARTITION MSR SIZE=16)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>6</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo CREATE PARTITION PRIMARY&amp;echo SHRINK MINIMUM=1000&amp;echo FORMAT QUICK FS=NTFS LABEL="Windows"&amp;echo CREATE PARTITION PRIMARY&amp;echo FORMAT QUICK FS=NTFS LABEL="Recovery")"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>7</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo SET ID="de94bba4-06d1-4d40-a16a-bfd50179d6ac"&amp;echo GPT ATTRIBUTES=0x8000000000000001)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>8</Order>
+					<Path>cmd.exe /c "diskpart.exe /s "X:\diskpart.txt" &gt;&gt;"X:\diskpart.log" || ( type "X:\diskpart.log" &amp; echo diskpart encountered an error. &amp; pause &amp; exit /b 1 )"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>9</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>10</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>11</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="generalize"></settings>
+	<settings pass="specialize">
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<ComputerName>TEMPNAME</ComputerName>
+		</component>
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>powershell.exe -WindowStyle Hidden -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>powershell.exe -WindowStyle Hidden -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\Specialize.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>powershell.exe -WindowStyle Hidden -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\DefaultUser.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="auditSystem"></settings>
+	<settings pass="auditUser"></settings>
+	<settings pass="oobeSystem">
+		<component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<InputLocale>1009:00011009</InputLocale>
+			<SystemLocale>en-CA</SystemLocale>
+			<UILanguage>en-US</UILanguage>
+			<UserLocale>en-CA</UserLocale>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserAccounts>
+				<LocalAccounts>
+					<LocalAccount wcm:action="add">
+						<Name>user</Name>
+						<DisplayName></DisplayName>
+						<Group>Administrators</Group>
+						<Password>
+							<Value>root</Value>
+							<PlainText>true</PlainText>
+						</Password>
+					</LocalAccount>
+				</LocalAccounts>
+			</UserAccounts>
+			<AutoLogon>
+				<Username>user</Username>
+				<Enabled>true</Enabled>
+				<LogonCount>1</LogonCount>
+				<Password>
+					<Value>root</Value>
+					<PlainText>true</PlainText>
+				</Password>
+			</AutoLogon>
+			<OOBE>
+				<ProtectYourPC>3</ProtectYourPC>
+				<HideEULAPage>true</HideEULAPage>
+				<HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+				<HideOnlineAccountScreens>false</HideOnlineAccountScreens>
+			</OOBE>
+			<FirstLogonCommands>
+				<SynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<CommandLine>powershell.exe -WindowStyle Hidden -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\FirstLogon.ps1' -Raw | Invoke-Expression;"</CommandLine>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+	</settings>
+	<Extensions xmlns="https://schneegans.de/windows/unattend-generator/">
+		<ExtractScript>
+param(
+    [xml] $Document
+);
+
+foreach( $file in $Document.unattend.Extensions.File ) {
+    $path = [System.Environment]::ExpandEnvironmentVariables( $file.GetAttribute( 'path' ) );
+    mkdir -Path( $path | Split-Path -Parent ) -ErrorAction 'SilentlyContinue';
+    $encoding = switch( [System.IO.Path]::GetExtension( $path ) ) {
+        { $_ -in '.ps1', '.xml' } { [System.Text.Encoding]::UTF8; }
+        { $_ -in '.reg', '.vbs', '.js' } { [System.Text.UnicodeEncoding]::new( $false, $true ); }
+        default { [System.Text.Encoding]::Default; }
+    };
+    $bytes = $encoding.GetPreamble() + $encoding.GetBytes( $file.InnerText.Trim() );
+    [System.IO.File]::WriteAllBytes( $path, $bytes );
+}
+		</ExtractScript>
+		<File path="C:\Windows\Setup\Scripts\GetComputerName.ps1">
+# Generate a computer name in the format: WIN[10/11/XX]-[3 random alphanumeric characters]
+# Example: WIN10-4F6, WIN11-XZ2
+
+$osVersion = (Get-CimInstance Win32_OperatingSystem).Version.Split('.')[0]
+$randomSuffix = -join ((65..90 + 48..57) | Get-Random -Count 3 | ForEach-Object { [char]$_ })
+return "WIN$osVersion-$randomSuffix"
+
+&lt;#
+# Generates a computer name like:
+# WIN10-ABC, WIN11-XYZ, WINSRV19-Q7P, WINSRV25-T6L
+
+# Get the OS product name (e.g., "Windows Server 2022 Standard")
+$productName = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion').ProductName
+
+# Initialize prefix
+$prefix = "WIN??"
+
+# Try to extract 4-digit year if present (e.g., 2019, 2022, 2025)
+if ($productName -like "*Server*") {
+    if ($productName -match "20\d{2}") {
+        $year = $Matches[0]
+        $prefix = "WINSRV$($year.Substring(2))"  # use last two digits (e.g., "22")
+    } else {
+        $prefix = "WINSRV"
+    }
+}
+elseif ($productName -match "Windows (\d+)") {
+    $prefix = "WIN$($Matches[1])"
+}
+
+# Generate random 3-character alphanumeric suffix (A&#x2013;Z, 0&#x2013;9)
+$random = -join ((65..90 + 48..57) | Get-Random -Count 3 | ForEach-Object { [char]$_ })
+
+# Return computer name
+return "$prefix-$random"
+
+#&gt;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\SetComputerName.ps1">
+$ErrorActionPreference = 'Stop';
+Set-StrictMode -Version 'Latest';
+&amp; {
+	$newName = ( Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\ComputerName.txt' -Raw ).Trim();
+	if( [string]::IsNullOrWhitespace( $newName ) ) {
+		throw "No computer name was provided.";
+	}
+
+	$keys = @(
+		@{
+			LiteralPath = 'Registry::HKLM\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName';
+			Name = 'ComputerName';
+		};
+		@{
+			LiteralPath = 'Registry::HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters';
+			Name = 'Hostname';
+		};
+		@{
+			LiteralPath = 'Registry::HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters';
+			Name = 'NV Hostname';
+		};
+	);
+
+	while( $true ) {
+		foreach( $key in $keys ) {
+			Set-ItemProperty @key -Type 'String' -Value $newName;
+		}
+		Start-Sleep -Milliseconds 50;
+	}
+} *&gt;&amp;1 &gt;&gt; 'C:\Windows\Setup\Scripts\SetComputerName.log';
+		</File>
+		<File path="C:\Windows\Setup\Scripts\RemovePackages.ps1">
+$selectors = @(
+	'Microsoft.Microsoft3DViewer';
+	'Microsoft.BingSearch';
+	'Microsoft.WindowsCalculator';
+	'Microsoft.WindowsCamera';
+	'Clipchamp.Clipchamp';
+	'Microsoft.WindowsAlarms';
+	'Microsoft.549981C3F5F10';
+	'Microsoft.Windows.DevHome';
+	'MicrosoftCorporationII.MicrosoftFamily';
+	'Microsoft.WindowsFeedbackHub';
+	'Microsoft.GetHelp';
+	'Microsoft.Getstarted';
+	'microsoft.windowscommunicationsapps';
+	'Microsoft.WindowsMaps';
+	'Microsoft.MixedReality.Portal';
+	'Microsoft.BingNews';
+	'Microsoft.WindowsNotepad';
+	'Microsoft.MicrosoftOfficeHub';
+	'Microsoft.Office.OneNote';
+	'Microsoft.OutlookForWindows';
+	'Microsoft.Paint';
+	'Microsoft.MSPaint';
+	'Microsoft.People';
+	'Microsoft.Windows.Photos';
+	'Microsoft.PowerAutomateDesktop';
+	'MicrosoftCorporationII.QuickAssist';
+	'Microsoft.SkypeApp';
+	'Microsoft.MicrosoftSolitaireCollection';
+	'Microsoft.MicrosoftStickyNotes';
+	'MicrosoftTeams';
+	'MSTeams';
+	'Microsoft.Todos';
+	'Microsoft.WindowsSoundRecorder';
+	'Microsoft.Wallet';
+	'Microsoft.BingWeather';
+	'Microsoft.Xbox.TCUI';
+	'Microsoft.XboxApp';
+	'Microsoft.XboxGameOverlay';
+	'Microsoft.XboxGamingOverlay';
+	'Microsoft.XboxIdentityProvider';
+	'Microsoft.XboxSpeechToTextOverlay';
+	'Microsoft.GamingApp';
+	'Microsoft.YourPhone';
+	'Microsoft.ZuneMusic';
+	'Microsoft.ZuneVideo';
+);
+$getCommand = {
+  Get-AppxProvisionedPackage -Online;
+};
+$filterCommand = {
+  $_.DisplayName -eq $selector;
+};
+$removeCommand = {
+  [CmdletBinding()]
+  param(
+    [Parameter( Mandatory, ValueFromPipeline )]
+    $InputObject
+  );
+  process {
+    $InputObject | Remove-AppxProvisionedPackage -AllUsers -Online -ErrorAction 'Continue';
+  }
+};
+$type = 'Package';
+$logfile = 'C:\Windows\Setup\Scripts\RemovePackages.log';
+&amp; {
+	$installed = &amp; $getCommand;
+	foreach( $selector in $selectors ) {
+		$result = [ordered] @{
+			Selector = $selector;
+		};
+		$found = $installed | Where-Object -FilterScript $filterCommand;
+		if( $found ) {
+			$result.Output = $found | &amp; $removeCommand;
+			if( $? ) {
+				$result.Message = "$type removed.";
+			} else {
+				$result.Message = "$type not removed.";
+				$result.Error = $Error[0];
+			}
+		} else {
+			$result.Message = "$type not installed.";
+		}
+		$result | ConvertTo-Json -Depth 3 -Compress;
+	}
+} *&gt;&amp;1 &gt;&gt; $logfile;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\RemoveCapabilities.ps1">
+$selectors = @(
+	'Print.Fax.Scan';
+	'Language.Handwriting';
+	'Browser.InternetExplorer';
+	'MathRecognizer';
+	'OneCoreUAP.OneSync';
+	'OpenSSH.Client';
+	'Microsoft.Windows.MSPaint';
+	'App.Support.QuickAssist';
+	'Language.Speech';
+	'Language.TextToSpeech';
+	'App.StepsRecorder';
+	'Hello.Face.18967';
+	'Hello.Face.Migration.18967';
+	'Hello.Face.20134';
+	'Media.WindowsMediaPlayer';
+	'Microsoft.Windows.WordPad';
+);
+$getCommand = {
+  Get-WindowsCapability -Online | Where-Object -Property 'State' -NotIn -Value @(
+    'NotPresent';
+    'Removed';
+  );
+};
+$filterCommand = {
+  ($_.Name -split '~')[0] -eq $selector;
+};
+$removeCommand = {
+  [CmdletBinding()]
+  param(
+    [Parameter( Mandatory, ValueFromPipeline )]
+    $InputObject
+  );
+  process {
+    $InputObject | Remove-WindowsCapability -Online -ErrorAction 'Continue';
+  }
+};
+$type = 'Capability';
+$logfile = 'C:\Windows\Setup\Scripts\RemoveCapabilities.log';
+&amp; {
+	$installed = &amp; $getCommand;
+	foreach( $selector in $selectors ) {
+		$result = [ordered] @{
+			Selector = $selector;
+		};
+		$found = $installed | Where-Object -FilterScript $filterCommand;
+		if( $found ) {
+			$result.Output = $found | &amp; $removeCommand;
+			if( $? ) {
+				$result.Message = "$type removed.";
+			} else {
+				$result.Message = "$type not removed.";
+				$result.Error = $Error[0];
+			}
+		} else {
+			$result.Message = "$type not installed.";
+		}
+		$result | ConvertTo-Json -Depth 3 -Compress;
+	}
+} *&gt;&amp;1 &gt;&gt; $logfile;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\RemoveFeatures.ps1">
+$selectors = @(
+	'MediaPlayback';
+	'MicrosoftWindowsPowerShellV2Root';
+	'Microsoft-RemoteDesktopConnection';
+	'Recall';
+);
+$getCommand = {
+  Get-WindowsOptionalFeature -Online | Where-Object -Property 'State' -NotIn -Value @(
+    'Disabled';
+    'DisabledWithPayloadRemoved';
+  );
+};
+$filterCommand = {
+  $_.FeatureName -eq $selector;
+};
+$removeCommand = {
+  [CmdletBinding()]
+  param(
+    [Parameter( Mandatory, ValueFromPipeline )]
+    $InputObject
+  );
+  process {
+    $InputObject | Disable-WindowsOptionalFeature -Online -Remove -NoRestart -ErrorAction 'Continue';
+  }
+};
+$type = 'Feature';
+$logfile = 'C:\Windows\Setup\Scripts\RemoveFeatures.log';
+&amp; {
+	$installed = &amp; $getCommand;
+	foreach( $selector in $selectors ) {
+		$result = [ordered] @{
+			Selector = $selector;
+		};
+		$found = $installed | Where-Object -FilterScript $filterCommand;
+		if( $found ) {
+			$result.Output = $found | &amp; $removeCommand;
+			if( $? ) {
+				$result.Message = "$type removed.";
+			} else {
+				$result.Message = "$type not removed.";
+				$result.Error = $Error[0];
+			}
+		} else {
+			$result.Message = "$type not installed.";
+		}
+		$result | ConvertTo-Json -Depth 3 -Compress;
+	}
+} *&gt;&amp;1 &gt;&gt; $logfile;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\TaskbarLayoutModification.xml">
+&lt;LayoutModificationTemplate xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification" xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" Version="1"&gt;
+	&lt;CustomTaskbarLayoutCollection&gt;
+		&lt;defaultlayout:TaskbarLayout&gt;
+			&lt;taskbar:TaskbarPinList&gt;
+				&lt;!-- File Explorer --&gt;
+				&lt;taskbar:DesktopApp DesktopApplicationID="Microsoft.Windows.Explorer" /&gt;
+				&lt;!-- Firefox --&gt;
+				&lt;taskbar:DesktopApp DesktopApplicationLinkPath="C:\Program Files\Mozilla Firefox\firefox.exe" /&gt;
+				&lt;!-- PowerShell 7 --&gt;
+				&lt;taskbar:DesktopApp DesktopApplicationLinkPath="C:\Program Files\PowerShell\7\pwsh.exe" /&gt;
+			&lt;/taskbar:TaskbarPinList&gt;
+		&lt;/defaultlayout:TaskbarLayout&gt;
+	&lt;/CustomTaskbarLayoutCollection&gt;
+&lt;/LayoutModificationTemplate&gt;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\UnlockStartLayout.vbs">
+HKU = &amp;H80000003
+Set reg = GetObject("winmgmts://./root/default:StdRegProv")
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+If reg.EnumKey(HKU, "", sids) = 0 Then
+	If Not IsNull(sids) Then
+		For Each sid In sids
+			key = sid + "\Software\Policies\Microsoft\Windows\Explorer"
+			name = "LockedStartLayout"
+			If reg.GetDWORDValue(HKU, key, name, existing) = 0 Then
+				reg.SetDWORDValue HKU, key, name, 0
+			End If
+		Next
+	End If
+End If
+		</File>
+		<File path="C:\Windows\Setup\Scripts\UnlockStartLayout.xml">
+&lt;Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task"&gt;
+	&lt;Triggers&gt;
+		&lt;EventTrigger&gt;
+			&lt;Enabled&gt;true&lt;/Enabled&gt;
+			&lt;Subscription&gt;&amp;lt;QueryList&amp;gt;&amp;lt;Query Id="0" Path="Application"&amp;gt;&amp;lt;Select Path="Application"&amp;gt;*[System[Provider[@Name='UnattendGenerator'] and EventID=1]]&amp;lt;/Select&amp;gt;&amp;lt;/Query&amp;gt;&amp;lt;/QueryList&amp;gt;&lt;/Subscription&gt;
+		&lt;/EventTrigger&gt;
+	&lt;/Triggers&gt;
+	&lt;Principals&gt;
+		&lt;Principal id="Author"&gt;
+			&lt;UserId&gt;S-1-5-18&lt;/UserId&gt;
+			&lt;RunLevel&gt;LeastPrivilege&lt;/RunLevel&gt;
+		&lt;/Principal&gt;
+	&lt;/Principals&gt;
+	&lt;Settings&gt;
+		&lt;MultipleInstancesPolicy&gt;IgnoreNew&lt;/MultipleInstancesPolicy&gt;
+		&lt;DisallowStartIfOnBatteries&gt;false&lt;/DisallowStartIfOnBatteries&gt;
+		&lt;StopIfGoingOnBatteries&gt;false&lt;/StopIfGoingOnBatteries&gt;
+		&lt;AllowHardTerminate&gt;true&lt;/AllowHardTerminate&gt;
+		&lt;StartWhenAvailable&gt;false&lt;/StartWhenAvailable&gt;
+		&lt;RunOnlyIfNetworkAvailable&gt;false&lt;/RunOnlyIfNetworkAvailable&gt;
+		&lt;IdleSettings&gt;
+			&lt;StopOnIdleEnd&gt;true&lt;/StopOnIdleEnd&gt;
+			&lt;RestartOnIdle&gt;false&lt;/RestartOnIdle&gt;
+		&lt;/IdleSettings&gt;
+		&lt;AllowStartOnDemand&gt;true&lt;/AllowStartOnDemand&gt;
+		&lt;Enabled&gt;true&lt;/Enabled&gt;
+		&lt;Hidden&gt;false&lt;/Hidden&gt;
+		&lt;RunOnlyIfIdle&gt;false&lt;/RunOnlyIfIdle&gt;
+		&lt;WakeToRun&gt;false&lt;/WakeToRun&gt;
+		&lt;ExecutionTimeLimit&gt;PT72H&lt;/ExecutionTimeLimit&gt;
+		&lt;Priority&gt;7&lt;/Priority&gt;
+	&lt;/Settings&gt;
+	&lt;Actions Context="Author"&gt;
+		&lt;Exec&gt;
+			&lt;Command&gt;C:\Windows\System32\wscript.exe&lt;/Command&gt;
+			&lt;Arguments&gt;C:\Windows\Setup\Scripts\UnlockStartLayout.vbs&lt;/Arguments&gt;
+		&lt;/Exec&gt;
+	&lt;/Actions&gt;
+&lt;/Task&gt;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\PauseWindowsUpdate.ps1">
+$formatter = {
+	$args[0].ToString( "yyyy'-'MM'-'dd'T'HH':'mm':'ssK" );
+};
+$now = [datetime]::UtcNow;
+$start = &amp; $formatter $now;
+$end = &amp; $formatter $now.AddDays( 7 );
+
+$params = @{
+	LiteralPath = 'Registry::HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings';
+	Type = 'String';
+	Force = $true;
+};
+
+Set-ItemProperty @params -Name 'PauseFeatureUpdatesStartTime' -Value $start;
+Set-ItemProperty @params -Name 'PauseFeatureUpdatesEndTime' -Value $end;
+Set-ItemProperty @params -Name 'PauseQualityUpdatesStartTime' -Value $start;
+Set-ItemProperty @params -Name 'PauseQualityUpdatesEndTime' -Value $end;
+Set-ItemProperty @params -Name 'PauseUpdatesStartTime' -Value $start;
+Set-ItemProperty @params -Name 'PauseUpdatesExpiryTime' -Value $end;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\PauseWindowsUpdate.xml">
+&lt;Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task"&gt;
+	&lt;Triggers&gt;
+		&lt;BootTrigger&gt;
+			&lt;Repetition&gt;
+				&lt;Interval&gt;P1D&lt;/Interval&gt;
+				&lt;StopAtDurationEnd&gt;false&lt;/StopAtDurationEnd&gt;
+			&lt;/Repetition&gt;
+			&lt;Enabled&gt;true&lt;/Enabled&gt;
+		&lt;/BootTrigger&gt;
+	&lt;/Triggers&gt;
+	&lt;Principals&gt;
+		&lt;Principal id="Author"&gt;
+			&lt;UserId&gt;S-1-5-19&lt;/UserId&gt;
+			&lt;RunLevel&gt;LeastPrivilege&lt;/RunLevel&gt;
+		&lt;/Principal&gt;
+	&lt;/Principals&gt;
+	&lt;Settings&gt;
+		&lt;MultipleInstancesPolicy&gt;IgnoreNew&lt;/MultipleInstancesPolicy&gt;
+		&lt;DisallowStartIfOnBatteries&gt;false&lt;/DisallowStartIfOnBatteries&gt;
+		&lt;StopIfGoingOnBatteries&gt;false&lt;/StopIfGoingOnBatteries&gt;
+		&lt;AllowHardTerminate&gt;true&lt;/AllowHardTerminate&gt;
+		&lt;StartWhenAvailable&gt;false&lt;/StartWhenAvailable&gt;
+		&lt;RunOnlyIfNetworkAvailable&gt;false&lt;/RunOnlyIfNetworkAvailable&gt;
+		&lt;IdleSettings&gt;
+			&lt;StopOnIdleEnd&gt;true&lt;/StopOnIdleEnd&gt;
+			&lt;RestartOnIdle&gt;false&lt;/RestartOnIdle&gt;
+		&lt;/IdleSettings&gt;
+		&lt;AllowStartOnDemand&gt;true&lt;/AllowStartOnDemand&gt;
+		&lt;Enabled&gt;true&lt;/Enabled&gt;
+		&lt;Hidden&gt;false&lt;/Hidden&gt;
+		&lt;RunOnlyIfIdle&gt;false&lt;/RunOnlyIfIdle&gt;
+		&lt;WakeToRun&gt;false&lt;/WakeToRun&gt;
+		&lt;ExecutionTimeLimit&gt;PT72H&lt;/ExecutionTimeLimit&gt;
+		&lt;Priority&gt;7&lt;/Priority&gt;
+	&lt;/Settings&gt;
+	&lt;Actions Context="Author"&gt;
+		&lt;Exec&gt;
+			&lt;Command&gt;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&lt;/Command&gt;
+			&lt;Arguments&gt;-Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\PauseWindowsUpdate.ps1' -Raw | Invoke-Expression;"&lt;/Arguments&gt;
+		&lt;/Exec&gt;
+	&lt;/Actions&gt;
+&lt;/Task&gt;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\MoveActiveHours.vbs">
+HKLM = &amp;H80000002
+key = "SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
+Set reg = GetObject("winmgmts://./root/default:StdRegProv")
+current = Hour(Now)
+reg.SetDWORDValue HKLM, key, "ActiveHoursStart", ( current + 23 ) Mod 24
+reg.SetDWORDValue HKLM, key, "ActiveHoursEnd", ( current + 11 ) Mod 24
+reg.SetDWORDValue HKLM, key, "SmartActiveHoursState", 2
+		</File>
+		<File path="C:\Windows\Setup\Scripts\MoveActiveHours.xml">
+&lt;Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task"&gt;
+	&lt;Triggers&gt;
+		&lt;BootTrigger&gt;
+			&lt;Repetition&gt;
+				&lt;Interval&gt;PT4H&lt;/Interval&gt;
+				&lt;StopAtDurationEnd&gt;false&lt;/StopAtDurationEnd&gt;
+			&lt;/Repetition&gt;
+			&lt;Enabled&gt;true&lt;/Enabled&gt;
+		&lt;/BootTrigger&gt;
+		&lt;RegistrationTrigger&gt;
+			&lt;Repetition&gt;
+				&lt;Interval&gt;PT4H&lt;/Interval&gt;
+				&lt;StopAtDurationEnd&gt;false&lt;/StopAtDurationEnd&gt;
+			&lt;/Repetition&gt;
+			&lt;Enabled&gt;true&lt;/Enabled&gt;
+		&lt;/RegistrationTrigger&gt;
+	&lt;/Triggers&gt;
+	&lt;Principals&gt;
+		&lt;Principal id="Author"&gt;
+			&lt;UserId&gt;S-1-5-19&lt;/UserId&gt;
+			&lt;RunLevel&gt;LeastPrivilege&lt;/RunLevel&gt;
+		&lt;/Principal&gt;
+	&lt;/Principals&gt;
+	&lt;Settings&gt;
+		&lt;MultipleInstancesPolicy&gt;IgnoreNew&lt;/MultipleInstancesPolicy&gt;
+		&lt;DisallowStartIfOnBatteries&gt;false&lt;/DisallowStartIfOnBatteries&gt;
+		&lt;StopIfGoingOnBatteries&gt;false&lt;/StopIfGoingOnBatteries&gt;
+		&lt;AllowHardTerminate&gt;true&lt;/AllowHardTerminate&gt;
+		&lt;StartWhenAvailable&gt;false&lt;/StartWhenAvailable&gt;
+		&lt;RunOnlyIfNetworkAvailable&gt;false&lt;/RunOnlyIfNetworkAvailable&gt;
+		&lt;IdleSettings&gt;
+			&lt;StopOnIdleEnd&gt;true&lt;/StopOnIdleEnd&gt;
+			&lt;RestartOnIdle&gt;false&lt;/RestartOnIdle&gt;
+		&lt;/IdleSettings&gt;
+		&lt;AllowStartOnDemand&gt;true&lt;/AllowStartOnDemand&gt;
+		&lt;Enabled&gt;true&lt;/Enabled&gt;
+		&lt;Hidden&gt;false&lt;/Hidden&gt;
+		&lt;RunOnlyIfIdle&gt;false&lt;/RunOnlyIfIdle&gt;
+		&lt;WakeToRun&gt;false&lt;/WakeToRun&gt;
+		&lt;ExecutionTimeLimit&gt;PT72H&lt;/ExecutionTimeLimit&gt;
+		&lt;Priority&gt;7&lt;/Priority&gt;
+	&lt;/Settings&gt;
+	&lt;Actions Context="Author"&gt;
+		&lt;Exec&gt;
+			&lt;Command&gt;C:\Windows\System32\wscript.exe&lt;/Command&gt;
+			&lt;Arguments&gt;C:\Windows\Setup\Scripts\MoveActiveHours.vbs&lt;/Arguments&gt;
+		&lt;/Exec&gt;
+	&lt;/Actions&gt;
+&lt;/Task&gt;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\VMwareTools.ps1">
+&amp; {
+	foreach( $letter in 'DEFGHIJKLMNOPQRSTUVWXYZ'.ToCharArray() ) {
+		$exe = "${letter}:\setup.exe";
+		if( ( Get-Item -LiteralPath $exe -ErrorAction 'SilentlyContinue' | Select-Object -ExpandProperty 'VersionInfo' | Select-Object -ExpandProperty 'ProductName' ) -eq 'VMware Tools' ) {
+			Start-Process -FilePath $exe -ArgumentList '/s /v /qn REBOOT=R' -Wait;
+			return;
+		}
+	}
+	'VMware Tools image (windows.iso) is not attached to this VM.';
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\VMwareTools.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\VirtIoGuestTools.ps1">
+&amp; {
+	foreach( $letter in 'DEFGHIJKLMNOPQRSTUVWXYZ'.ToCharArray() ) {
+		$exe = "${letter}:\virtio-win-guest-tools.exe";
+		if( Test-Path -LiteralPath $exe ) {
+			Start-Process -FilePath $exe -ArgumentList '/passive', '/norestart' -Wait;
+			return;
+		}
+	}
+	'VirtIO Guest Tools image (virtio-win-*.iso) is not attached to this VM.';
+} *&gt;&amp;1 &gt;&gt; 'C:\Windows\Setup\Scripts\VirtIoGuestTools.log';
+		</File>
+		<File path="C:\Windows\Setup\Scripts\MakeEdgeUninstallable.ps1">
+$ErrorActionPreference = 'Stop';
+&amp; {
+	try {
+		$params = @{
+			LiteralPath = 'C:\Windows\System32\IntegratedServicesRegionPolicySet.json';
+			Encoding = 'Utf8';
+		};
+		$o = Get-Content @params | ConvertFrom-Json;
+		$o.policies | ForEach-Object -Process {
+			if( $_.guid -eq '{1bca278a-5d11-4acf-ad2f-f9ab6d7f93a6}' ) {
+				$_.defaultState = 'enabled';
+			}
+		};
+		$o | ConvertTo-Json -Depth 9 | Out-File @params;
+	} catch {
+		$_;
+	}
+} *&gt;&amp;1 &gt;&gt; 'C:\Windows\Setup\Scripts\MakeEdgeUninstallable.log';
+		</File>
+		<File path="C:\Windows\Setup\Scripts\SetStartPins.ps1">
+$json = '{"pinnedList":[]}';
+if( [System.Environment]::OSVersion.Version.Build -lt 20000 ) {
+	return;
+}
+$key = 'Registry::HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Start';
+New-Item -Path $key -ItemType 'Directory' -ErrorAction 'SilentlyContinue';
+Set-ItemProperty -LiteralPath $key -Name 'ConfigureStartPins' -Value $json -Type 'String';
+		</File>
+		<File path="C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml">
+&lt;LayoutModificationTemplate Version="1" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification"&gt;
+	&lt;LayoutOptions StartTileGroupCellWidth="6" /&gt;
+	&lt;DefaultLayoutOverride&gt;
+		&lt;StartLayoutCollection&gt;
+			&lt;StartLayout GroupCellWidth="6" xmlns="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" /&gt;
+		&lt;/StartLayoutCollection&gt;
+	&lt;/DefaultLayoutOverride&gt;
+&lt;/LayoutModificationTemplate&gt;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\SetColorTheme.ps1">
+$lightThemeSystem = 0;
+$lightThemeApps = 0;
+$accentColorOnStart = 0;
+$enableTransparency = 0;
+$htmlAccentColor = '#CF05A7';
+&amp; {
+	$params = @{
+		LiteralPath = 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize';
+		Force = $true;
+		Type = 'DWord';
+	};
+	Set-ItemProperty @params -Name 'SystemUsesLightTheme' -Value $lightThemeSystem;
+	Set-ItemProperty @params -Name 'AppsUseLightTheme' -Value $lightThemeApps;
+	Set-ItemProperty @params -Name 'ColorPrevalence' -Value $accentColorOnStart;
+	Set-ItemProperty @params -Name 'EnableTransparency' -Value $enableTransparency;
+};
+&amp; {
+	Add-Type -AssemblyName 'System.Drawing';
+	$accentColor = [System.Drawing.ColorTranslator]::FromHtml( $htmlAccentColor );
+
+	function ConvertTo-DWord {
+		param(
+			[System.Drawing.Color]
+			$Color
+		);
+						
+		[byte[]] $bytes = @(
+			$Color.R;
+			$Color.G;
+			$Color.B;
+			$Color.A;
+		);
+		return [System.BitConverter]::ToUInt32( $bytes, 0); 
+	}
+
+	$startColor = [System.Drawing.Color]::FromArgb( 0xD2, $accentColor );
+	Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent' -Name 'StartColorMenu' -Value( ConvertTo-DWord -Color $accentColor ) -Type 'DWord' -Force;
+	Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent' -Name 'AccentColorMenu' -Value( ConvertTo-DWord -Color $accentColor ) -Type 'DWord' -Force;
+	Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\DWM' -Name 'AccentColor' -Value( ConvertTo-DWord -Color $accentColor ) -Type 'DWord' -Force;
+	$params = @{
+		LiteralPath = 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent';
+		Name = 'AccentPalette';
+	};
+	$palette = Get-ItemPropertyValue @params;
+	$index = 20;
+	$palette[ $index++ ] = $accentColor.R;
+	$palette[ $index++ ] = $accentColor.G;
+	$palette[ $index++ ] = $accentColor.B;
+	$palette[ $index++ ] = $accentColor.A;
+	Set-ItemProperty @params -Value $palette -Type 'Binary' -Force;
+};
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-01.ps1">
+# === LOGGING ===
+Start-Transcript -Path "$env:TEMP\00_SystemSetup.log" -Append -Force
+
+&lt;#
+.TITLE
+    Script 04 &#x2013; System-Level Performance, Privacy, and Gaming Optimizations
+
+.SYNOPSIS
+    Applies deep system tweaks focused on performance, telemetry reduction, power tuning,
+    and gaming responsiveness. Designed to run in SYSTEM context.
+
+.DESCRIPTION
+    - Disables telemetry-related scheduled tasks and services
+    - Enables the Ultimate Performance power plan
+    - Applies CPU and GPU tuning for gaming
+    - Blocks unnecessary features like error reporting and Store taskbar pins
+    - Removes pinned Start menu tiles and disables taskbar feeds
+    - Opens up ICMP traffic for network diagnostics
+
+.NOTES
+    &#x26A0;&#xFE0F; Must be run as SYSTEM (e.g. via SetupComplete or Task Scheduler)
+    &#x2705; Safe to run repeatedly (idempotent registry and scheduled task commands)
+    &#x1F4C1; Logs actions to $env:TEMP\00_SystemSetup.log
+#&gt;
+
+function Try-Run {
+    param (
+        [scriptblock]$Script,
+        [string]$Description
+    )
+    Write-Host "`n[INFO] $Description"
+    try {
+        &amp; $Script
+        Write-Host "[SUCCESS] $Description applied."
+    } catch {
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+    }
+}
+
+# === WINDOWS UPDATE ===
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v SearchOrderConfig /t REG_DWORD /d 1 /f
+} "Setting Windows Update to prioritize driver searches"
+
+# === SCHEDULED TASKS: TELEMETRY CLEANUP ===
+Try-Run {
+    $tasks = @(
+        "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser",
+        "Microsoft\Windows\Application Experience\ProgramDataUpdater",
+        "Microsoft\Windows\Autochk\Proxy",
+        "Microsoft\Windows\Customer Experience Improvement Program\Consolidator",
+        "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip",
+        "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector",
+        "Microsoft\Windows\Feedback\Siuf\DmClient",
+        "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload",
+        "Microsoft\Windows\Windows Error Reporting\QueueReporting",
+        "Microsoft\Windows\Application Experience\MareBackup",
+        "Microsoft\Windows\Application Experience\StartupAppTask",
+        "Microsoft\Windows\Application Experience\PcaPatchDbTask",
+        "Microsoft\Windows\Maps\MapsUpdateTask",
+        "Microsoft\Windows\Windows Feeds\UpdateFeeds"
+    )
+    foreach ($task in $tasks) {
+        schtasks /Change /TN $task /Disable | Out-Null
+    }
+} "Disabling telemetry and customer experience tasks"
+
+Try-Run {
+    $taskGUIDs = @(
+        "{0600DD45-FAF2-4131-A006-0B17509B9F78}",
+        "{4738DE7A-BCC1-4E2D-B1B0-CADB044BFA81}",
+        "{6FAC31FA-4A85-4E64-BFD5-2154FF4594B3}",
+        "{FC931F16-B50A-472E-B061-B6F79A71EF59}",
+        "{0671EB05-7D95-4153-A32B-1426B9FE61DB}",
+        "{87BF85F4-2CE1-4160-96EA-52F554AA28A2}",
+        "{8A9C643C-3D74-4099-B6BD-9C6D170898B1}",
+        "{E3176A65-4E44-4ED3-AA73-3283660ACB9C}"
+    )
+    foreach ($guid in $taskGUIDs) {
+        reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\$guid" /f | Out-Null
+    }
+} "Clearing telemetry task cache from registry"
+
+# === POWER &amp; PERFORMANCE ===
+Try-Run {
+    $guid = (powercfg.exe /DUPLICATESCHEME e9a42b02-d5df-448d-aa00-03f14749eb61) -match '\s([a-f0-9-]{36})\s'
+    powercfg.exe /SETACTIVE $Matches[1]
+} "Activating Ultimate Performance power plan"
+
+Try-Run {
+    reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v IRPStackSize /t REG_DWORD /d 30 /f
+} "Increasing IRP Stack Size for better network performance"
+
+Try-Run {
+    $ramKB = (Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1KB
+    Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control -Name SvcHostSplitThresholdInKB -Value [int]$ramKB -Force
+} "Optimizing svchost split threshold based on system RAM"
+
+Try-Run { powercfg -hibernate off } "Disabling hibernation"
+Try-Run { powercfg /change standby-timeout-ac 0 } "Disabling AC standby timeout"
+Try-Run { powercfg /change standby-timeout-dc 0 } "Disabling DC standby timeout"
+Try-Run { powercfg /change monitor-timeout-ac 0 } "Disabling monitor timeout (AC)"
+Try-Run { powercfg /change monitor-timeout-dc 0 } "Disabling monitor timeout (DC)"
+
+# === GAMING PRIORITY ===
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d 8 /f
+} "Setting GPU priority to 8 for gaming"
+
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Priority /t REG_DWORD /d 6 /f
+} "Setting CPU scheduling priority to 6 for games"
+
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d "High" /f
+} "Setting scheduling category to High for gaming tasks"
+
+# === POLICY HARDENING ===
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
+} "Disabling Windows Error Reporting"
+
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v DisabledByGroupPolicy /t REG_DWORD /d 1 /f
+} "Disabling Advertising ID globally"
+
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoPinningStoreToTaskbar /t REG_DWORD /d 1 /f
+} "Preventing Microsoft Store from being pinned to taskbar"
+
+# === START MENU &amp; FEEDS ===
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins /t REG_SZ /d '{ "pinnedList": [] }' /f
+    reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins_ProviderSet /t REG_DWORD /d 1 /f
+    reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins_WinningProvider /t REG_SZ /d B5292708-1619-419B-9923-E5D9F3925E71 /f
+} "Clearing Start menu pinned tiles"
+
+Try-Run {
+    reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v EnableFeeds /t REG_DWORD /d 0 /f
+} "Disabling News and Interests from taskbar"
+
+# === FIREWALL ALLOW ICMP ===
+Try-Run {
+    New-NetFirewallRule -DisplayName 'ICMPv4' -Profile Any -Protocol ICMPv4
+    New-NetFirewallRule -DisplayName 'ICMPv6' -Profile Any -Protocol ICMPv6
+} "Allowing ICMP ping (v4 + v6) through the firewall"
+
+# === DONE ===
+Write-Host "`n[INFO] Script completed successfully. Log saved to $env:TEMP\00_SystemSetup.log"
+Stop-Transcript
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-02.ps1">
+# === LOGGING ===
+Start-Transcript -Path "$env:TEMP\01_UI_Tweaks.log" -Append -Force
+
+&lt;#
+.TITLE
+    Script 01 &#x2013; UI, Taskbar, and Privacy Tweaks
+
+.SYNOPSIS
+    Applies Explorer and taskbar behavior tweaks and disables various telemetry and ad-related settings via the registry.
+
+.DESCRIPTION
+    - Optimizes File Explorer and taskbar behavior
+    - Removes unwanted UI components (e.g. Widgets, Meet Now)
+    - Disables suggestions, feedback, and advertising telemetry
+    - Hardens privacy for first-logon or automated Windows deployments
+
+.NOTES
+    &#x2705; Safe to run repeatedly (idempotent registry writes)
+    &#x1F6E0;&#xFE0F; Intended for use during FirstLogon or SetupComplete
+    &#x1F4C1; Logs all actions to $env:TEMP\01_UI_Tweaks.log
+#&gt;
+
+# === FUNCTION: EXECUTION WRAPPER ===
+function Try-Run {
+    param (
+        [scriptblock]$Block,
+        [string]$Description
+    )
+    Write-Host "`n[INFO] $Description"
+    try {
+        &amp; $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
+    } catch {
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
+    }
+}
+
+# === EXPLORER &amp; UI TWEAKS ===
+Try-Run {
+    Write-Host "&#x2192; Removing Widgets"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarDa /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Removing Store banner in Notepad"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Notepad" /v ShowStoreBanner /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Setting File Explorer to open 'This PC'"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v LaunchTo /t REG_DWORD /d 1 /f
+
+    Write-Host "&#x2192; Setting Alt+Tab to show only open windows"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v MultiTaskingAltTabFilter /t REG_DWORD /d 3 /f
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v AltTabSettings /t REG_DWORD /d 1 /f
+
+    Write-Host "&#x2192; Disabling Snap Assist Flyout"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v SnapAssist /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Preventing Store app pinning to taskbar"
+    reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoPinningStoreToTaskbar /t REG_DWORD /d 1 /f
+} "Applying File Explorer and taskbar behavior tweaks"
+
+# === TASKBAR ICONS &amp; NEWS ===
+Try-Run {
+    Write-Host "&#x2192; Disabling News and Interests panel"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsEnabled /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Disabling News and Interests hover popup"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsTaskbarOpenOnHover /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Hiding Meet Now button from taskbar"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAMeetNow /t REG_DWORD /d 1 /f
+} "Disabling taskbar news, widgets, and chat icons"
+
+# === PRIVACY &amp; TELEMETRY ===
+Try-Run {
+    Write-Host "&#x2192; Disabling language list sharing with websites"
+    reg.exe add "HKCU\Control Panel\International\User Profile" /v HttpAcceptLanguageOptOut /t REG_DWORD /d 1 /f
+
+    Write-Host "&#x2192; Disabling personalization consent"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v AcceptedPrivacyPolicy /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Disabling collection of typed text and handwriting"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\InputPersonalization" /v RestrictImplicitTextCollection /t REG_DWORD /d 1 /f
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\InputPersonalization" /v RestrictImplicitInkCollection /t REG_DWORD /d 1 /f
+
+    Write-Host "&#x2192; Disabling feedback sampling and related services"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Feedback" /v AutoSample /t REG_DWORD /d 0 /f
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Feedback" /v ServiceEnabled /t REG_DWORD /d 0 /f
+
+    Write-Host "&#x2192; Disabling telemetry and advertising ID features"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v NumberOfSIUFInPeriod /t REG_DWORD /d 0 /f
+    reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableTailoredExperiencesWithDiagnosticData /t REG_DWORD /d 1 /f
+    reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
+} "Applying privacy and telemetry restrictions"
+
+# === DONE ===
+Write-Host "`n[INFO] All registry tweaks applied. Log saved to $env:TEMP\01_UI_Tweaks.log"
+Stop-Transcript
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-03.ps1">
+# === LOGGING ===
+Start-Transcript -Path "$env:TEMP\02_SysPrep_Debloater.log" -Append -Force
+
+&lt;#
+.TITLE
+    Script 02 &#x2013; Sysprep Debloater &amp; Cleanup
+
+.SYNOPSIS
+    Post-setup script to clean Windows from unnecessary preinstalled software, apps, and features.
+
+.DESCRIPTION
+    - Strips common PUWs (Provisioned Windows Apps)
+    - Removes optional Windows features
+    - Fully uninstalls Microsoft Teams
+    - Blocks Dev Home and New Outlook auto-installation
+    - Removes OneDrive using asheroto's PowerShell script
+
+.NOTES
+    &#x2705; Internet access is required for online components (OneDrive removal)
+    &#x1F464; Safe to run under a standard user context (FirstLogonCommands)
+    &#x1F4C1; Logs are saved to $env:TEMP\02_SysPrep_Debloater.log
+
+.LINK
+    https://github.com/asheroto/UninstallOneDrive
+#&gt;
+
+# === UTILITY: Safe Execution Wrapper ===
+function Try-Run {
+    param (
+        [scriptblock]$Script,
+        [string]$Description
+    )
+    Write-Host "`n[INFO] $Description"
+    try {
+        &amp; $Script
+        Write-Host "[SUCCESS] $Description completed."
+    } catch {
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+    }
+}
+
+# === REMOVE BLOATWARE (PUWs) ===
+Try-Run {
+    Write-Host "[DETAIL] Removing provisioned apps..."
+    $provisionedApps = @(
+        'Microsoft.Microsoft3DViewer'
+        'Microsoft.BingSearch'
+        'Microsoft.BingFinance'
+        'Microsoft.BingSports'
+        'Microsoft.BingNews'
+        'Microsoft.BingWeather'
+        'Microsoft.BingTravel'
+        'Microsoft.BingFoodAndDrink'
+        'Microsoft.BingHealthAndFitness'
+        'Microsoft.BingTranslator'
+        'Microsoft.Wallet'
+        'Microsoft.WindowsCamera'
+        'Clipchamp.Clipchamp'
+        'Microsoft.549981C3F5F10'
+        'Microsoft.Windows.DevHome'
+        'MicrosoftCorporationII.MicrosoftFamily'
+        'Microsoft.WindowsFeedbackHub'
+        'Microsoft.GetHelp'
+        'microsoft.windowscommunicationsapps'
+        'Microsoft.WindowsMaps'
+        'Microsoft.ZuneVideo'
+        'Microsoft.MicrosoftOfficeHub'
+        'Microsoft.Office.OneNote'
+        'Microsoft.OutlookForWindows'
+        'Microsoft.MSPaint'
+        'Microsoft.People'
+        'Microsoft.Windows.Photos'
+        'Microsoft.PowerAutomateDesktop'
+        'MicrosoftCorporationII.QuickAssist'
+        'Microsoft.SkypeApp'
+        'Microsoft.ScreenSketch'
+        'Microsoft.MicrosoftSolitaireCollection'
+        'MSTeams'
+        'Microsoft.Getstarted'
+        'Microsoft.WindowsSoundRecorder'
+        'Microsoft.ZuneMusic'
+        'Microsoft.Xbox.TCUI'
+        'Microsoft.XboxGameOverlay'
+        'Microsoft.XboxGamingOverlay'
+        'Microsoft.XboxSpeechToTextOverlay'
+        'Microsoft.GamingApp'
+        'Microsoft.YourPhone'
+        'Microsoft.OneDrive'
+        'Microsoft.MixedReality.Portal'
+        'Microsoft.Windows.Ai.Copilot.Provider'
+        'Microsoft.WindowsMeetNow'
+        'Microsoft.Office.Lens'
+        '*CandyCrush*'
+        '*Netflix*'
+    )
+    Get-AppxProvisionedPackage -Online | Where-Object {
+        $provisionedApps -contains $_.DisplayName -or ($provisionedApps | Where-Object { $_ -like "*" })
+    } | Remove-AppxProvisionedPackage -AllUsers -Online
+} "Removing provisioned apps (PUWs)"
+
+# === REMOVE OPTIONAL FEATURES ===
+Try-Run {
+    Write-Host "[DETAIL] Uninstalling legacy and optional features..."
+    $optionalFeatures = @(
+        'Browser.InternetExplorer'
+        'MathRecognizer'
+        'OpenSSH.Client'
+        'Microsoft.Windows.PowerShell.ISE'
+        'App.StepsRecorder'
+        'Microsoft.Windows.WordPad'
+    )
+    Get-WindowsCapability -Online | Where-Object {
+        ($_.Name -split '~')[0] -in $optionalFeatures
+    } | Remove-WindowsCapability -Online
+} "Removing optional Windows features"
+
+# === UNINSTALL MICROSOFT TEAMS ===
+Try-Run {
+    Write-Host "[DETAIL] Stopping Teams processes and uninstalling Teams..."
+    Stop-Process -Name "*teams*" -Force -ErrorAction SilentlyContinue
+
+    $TeamsPath = Join-Path $env:LOCALAPPDATA 'Microsoft\Teams'
+    $TeamsUpdateExePath = Join-Path $TeamsPath 'Update.exe'
+
+    if (Test-Path $TeamsUpdateExePath) {
+        $proc = Start-Process $TeamsUpdateExePath "-uninstall -s" -PassThru
+        $proc.WaitForExit()
+    }
+
+    Get-AppxPackage "*Teams*" | Remove-AppxPackage -ErrorAction SilentlyContinue
+    Get-AppxPackage "*Teams*" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+
+    if (Test-Path $TeamsPath) {
+        Remove-Item $TeamsPath -Recurse -Force -ErrorAction SilentlyContinue
+    }
+} "Fully uninstalling Microsoft Teams"
+
+# === BLOCK DEV HOME &amp; OUTLOOK AUTO-INSTALL ===
+Try-Run {
+    Write-Host "[DETAIL] Removing registry entries that trigger Dev Home and Outlook..."
+    reg.exe delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\DevHomeUpdate" /f | Out-Null
+    reg.exe delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate" /f | Out-Null
+} "Blocking Dev Home and New Outlook installation"
+
+# === UNINSTALL ONEDRIVE ===
+Try-Run {
+    Write-Host "[DETAIL] Downloading and executing OneDrive removal script..."
+    &amp; { irm https://github.com/asheroto/UninstallOneDrive/releases/download/1.0.2/UninstallOneDrive.ps1 | iex } *&gt;$null
+} "Uninstalling Microsoft OneDrive"
+
+# === WRAP UP ===
+Write-Host "`n[INFO] Debloating and cleanup complete. Log saved to $env:TEMP\02_SysPrep_Debloater.log"
+Stop-Transcript
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-04.ps1">
+# === LOGGING ===
+Start-Transcript -Path "$env:TEMP\03_Winget_Apps.log" -Append -Force
+
+&lt;#
+.TITLE
+    Script 03 &#x2013; Install Applications via Winget
+
+.SYNOPSIS
+    Installs Winget if not present, ensures required dependencies, and installs a set of applications.
+    Optionally removes desktop shortcuts created by those apps.
+
+.DESCRIPTION
+    - Downloads and installs Microsoft.VCLibs and Microsoft.UI.Xaml if not already installed.
+    - Automatically fetches the latest version of winget from GitHub.
+    - Installs all listed apps via winget using their IDs.
+    - Optionally deletes desktop shortcuts to keep a clean environment.
+
+.NOTES
+    &#x2705; Internet connection required
+    &#x1F9EA; Customize `$appList` for your software stack
+    &#x1F4C1; Logs actions to $env:TEMP\03_Winget_Apps.log
+
+.LINK
+    https://learn.microsoft.com/en-us/windows/package-manager/
+    https://winget.run/
+    https://winstall.app
+    https://winget.ragerworks.com
+#&gt;
+
+# === CONFIGURATION ===
+
+# Remove .lnk shortcuts after installing?
+$RemoveShortcuts = $true
+
+# Applications to install via winget (use IDs)
+$appList = @(
+    "Notepad++.Notepad++"
+    "Mozilla.Firefox"
+    "Microsoft.WindowsTerminal"
+    "voidtools.Everything"
+)
+
+# Extract fragment of names for shortcut detection
+$shortcutFragments = $appList | ForEach-Object { ($_ -split '\.')[1] } | Where-Object { $_ }
+
+# === FUNCTIONS ===
+
+function Try-Run {
+    param (
+        [scriptblock]$Script,
+        [string]$Description
+    )
+    Write-Host "`n[INFO] $Description"
+    try {
+        &amp; $Script
+        Write-Host "[SUCCESS] $Description completed."
+    } catch {
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+    }
+}
+
+function Remove-Shortcut {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string[]]$NameFragments
+    )
+
+    $shortcutPaths = @(
+        "$env:USERPROFILE\Desktop",
+        "C:\Users\Public\Desktop"
+    )
+
+    foreach ($path in $shortcutPaths) {
+        foreach ($fragment in $NameFragments) {
+            Get-ChildItem -Path $path -Filter *.lnk -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -match [regex]::Escape($fragment) } |
+                ForEach-Object {
+                    Write-Host "`n[INFO] Found shortcut matching '$fragment': $($_.FullName)"
+                    Try-Run {
+                        Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
+                    } "Removing shortcut: $($_.Name)"
+                }
+        }
+    }
+}
+
+# === INSTALLER PATHS &amp; URLs ===
+
+$VCLibs       = "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx"
+$UIXaml       = "$env:TEMP\Microsoft.UI.Xaml.2.8.x64.appx"
+$winget       = "$env:TEMP\winget.msixbundle"
+
+$VCLibsUrl    = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
+$UIXamlUrl    = "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx"
+$wingetUrl    = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+
+# === INSTALL DEPENDENCIES ===
+
+Try-Run {
+    &amp; curl.exe -L -o $VCLibs $VCLibsUrl
+    Add-AppxPackage -Path $VCLibs
+} "Installing Microsoft.VCLibs (UWP C++ runtime)"
+
+Try-Run {
+    &amp; curl.exe -L -o $UIXaml $UIXamlUrl
+    Add-AppxPackage -Path $UIXaml
+} "Installing Microsoft.UI.Xaml (UI framework)"
+
+# === INSTALL WINGET ===
+
+Try-Run {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $bundle = (Invoke-RestMethod $wingetUrl).assets | Where-Object { $_.name -like "*.msixbundle" } | Select-Object -First 1
+    &amp; curl.exe -L -J -o $winget $bundle.browser_download_url
+
+    if (-Not (Test-Path $winget)) {
+        throw "Download failed: $winget was not created."
+    }
+
+    Add-AppxPackage -Path $winget
+} "Installing winget (Windows Package Manager)"
+
+# === VERIFY WINGET ===
+
+Set-Variable -Name wingetAvailable -Value $false -Scope Script
+Try-Run {
+    winget --version | Out-Null
+    $script:wingetAvailable = $true
+} "Verifying winget is available"
+
+if ($wingetAvailable) {
+
+    # === CLEANUP TEMP FILES ===
+    Try-Run {
+        Remove-Item -LiteralPath $winget -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $UIXaml -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $VCLibs -Force -ErrorAction SilentlyContinue
+    } "Cleaning up temporary installer files"
+
+    # === INSTALL APPLICATIONS ===
+    foreach ($app in $appList) {
+        Try-Run {
+            winget install --id=$app -e --accept-source-agreements --accept-package-agreements
+        } "Installing $app"
+    }
+
+    # === OPTIONAL SHORTCUT CLEANUP ===
+    if ($RemoveShortcuts) {
+        Try-Run {
+            Remove-Shortcut -NameFragments $shortcutFragments
+        } "Removing desktop shortcuts for installed apps"
+    }
+
+} else {
+    Write-Host "`n[WARNING] winget is not available. Skipping app installations and cleanup."
+}
+
+# === WRAP UP ===
+Write-Host "`n[INFO] Winget Apps script completed. Log saved to $env:TEMP\03_Winget_Apps.log"
+Stop-Transcript
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-05.ps1">
+# === LOGGING ===
+Start-Transcript -Path "$env:TEMP\04_UserSetup.log" -Append -Force
+
+&lt;#
+.TITLE
+    Script 04 &#x2013; Unattended Desktop Customization &amp; Activation
+
+.SYNOPSIS
+    Configures keyboard layout, sets default wallpaper, removes clutter,
+    adds helpful shortcuts, and activates Windows automatically.
+
+.DESCRIPTION
+    - Applies a preferred keyboard layout (customizable)
+    - Sets default wallpaper from Windows stock backgrounds
+    - Removes Microsoft Edge shortcut
+    - Adds shortcuts for Network Connections and Sysinternals Autologon
+    - Activates Windows using TSForge (via MAS scripts)
+
+.NOTES
+    &#x2705; Internet required for TSForge activation and Autologon download
+    &#x1F4C1; Logs actions to $env:TEMP\04_UserSetup.log
+    &#x1F6E0;&#xFE0F; Use `Get-WinUserLanguageList` to discover language/input codes
+
+.LINK
+    https://learn.microsoft.com/en-us/sysinternals/downloads/autologon
+    https://github.com/massgravel/Microsoft-Activation-Scripts
+#&gt;
+
+
+function Try-Run {
+    param (
+        [scriptblock]$Script,
+        [string]$Description
+    )
+    Write-Host "`n[INFO] $Description"
+    try {
+        &amp; $Script
+        Write-Host "[SUCCESS] $Description completed."
+    } catch {
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+    }
+}
+
+# === KEYBOARD LAYOUT ===
+Try-Run {
+    # To customize: Run Get-WinUserLanguageList to view input/language codes
+    # Replace 'en-CA' and '1009:00011009' with your own layout if desired
+    $langList = New-WinUserLanguageList "en-CA"
+    $langList[0].InputMethodTips.Clear()
+    $langList[0].InputMethodTips.Add("1009:00011009")  # Canadian Multilingual Standard
+    Set-WinUserLanguageList $langList -Force
+} "Setting keyboard layout to English (Canada) - Canadian Multilingual"
+
+# === WALLPAPER ===
+$W10_Wallpaper = "C:\Windows\Web\Wallpaper\Theme1\img4.jpg"
+$W11_Wallpaper = "C:\Windows\Web\Wallpaper\ThemeA\img20.jpg"
+
+Try-Run {
+    $wallpaperToApply = if (Test-Path $W10_Wallpaper) {
+        Write-Host "[INFO] Using Windows 10 wallpaper."
+        $W10_Wallpaper
+    } elseif (Test-Path $W11_Wallpaper) {
+        Write-Host "[INFO] Using Windows 11 fallback wallpaper."
+        $W11_Wallpaper
+    } else {
+        Write-Warning "No suitable wallpaper found."
+        return
+    }
+
+    Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name WallPaper -Value $wallpaperToApply
+    Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name WallpaperStyle -Value "10"  # Fill
+    Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name TileWallpaper -Value "0"     # No Tile
+    Start-Process -FilePath rundll32.exe -ArgumentList 'user32.dll,UpdatePerUserSystemParameters' -NoNewWindow -Wait
+} "Applying default wallpaper"
+
+# === REMOVE MICROSOFT EDGE SHORTCUT ===
+Try-Run {
+    Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
+} "Removing Microsoft Edge shortcut from Desktop"
+
+# === NETWORK CONNECTIONS SHORTCUT ===
+Try-Run {
+    $ncpa = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\Network Connections.lnk")
+    $ncpa.TargetPath       = "$env:windir\explorer.exe"
+    $ncpa.Arguments        = "shell:::{992CFFA0-F557-101A-88EC-00DD010CCC48}"
+    $ncpa.WorkingDirectory = "$env:windir"
+    $ncpa.IconLocation     = "$env:SystemRoot\System32\netshell.dll"
+    $ncpa.Save()
+} "Creating 'Network Connections' shortcut on Desktop"
+
+# === AUTOLOGON TOOL ===
+Try-Run {
+    curl.exe -L -s https://live.sysinternals.com/Autologon.exe -o "$env:USERPROFILE\Desktop\Autologon.exe"
+} "Downloading Sysinternals Autologon to Desktop"
+
+# === ACTIVATE WINDOWS VIA TSFORGE ===
+Try-Run {
+    Write-Host "[DETAIL] Downloading and running TSForge activation script..."
+    $tsPath = "$env:TEMP\TSforge_Activation.cmd"
+    curl.exe -L -s https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/master/MAS/Separate-Files-Version/Activators/TSforge_Activation.cmd -o $tsPath
+    &amp; $tsPath /Z-Windows
+    Remove-Item $tsPath -Force -ErrorAction SilentlyContinue
+} "Running TSForge activation"
+
+# === RESTART EXPLORER TO APPLY CHANGES ===
+Write-Host "&#x2192; Restarting Explorer to apply changes"
+taskkill /f /im explorer.exe | Out-Null
+Start-Process explorer.exe
+
+# === WRAP UP ===
+Write-Host "`n[INFO] Script completed. Log saved to $env:TEMP\04_UserSetup.log"
+Stop-Transcript
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-06.ps1">
+# === LOGGING ===
+Start-Transcript -Path "$env:TEMP\05_CTT_Winutil_Tweaks.log" -Append -Force
+
+&lt;#
+.TITLE
+    Script 05 &#x2013; CTT WinUtil Setup and Tweaks
+
+.SYNOPSIS
+    Executes Chris Titus Tech's WinUtil tool with a predefined JSON config for system debloating and tweaking.
+
+.DESCRIPTION
+    - Downloads the latest WinUtil script from the official source
+    - Applies user-defined tweaks from an embedded JSON config
+    - Auto-patches script to skip feature installations and auto-close when done
+
+.HOW TO CUSTOMIZE CONFIG:
+    1. Open PowerShell and run:
+         irm 'https://christitus.com/win' | iex
+    2. Go to the "Tweaks" tab and select the tweaks you want (avoid installing software here).
+    3. Click the &#x2699;&#xFE0F; gear icon in the top-right and export your config as JSON.
+    4. Replace the `$configJson` block below with your exported content.
+
+.NOTES
+    &#x2705; Internet required for downloading script
+    &#x1F4DD; Config saved to $env:TEMP\winutil_config.json
+    &#x1F4C1; Logs saved to $env:TEMP\05_CTT_Winutil_Tweaks.log
+
+.LINK
+    https://github.com/ChrisTitusTech/winutil
+#&gt;
+
+function Try-Run {
+    param (
+        [scriptblock]$Script,
+        [string]$Description
+    )
+    Write-Host "`n[INFO] $Description"
+    try {
+        &amp; $Script
+        Write-Host "[SUCCESS] $Description completed."
+    } catch {
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+    }
+}
+
+# === CONFIG JSON ===
+$configJson = @'
+{
+  "WPFFeature": [
+    "WPFFeatureDisableSearchSuggestions"
+  ],
+  "WPFInstall": [],
+  "Install": [],
+  "WPFTweaks": [
+    "WPFTweaksRemoveHomeGallery",
+    "WPFTweaksDVR",
+    "WPFTweaksEdgeDebloat",
+    "WPFTweaksConsumerFeatures",
+    "WPFTweaksDisableipsix",
+    "WPFTweaksHome",
+    "WPFTweaksDisableBGapps",
+    "WPFTweaksStorage",
+    "WPFTweaksHiber",
+    "WPFTweaksRemoveCopilot",
+    "WPFTweaksLoc",
+    "WPFTweaksPowershell7Tele",
+    "WPFTweaksWifi",
+    "WPFTweaksServices",
+    "WPFTweaksRecallOff",
+    "WPFTweaksTele",
+    "WPFTweaksIPv46",
+    "WPFTweaksDisableNotifications"
+  ]
+}
+'@
+
+# === PATH SETUP ===
+$configPath  = "$env:TEMP\winutil_config.json"
+$winutilPath = "$env:TEMP\winutil.ps1"
+
+# === SAVE CONFIG ===
+Try-Run {
+    $configJson | Out-File -FilePath $configPath -Encoding utf8 -Force
+} "Saving WinUtil configuration to $configPath"
+
+# === DOWNLOAD + PATCH SCRIPT ===
+Try-Run {
+    irm 'https://christitus.com/win' -OutFile $winutilPath
+
+    if (-not (Test-Path $winutilPath)) {
+        throw "Failed to download WinUtil script."
+    }
+    Write-Host "[INFO] Script saved to $winutilPath"
+
+    # Remove feature install block
+    $featureRegex  = '(?ms)(?&lt;=^\s*Write-Host "Installing features..."\s*).*?(?=\s*Write-Host "Done.")'
+    $patchedScript = (Get-Content -Raw $winutilPath) -replace $featureRegex, ''
+    Set-Content -Path $winutilPath -Value $patchedScript
+    Write-Host "[INFO] Removed feature installation block."
+
+    # Auto-close patch
+    $exitPatch = 'Write-Host "--     Tweaks are Finished    ---"; Start-Sleep -Seconds 1; Stop-Process -Id $PID -Force'
+    $patchedScript = (Get-Content -Raw $winutilPath) -replace 'Write-Host "--     Tweaks are Finished    ---"', $exitPatch
+    Set-Content -Path $winutilPath -Value $patchedScript
+    Write-Host "[INFO] Applied auto-close patch."
+} "Downloading and patching WinUtil script"
+
+# === RUN WINUTIL ===
+Try-Run {
+    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
+} "Running WinUtil with configuration"
+
+# === FALLBACK TO LOCAL ===
+if (-not (Test-Path $winutilPath)) {
+    Write-Host "[WARN] Remote script failed. Trying fallback."
+    Try-Run {
+        $exitPatch = 'Write-Host "--     Tweaks are Finished    ---"; Start-Sleep -Seconds 1; Stop-Process -Id $PID -Force'
+        (Get-Content -Raw $winutilPath) -replace 'Write-Host "--     Tweaks are Finished    ---"', $exitPatch | Set-Content $winutilPath
+        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
+    } "Running local WinUtil fallback"
+}
+
+# === CLEANUP ===
+Try-Run {
+    Remove-Item -LiteralPath $winutilPath -Force -ErrorAction SilentlyContinue
+} "Deleting WinUtil script"
+
+# === WRAP UP ===
+Write-Host "`n[INFO] Winutil execution completed. Log saved to $env:TEMP\05_CTT_Winutil_Tweaks.log"
+Stop-Transcript
+Restart-Computer -Force
+		</File>
+		<File path="C:\Windows\Setup\Scripts\Specialize.ps1">
+$scripts = @(
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\GetComputerName.ps1' -Raw | Invoke-Expression &gt; 'C:\Windows\Setup\Scripts\ComputerName.txt';
+		Start-Process -FilePath ( Get-Process -Id $PID ).Path -ArgumentList '-NoProfile', '-Command', 'Get-Content -LiteralPath "C:\Windows\Setup\Scripts\SetComputerName.ps1" -Raw | Invoke-Expression;' -WindowStyle 'Hidden';
+		Start-Sleep -Seconds 10;
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\Setup\MoSetup" /v AllowUpgradesWithUnsupportedTPMOrCPU /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f;
+	};
+	{
+		Remove-Item -LiteralPath 'Registry::HKLM\Software\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\DevHomeUpdate' -Force -ErrorAction 'SilentlyContinue';
+	};
+	{
+		Remove-Item -LiteralPath 'C:\Users\Default\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk', 'C:\Windows\System32\OneDriveSetup.exe', 'C:\Windows\SysWOW64\OneDriveSetup.exe' -ErrorAction 'Continue';
+	};
+	{
+		Remove-Item -LiteralPath 'Registry::HKLM\Software\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate' -Force -ErrorAction 'SilentlyContinue';
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications" /v ConfigureChatAutoInstall /t REG_DWORD /d 0 /f;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\RemovePackages.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\RemoveCapabilities.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\RemoveFeatures.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		net.exe accounts /maxpwage:UNLIMITED;
+	};
+	{
+		reg.exe add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableCloudOptimizedContent" /t REG_DWORD /d 1 /f;
+		[System.Diagnostics.EventLog]::CreateEventSource( 'UnattendGenerator', 'Application' );
+	};
+	{
+		Register-ScheduledTask -TaskName 'UnlockStartLayout' -Xml $( Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\UnlockStartLayout.xml' -Raw );
+	};
+	{
+		Register-ScheduledTask -TaskName 'PauseWindowsUpdate' -Xml $( Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\PauseWindowsUpdate.xml' -Raw );
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v SmartScreenEnabled /t REG_SZ /d "Off" /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v ServiceEnabled /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v NotifyMalicious /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v NotifyPasswordReuse /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v NotifyUnsafeApp /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Systray" /v HideSystray /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions /t REG_DWORD /d 4 /f;
+		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f;
+	};
+	{
+		Register-ScheduledTask -TaskName 'MoveActiveHours' -Xml $( Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\MoveActiveHours.xml' -Raw );
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HiberbootEnabled /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsConsumerFeatures" /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HideFirstRunExperience /t REG_DWORD /d 1 /f;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\MakeEdgeUninstallable.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\SetStartPins.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ControlAnimations" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\AnimateMinMax" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\TaskbarAnimations" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\DWMAeroPeekEnabled" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\MenuAnimation" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\TooltipAnimation" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\SelectionFade" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\DWMSaveThumbnailEnabled" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\CursorShadow" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ListviewShadow" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ThumbnailsOrIcon" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ListviewAlphaSelect" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\DragFullWindows" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ComboBoxAnimation" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\FontSmoothing" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ListBoxSmoothScrolling" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\DropShadow" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-01.ps1' -Raw | Invoke-Expression;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to customize your Windows installation. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\Specialize.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\UserOnce.ps1">
+$scripts = @(
+	{
+		Get-AppxPackage -Name 'Microsoft.Windows.Ai.Copilot.Provider' | Remove-AppxPackage;
+	};
+	{
+		[System.Diagnostics.EventLog]::WriteEntry( 'UnattendGenerator', "User '$env:USERNAME' has requested to unlock the Start menu layout.", [System.Diagnostics.EventLogEntryType]::Information, 1 );
+	};
+	{
+		$params = @{
+			Path = 'Registry::HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32';
+			ErrorAction = 'SilentlyContinue';
+			Force = $true;
+		};
+		New-Item @params;
+		Set-ItemProperty @params -Name '(Default)' -Value '' -Type 'String';
+	};
+	{
+		Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Type 'DWord' -Value 1;
+	};
+	{
+		Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Search' -Name 'SearchboxTaskbarMode' -Type 'DWord' -Value 1;
+	};
+	{
+		Set-ItemProperty -LiteralPath 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects' -Name 'VisualFXSetting' -Type 'DWord' -Value 3 -Force;
+	};
+	{
+		New-Item -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Force;
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{5399e694-6ce5-4d6c-8fce-1d8870fdcba0}' -Value 0 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{b4bfcc3a-db2c-424c-b029-7fe99a87c641}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{a8cdff1c-4878-43be-b5fd-f8091c1c60d0}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{374de290-123f-4565-9164-39c4925e467b}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{f874310e-b6b7-47dc-bc84-b9e6b38f5903}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{1cf1260c-4dd0-4ebb-811f-33c572699fde}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{f02c1a0d-be21-4350-88b0-7367fc96ef3c}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{3add1653-eb32-4cb0-bbd7-dfa0abb5acca}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{645ff040-5081-101b-9f08-00aa002f954e}' -Value 0 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{20d04fe0-3aea-1069-a2d8-08002b30309d}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{59031a47-3f72-44a7-89c5-5595fe6b30ee}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu' -Name '{a0953c92-50dc-43bf-be83-3742fed03c9c}' -Value 1 -Type 'DWord';
+		New-Item -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Force;
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{5399e694-6ce5-4d6c-8fce-1d8870fdcba0}' -Value 0 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{b4bfcc3a-db2c-424c-b029-7fe99a87c641}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{a8cdff1c-4878-43be-b5fd-f8091c1c60d0}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{374de290-123f-4565-9164-39c4925e467b}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{f874310e-b6b7-47dc-bc84-b9e6b38f5903}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{1cf1260c-4dd0-4ebb-811f-33c572699fde}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{f02c1a0d-be21-4350-88b0-7367fc96ef3c}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{3add1653-eb32-4cb0-bbd7-dfa0abb5acca}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{645ff040-5081-101b-9f08-00aa002f954e}' -Value 0 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{20d04fe0-3aea-1069-a2d8-08002b30309d}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{59031a47-3f72-44a7-89c5-5595fe6b30ee}' -Value 1 -Type 'DWord';
+		Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{a0953c92-50dc-43bf-be83-3742fed03c9c}' -Value 1 -Type 'DWord';
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\SetColorTheme.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Process -Name 'explorer' -ErrorAction 'SilentlyContinue' | Where-Object -FilterScript {
+			$_.SessionId -eq ( Get-Process -Id $PID ).SessionId;
+		} | Stop-Process -Force;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to configure this user account. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "$env:TEMP\UserOnce.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\DefaultUser.ps1">
+$scripts = @(
+	{
+		reg.exe add "HKU\DefaultUser\Software\Policies\Microsoft\Windows\WindowsCopilot" /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Notepad" /v ShowStoreBanner /t REG_DWORD /d 0 /f;
+	};
+	{
+		Remove-ItemProperty -LiteralPath 'Registry::HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDriveSetup' -Force -ErrorAction 'Continue';
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\GameDVR" /v AppCaptureEnabled /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Policies\Microsoft\Windows\Explorer" /v "StartLayoutFile" /t REG_SZ /d "C:\Windows\Setup\Scripts\TaskbarLayoutModification.xml" /f;
+		reg.exe add "HKU\DefaultUser\Software\Policies\Microsoft\Windows\Explorer" /v "LockedStartLayout" /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Hidden" /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowTaskViewButton /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Edge\SmartScreenEnabled" /ve /t REG_DWORD /d 0 /f;
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Edge\SmartScreenPuaEnabled" /ve /t REG_DWORD /d 0 /f;
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\AppHost" /v EnableWebContentEvaluation /t REG_DWORD /d 0 /f;
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\AppHost" /v PreventOverride /t REG_DWORD /d 0 /f;
+	};
+	{
+		$names = @(
+		  'ContentDeliveryAllowed';
+		  'FeatureManagementEnabled';
+		  'OEMPreInstalledAppsEnabled';
+		  'PreInstalledAppsEnabled';
+		  'PreInstalledAppsEverEnabled';
+		  'SilentInstalledAppsEnabled';
+		  'SoftLandingEnabled';
+		  'SubscribedContentEnabled';
+		  'SubscribedContent-310093Enabled';
+		  'SubscribedContent-338387Enabled';
+		  'SubscribedContent-338388Enabled';
+		  'SubscribedContent-338389Enabled';
+		  'SubscribedContent-338393Enabled';
+		  'SubscribedContent-353698Enabled';
+		  'SystemPaneSuggestionsEnabled';
+		);
+		
+		foreach( $name in $names ) {
+		  reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v $name /t REG_DWORD /d 0 /f;
+		}
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarAl /t REG_DWORD /d 0 /f;
+	};
+	{
+		foreach( $root in 'Registry::HKU\.DEFAULT', 'Registry::HKU\DefaultUser' ) {
+		  Set-ItemProperty -LiteralPath "$root\Control Panel\Keyboard" -Name 'InitialKeyboardIndicators' -Type 'String' -Value 2 -Force;
+		}
+	};
+	{
+		$params = @{
+		  LiteralPath = 'Registry::HKU\DefaultUser\Control Panel\Mouse';
+		  Type = 'String';
+		  Value = 0;
+		  Force = $true;
+		};
+		Set-ItemProperty @params -Name 'MouseSpeed';
+		Set-ItemProperty @params -Name 'MouseThreshold1';
+		Set-ItemProperty @params -Name 'MouseThreshold2';
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\DWM" /v ColorPrevalence /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\RunOnce" /v "UnattendedSetup" /t REG_SZ /d "powershell.exe -WindowStyle Hidden -NoProfile -Command \""Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\UserOnce.ps1' -Raw | Invoke-Expression;\""" /f;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to modify the default user&#x2019;&#x2019;s registry hive. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\DefaultUser.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\FirstLogon.ps1">
+$scripts = @(
+	{
+		Set-ItemProperty -LiteralPath 'Registry::HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Type 'DWord' -Force -Value 0;
+	};
+	{
+		Disable-ComputerRestore -Drive 'C:\';
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\VMwareTools.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\VirtIoGuestTools.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-02.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-03.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-04.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-05.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-06.ps1' -Raw | Invoke-Expression;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to finalize your Windows installation. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\FirstLogon.log";
+		</File>
+	</Extensions>
+</unattend>
