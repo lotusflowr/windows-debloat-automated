@@ -18,7 +18,7 @@ All scripts are compatible with tools like [schneegans.de/autostart](https://sch
 | `SystemSetup.ps1`        | Core system tweaks (performance, Defender, telemetry, power plans). ✅ Can run as SYSTEM or Administrator. |
 | `UI_Tweaks.ps1`          | Taskbar layout, File Explorer, privacy and telemetry hardening, plus startup cleanup (e.g., SecurityHealth, EdgeAutoLaunch). |
 | `SysPrep_Debloater.ps1`  | Removes provisioned apps (PUWs), OneDrive, Teams, and optional features. Sysprep/FirstLogon safe. |
-| `Winget_Apps.ps1`        | Installs your curated app list using `winget`. Auto-installs `winget` + dependencies if missing. |
+| `Winget_Apps.ps1`        | Auto-installs `winget` + dependencies and your curated app list. |
 | `UserSetup.ps1`          | Applies user-level personalization, shell tweaks, and associations. |
 | `WindowsOptimizer.ps1`   | Downloads [Optimizer](https://github.com/hellzerg/optimizer), injects dynamic config (Win10/11), applies system tweaks silently, removes tray bloat, then cleans up. |
 | `WindowsSpyBlocker.ps1`  | Adds [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker) firewall rules to block Microsoft tracking. |
@@ -58,14 +58,6 @@ WindowsSpyBlocker.ps1  → Apply telemetry blocklists
 CTT_Winutil.ps1        → Final system polish (no software)
 ```
 
----
-
-
----
-
-
----
-
 ### 📦 Autounattend Integration
 
 This project includes and supports a fully configured `Autounattend.xml` for hands-free deployment.
@@ -78,28 +70,7 @@ To apply this to your install media:
 
 You can find a copy of the example [`Autounattend.xml`](./Autounattend.xml) in this repository.
 
-
-
----
-
-### 📦 Autounattend Integration (Unattended Setup)
-
-This project is built to integrate seamlessly with `Autounattend.xml` for **fully automated Windows installations** — including post-setup script execution.
-
-#### 🧰 ISO Repackaging Tools
-
-Once files are added, use one of the following to repackage the ISO:
-
-- [NTLite](https://www.ntlite.com/) — easy drag-and-drop GUI
-- [oscdimg](https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/oscdimg-command-line-options) — CLI tool from Windows ADK
-- Rufus (if deploying via USB)
-
-#### 🧪 Customize Your XML
-
-Use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unattend-generator/) to inspect or generate your own `autounattend.xml`.
-
-📄 A working example is included in this repository: [`Autounattend.xml`](./autounattend.xml)
-
+More info in the [Wiki/Autounattend-Integration](./wiki/Autounattend-Integration).
 
 ## 📌 Requirements
 
