@@ -55,7 +55,7 @@ Winget_Apps.ps1        → Install app stack (auto-installs winget if needed)
 UserSetup.ps1          → Per-user personalization
 WindowsOptimizer.ps1   → Full Optimizer pass with embedded config
 WindowsSpyBlocker.ps1  → Apply telemetry blocklists
-CTT_Winutil.ps1        → Final system polish (no software)
+CTT_Winutil.ps1        → If you want to add/change more things that weren't included in the previous scripts.
 ```
 
 ### 📦 Autounattend Integration
