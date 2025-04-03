@@ -70,7 +70,7 @@ CTT_Winutil.ps1        → Final system polish (no software)
 
 This project includes and supports a fully configured `Autounattend.xml` for hands-free deployment.
 
-You can use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unattend-generator/?LanguageMode=Unattended&UILanguage=en-US&Locale=en-CA&Keyboard=00011009&GeoLocation=39&ProcessorArchitecture=amd64&BypassRequirementsCheck=true&BypassNetworkCheck) to modify or inspect the unattended configuration.
+You can use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unattend-generator/) to modify or inspect the unattended configuration.
 
 To apply this to your install media:
 - Place the provided `Autounattend.xml` at the root of a bootable Windows ISO or USB
@@ -86,43 +86,6 @@ You can find a copy of the example [`Autounattend.xml`](./Autounattend.xml) in t
 
 This project is built to integrate seamlessly with `Autounattend.xml` for **fully automated Windows installations** — including post-setup script execution.
 
-#### 🗂 Where to Place Files in the ISO
-
-To prepare your installation media:
-
-```
-📁 ISO_ROOT/
-├── Autounattend.xml           ← 🟢 Place this at the root of the ISO or USB
-├── $OEM$/
-│   └── $$/
-│       └── Scripts/           ← 📁 Your PowerShell scripts (run post-setup)
-│           ├── UI_Tweaks.ps1
-│           ├── SystemSetup.ps1
-│           └── ...
-├── boot/
-├── sources/
-├── setup.exe
-└── ...
-```
-
-This structure ensures your scripts are copied to `C:\Scripts\` on the installed OS.
-
-#### 🛠 Autounattend Execution Method
-
-Your `Autounattend.xml` should contain a `FirstLogonCommands` section that triggers your chosen script once setup completes:
-
-```xml
-<FirstLogonCommands>
-  <SynchronousCommand wcm:action="add">
-    <Order>1</Order>
-    <Description>Run UI Tweaks</Description>
-    <CommandLine>cmd /c start /min powershell.exe -ExecutionPolicy Bypass -File "%SystemDrive%\Scripts\UI_Tweaks.ps1"</CommandLine>
-  </SynchronousCommand>
-</FirstLogonCommands>
-```
-
-💡 You may trigger any script placed under `Scripts\` using this method. Just update the filename in the `CommandLine`.
-
 #### 🧰 ISO Repackaging Tools
 
 Once files are added, use one of the following to repackage the ISO:
@@ -133,9 +96,9 @@ Once files are added, use one of the following to repackage the ISO:
 
 #### 🧪 Customize Your XML
 
-Use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unattend-generator/?LanguageMode=Unattended&UILanguage=en-US&Locale=en-CA&Keyboard=00011009&GeoLocation=39&ProcessorArchitecture=amd64&BypassRequirementsCheck=true&BypassNetworkCheck) to inspect or generate your own `Autounattend.xml`.
+Use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unattend-generator/) to inspect or generate your own `autounattend.xml`.
 
-📄 A working example is included in this repository: [`Autounattend.xml`](./Autounattend.xml)
+📄 A working example is included in this repository: [`Autounattend.xml`](./autounattend.xml)
 
 
 ## 📌 Requirements
@@ -158,7 +121,7 @@ Use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unatten
 
 ## ⚠️ Disclaimer
 
-Most inline comments in the scripts were generated using ChatGPT and may be incomplete or slightly inaccurate.  
+Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.  
 Please review and test before relying on them in production or enterprise settings.
 
 > Feedback and forks welcome — this is an evolving deployment suite.
