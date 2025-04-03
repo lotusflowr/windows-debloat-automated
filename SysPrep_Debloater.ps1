@@ -58,7 +58,7 @@ Try-Run {
         'Microsoft.WindowsCamera'
         'Clipchamp.Clipchamp'
         'Microsoft.549981C3F5F10'
-        '*DevHome*'
+        'Microsoft.Windows.DevHome'
         'MicrosoftCorporationII.MicrosoftFamily'
         'Microsoft.WindowsFeedbackHub'
         'Microsoft.GetHelp'
@@ -93,12 +93,6 @@ Try-Run {
         'Microsoft.Office.Lens'
         '*CandyCrush*'
         '*Netflix*'
-        'Microsoft.3DBuilder'
-        'Microsoft.Tips'
-        'Microsoft.Todos'
-        'Microsoft.StickyNotes'
-        'Microsoft.MicrosoftStickyNotes'
-        'Microsoft.Print3D'
     )
     Get-AppxProvisionedPackage -Online | Where-Object {
         $provisionedApps -contains $_.DisplayName -or ($provisionedApps | Where-Object { $_ -like "*" })

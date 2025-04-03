@@ -36,8 +36,11 @@ function Try-Run {
     }
 }
 
-# === EXPLORER UI ===
+# === EXPLORER & UI TWEAKS ===
 Try-Run {
+    Write-Host "→ Removing Widgets"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarDa /t REG_DWORD /d 0 /f
+
     Write-Host "→ Removing Store banner in Notepad"
     reg.exe add "HKCU\SOFTWARE\Microsoft\Notepad" /v ShowStoreBanner /t REG_DWORD /d 0 /f
 
@@ -46,18 +49,32 @@ Try-Run {
 
     Write-Host "→ Setting Alt+Tab to show only open windows"
     reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v MultiTaskingAltTabFilter /t REG_DWORD /d 3 /f
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v AltTabSettings /t REG_DWORD /d 1 /f
 
     Write-Host "→ Disabling Snap Assist Flyout"
     reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v SnapAssist /t REG_DWORD /d 0 /f
-} "Applying additional File Explorer UI tweaks"
 
-# === TASKBAR ICONS ===
+    Write-Host "→ Preventing Store app pinning to taskbar"
+    reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoPinningStoreToTaskbar /t REG_DWORD /d 1 /f
+} "Applying File Explorer and taskbar behavior tweaks"
+
 Try-Run {
+    Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
+} "Removing Microsoft Edge shortcut from Desktop"
+
+# === TASKBAR ICONS & NEWS ===
+Try-Run {
+    Write-Host "→ Disabling News and Interests panel"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsEnabled /t REG_DWORD /d 0 /f
+
+    Write-Host "→ Disabling News and Interests hover popup"
+    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsTaskbarOpenOnHover /t REG_DWORD /d 0 /f
+
     Write-Host "→ Hiding Meet Now button from taskbar"
     reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAMeetNow /t REG_DWORD /d 1 /f
-} "Disabling Meet Now icon"
+} "Disabling taskbar news, widgets, and chat icons"
 
-# === PRIVACY & INPUT ===
+# === PRIVACY & TELEMETRY ===
 Try-Run {
     Write-Host "→ Disabling language list sharing with websites"
     reg.exe add "HKCU\Control Panel\International\User Profile" /v HttpAcceptLanguageOptOut /t REG_DWORD /d 1 /f
@@ -68,7 +85,17 @@ Try-Run {
     Write-Host "→ Disabling collection of typed text and handwriting"
     reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\InputPersonalization" /v RestrictImplicitTextCollection /t REG_DWORD /d 1 /f
     reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\InputPersonalization" /v RestrictImplicitInkCollection /t REG_DWORD /d 1 /f
-} "Applying additional privacy restrictions"
+
+    Write-Host "→ Disabling feedback sampling and related services"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Feedback" /v AutoSample /t REG_DWORD /d 0 /f
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Feedback" /v ServiceEnabled /t REG_DWORD /d 0 /f
+
+    Write-Host "→ Disabling telemetry and advertising ID features"
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v NumberOfSIUFInPeriod /t REG_DWORD /d 0 /f
+    reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableTailoredExperiencesWithDiagnosticData /t REG_DWORD /d 1 /f
+    reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
+    reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
+} "Applying privacy and telemetry restrictions"
 
 # === WRAP UP ===
 $runtime = (Get-Date) - $start
