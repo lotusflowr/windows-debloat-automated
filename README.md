@@ -68,7 +68,7 @@ To apply this to your install media, simply place the provided [`Autounattend.xm
 
 You can find a copy of the example [`Autounattend.xml`](./autounattend.xml) in this repository.
 
-More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/windows-debloat/wiki/Autounattend-Integration).
+More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/windows-debloat-automated/wiki/Autounattend-Integration).
 
 ## 📌 Requirements
 
