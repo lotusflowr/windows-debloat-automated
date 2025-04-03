@@ -84,7 +84,7 @@ More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/w
 - [Optimizer by hellzerg](https://github.com/hellzerg/optimizer)
 - [WinUtil by Chris Titus Tech](https://github.com/ChrisTitusTech/winutil)
 - [WindowsSpyBlocker by crazy-max](https://github.com/crazy-max/WindowsSpyBlocker)
-- [schneegans.de](https://schneegans.de) for one-time script scheduling
+- [schneegans.de](https://schneegans.de/windows/unattend-generator)
 
 ---
 
