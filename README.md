@@ -88,9 +88,10 @@ More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/w
 
 ---
 
-## ⚠️ Disclaimer
+## ⚠️ Disclaimers
 
-Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.  
-Please review and test before relying on them in production or enterprise settings.
+- Always test this suite in a virtual machine (VM) or disposable environment before deploying it to production or real hardware.
+- These scripts apply deep system-level changes and may behave differently depending on your Windows version, edition, or configuration. Make sure to create backups before attempting any changes.
+- Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.  
 
 > Feedback and forks welcome — this is an evolving deployment suite.
