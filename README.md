@@ -20,7 +20,7 @@ All scripts are compatible with tools like [schneegans.de/autostart](https://sch
 | `SysPrep_Debloater.ps1`  | Removes provisioned apps (PUWs), OneDrive, Teams, and optional features. Sysprep/FirstLogon safe. |
 | `Winget_Apps.ps1`        | Installs your curated app list using `winget`. Auto-installs `winget` + dependencies if missing. |
 | `UserSetup.ps1`          | Applies user-level personalization, shell tweaks, and associations. |
-| `WindowsOptimizer.ps1`   | Downloads Optimizer, injects dynamic config (Win10/11), applies system tweaks silently, removes tray bloat, then cleans up. |
+| `WindowsOptimizer.ps1`   | Downloads [Optimizer](https://github.com/hellzerg/optimizer), injects dynamic config (Win10/11), applies system tweaks silently, removes tray bloat, then cleans up. |
 | `WindowsSpyBlocker.ps1`  | Adds [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker) firewall rules to block Microsoft tracking. |
 | `CTT_Winutil.ps1`        | Executes a **patched version** of [ChrisTitusTech WinUtil](https://christitus.com/win) applying only system tweaks (no software installs). |
 
