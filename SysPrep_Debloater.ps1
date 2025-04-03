@@ -58,7 +58,7 @@ Try-Run {
         'Microsoft.WindowsCamera'
         'Clipchamp.Clipchamp'
         'Microsoft.549981C3F5F10'
-        'Microsoft.Windows.DevHome'
+        '*DevHome*'
         'MicrosoftCorporationII.MicrosoftFamily'
         'Microsoft.WindowsFeedbackHub'
         'Microsoft.GetHelp'
