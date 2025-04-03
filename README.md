@@ -6,7 +6,7 @@
 
 A fully automated PowerShell toolkit to **debloat**, **optimize**, and **harden Windows** — from install to ready-to-use.
 
-This suite is purpose-built for **Autounattend.xml deployments** and post-install automation.  
+This suite is purpose-built for Autounattend.xml deployments and post-install automation.  
 All scripts are compatible with tools like [schneegans.de](https://schneegans.de/windows/unattend-generator) for lightweight, one-time execution during OOBE or after first login.
 
 ---
