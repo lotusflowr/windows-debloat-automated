@@ -1,5 +1,5 @@
 # === LOGGING ===
-Start-Transcript -Path "$env:TEMP\05_CTT_Winutil_Tweaks.log" -Append -Force
+Start-Transcript -Path "$env:TEMP\07_CTT_Winutil_Tweaks.log" -Append -Force
 $start = Get-Date
 
 <#
@@ -24,7 +24,7 @@ $start = Get-Date
 .NOTES
     ✅ Internet required for downloading script
     📝 Config saved to $env:TEMP\winutil_config.json
-    📁 Logs saved to $env:TEMP\05_CTT_Winutil_Tweaks.log
+    📁 Logs saved to $env:TEMP\07_CTT_Winutil_Tweaks.log
 
 .LINK
     https://github.com/ChrisTitusTech/winutil
