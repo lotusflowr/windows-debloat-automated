@@ -1,5 +1,10 @@
 # 🧰 Windows Debloat & Optimization Suite
 
+![OS](https://img.shields.io/badge/Windows-10%20%7C%2011-blue)
+![Shell](https://img.shields.io/badge/Shell-PowerShell-008fc7)
+![Autounattend](https://img.shields.io/badge/Autounattend-Compatible-green)
+![Generated](https://img.shields.io/badge/comments-ChatGPT%20generated-orange)
+
 A fully automated PowerShell toolkit to **debloat**, **optimize**, and **harden Windows** — from install to ready-to-use.
 
 This suite is purpose-built for **Autounattend.xml deployments** and post-install automation.  
@@ -16,7 +21,7 @@ All scripts are compatible with tools like [schneegans.de/autostart](https://sch
 | `SysPrep_Debloater.ps1`  | Removes provisioned apps (PUWs), OneDrive, Teams, and optional features. Sysprep/FirstLogon safe. |
 | `Winget_Apps.ps1`        | Installs your curated app list using `winget`. Auto-installs `winget` + dependencies if missing. |
 | `UserSetup.ps1`          | Applies user-level personalization, shell tweaks, and associations. |
-| `WindowsOptimizer.ps1`   | Downloads Optimizer, injects dynamic config (Win10/11), applies system tweaks silently, removes tray bloat, then cleans up. |
+| `WindowsOptimizer.ps1`   | Downloads Optimizer, injects config, applies system tweaks silently, removes tray bloat, then cleans up. |
 | `WindowsSpyBlocker.ps1`  | Adds [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker) firewall rules to block Microsoft tracking. |
 | `CTT_Winutil.ps1`        | Executes a **patched version** of [ChrisTitusTech WinUtil](https://christitus.com/win) applying only system tweaks (no software installs). |
 
@@ -30,7 +35,7 @@ All scripts are compatible with tools like [schneegans.de/autostart](https://sch
 - 🧩 Modular — use only what you need
 - 🌐 Pulls community tools: Optimizer, WinUtil, SpyBlocker
 - 💾 Winget bootstrap + install support
-- 🧱 Designed specifically for **Autounattend.xml automation**
+- 🧱 Designed specifically for **Autounattend.xml automation**, but can be ran normally as well.
 
 ---
 
@@ -60,8 +65,7 @@ CTT_Winutil.ps1        → Final system polish (no software)
 
 - 💻 Windows 10 or 11 (22H2+ recommended)
 - 🌐 Internet required for Optimizer, WinUtil, SpyBlocker, and winget
-- 🛠 PowerShell 5.1+
-- 🔓 Unblock scripts before running: `Right-click > Properties > Unblock`
+- 🔓 If running from a PowerShell window, use: `powershell.exe -ExecutionPolicy Bypass -File .\\ScriptName.ps1`
 
 ---
 
@@ -70,13 +74,13 @@ CTT_Winutil.ps1        → Final system polish (no software)
 - [Optimizer by hellzerg](https://github.com/hellzerg/optimizer)
 - [WinUtil by Chris Titus Tech](https://github.com/ChrisTitusTech/winutil)
 - [WindowsSpyBlocker by crazy-max](https://github.com/crazy-max/WindowsSpyBlocker)
-- [schneegans.de](https://schneegans.de) for one-time script scheduling
+- [schneegans.de](https://schneegans.de)
 
 ---
 
 ## ⚠️ Disclaimer
 
-Most inline comments in the scripts were generated using ChatGPT and may be incomplete or slightly inaccurate.  
+Most inline comments in the scripts were generated using [ChatGPT](https://chatgpt.com/) and may be incomplete or slightly inaccurate.  
 Please review and test before relying on them in production or enterprise settings.
 
 > Feedback and forks welcome — this is an evolving deployment suite.
