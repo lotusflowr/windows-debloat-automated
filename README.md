@@ -42,7 +42,7 @@ All scripts are compatible with tools like [schneegans.de/autostart](https://sch
 
 You can run scripts manually, chain them in SetupComplete/FirstLogon, or automate via OOBE using:
 
-> 💡 [schneegans.de/autostart](https://schneegans.de/autostart)  
+> 💡 [schneegans.de](https://schneegans.de/windows/unattend-generator/)  
 > Use it to schedule **one-time execution** of PowerShell scripts during the first user login — no registry or Task Scheduler changes required.  
 > Perfect for `Autounattend.xml` deployments.
 
@@ -64,13 +64,11 @@ This project includes and supports a fully configured `Autounattend.xml` for han
 
 You can use [schneegans.de's Unattended Generator](https://schneegans.de/windows/unattend-generator/) to modify or inspect the unattended configuration.
 
-To apply this to your install media:
-- Place the provided `Autounattend.xml` at the root of a bootable Windows ISO or USB
-- We recommend using [NTLite](https://www.ntlite.com/) to inject the file and repackage the ISO quickly
+To apply this to your install media, simply place the provided [`Autounattend.xml`](./autounattend.xml) at the root of a bootable Windows ISO or USB
 
-You can find a copy of the example [`Autounattend.xml`](./Autounattend.xml) in this repository.
+You can find a copy of the example [`Autounattend.xml`](./autounattend.xml) in this repository.
 
-More info in the [Wiki/Autounattend-Integration](./wiki/Autounattend-Integration).
+More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/windows-debloat/wiki/Autounattend-Integration).
 
 ## 📌 Requirements
 
