@@ -84,12 +84,28 @@ Write-LoggedOperation {
     $configJson | Out-File -FilePath $configPath -Encoding utf8 -Force
 } "Saving WinUtil configuration to $configPath"
 
+# === VALIDATE CONFIG ===
+try {
+    $null = $configJson | ConvertFrom-Json
+} catch {
+    Write-Host "[ERROR] Invalid JSON configuration: $($_.Exception.Message)"
+    exit 1
+}
+
 # === DOWNLOAD + PATCH SCRIPT ===
 Write-LoggedOperation {
-    Invoke-RestMethod 'https://christitus.com/win' -OutFile $winutilPath
+    try {
+        $response = Invoke-WebRequest 'https://christitus.com/win' -UseBasicParsing
+        if ($response.StatusCode -ne 200) {
+            throw "Failed to download WinUtil script. Status code: $($response.StatusCode)"
+        }
+        $response.Content | Set-Content -Path $winutilPath -Force
+    } catch {
+        throw "Failed to download WinUtil script: $($_.Exception.Message)"
+    }
 
     if (-not (Test-Path $winutilPath)) {
-        throw "Failed to download WinUtil script."
+        throw "Failed to save WinUtil script."
     }
     Write-Host "[INFO] Script saved to $winutilPath"
 
