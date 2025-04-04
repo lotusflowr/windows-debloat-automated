@@ -149,6 +149,14 @@ Write-LoggedOperation {
 
     Write-Host "[INFO] Downloading from: $latestExeUrl"
     Invoke-WebRequest -Uri $latestExeUrl -OutFile $exePath -UseBasicParsing
+
+    # Validate downloaded file
+    if (-not (Test-Path $exePath)) {
+        throw "Failed to download Optimizer executable."
+    }
+    if ((Get-Item $exePath).Length -lt 1MB) {
+        throw "Downloaded file appears to be corrupted (too small)."
+    }
 } "Downloading latest Optimizer executable"
 
 # === WRITE CONFIG ===
@@ -158,12 +166,35 @@ Write-LoggedOperation {
 
 # === EXECUTE OPTIMIZER ===
 Write-LoggedOperation {
-    Start-Process -FilePath $exePath -ArgumentList "/config=$configPath" -Wait -WindowStyle Hidden
+    $process = Start-Process -FilePath $exePath -ArgumentList "/config=$configPath" -WindowStyle Hidden -PassThru
+    $timeout = 120 # 2 minutes
+    $startTime = Get-Date
+
+    while (-not $process.HasExited) {
+        if ((Get-Date).Subtract($startTime).TotalSeconds -gt $timeout) {
+            Stop-Process -Id $process.Id -Force
+            throw "Optimizer execution timed out after $timeout seconds."
+        }
+        Start-Sleep -Seconds 1
+    }
+
+    if ($process.ExitCode -ne 0) {
+        throw "Optimizer exited with code $($process.ExitCode)."
+    }
 } "Launching Optimizer with config"
 
 # === CLEANUP ===
 Write-LoggedOperation {
-    Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+    try {
+        if (Test-Path $tempDir) {
+            Remove-Item -Path $tempDir -Recurse -Force -ErrorAction Stop
+        }
+    } catch {
+        Write-Host "[WARNING] Failed to clean up temporary files: $($_.Exception.Message)"
+        # Try individual files
+        if (Test-Path $exePath) { Remove-Item -Path $exePath -Force -ErrorAction SilentlyContinue }
+        if (Test-Path $configPath) { Remove-Item -Path $configPath -Force -ErrorAction SilentlyContinue }
+    }
 } "Cleaning up temporary Optimizer files"
 
 # === WRAP UP ===
