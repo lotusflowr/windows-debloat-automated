@@ -20,9 +20,9 @@ All scripts are compatible with tools like [schneegans.de](https://schneegans.de
 | `SysPrep_Debloater.ps1`  | App and feature removal | • Removes provisioned apps (PUWs)<br>• Uninstalls optional features<br>• Progress tracking for removals<br>• Error handling for failed removals<br>• Safe for Sysprep/FirstLogon |
 | `Winget_Apps.ps1`        | Package management | • Auto-installs winget and dependencies<br>• Installs curated app list<br>• Handles shortcut cleanup<br>• Validates installations<br>• Progress tracking |
 | `UserSetup.ps1`          | User personalization | • Configures keyboard layout<br>• Sets wallpaper preferences<br>• Removes startup apps<br>• Creates network shortcuts<br>• Downloads system tools |
-| `WindowsOptimizer.ps1`   | System optimization | • Downloads and runs Optimizer<br>• Applies dynamic config based on OS<br>• Validates downloads<br>• Implements execution timeout<br>• Cleans up temporary files |
-| `WindowsSpyBlocker.ps1`  | Privacy protection | • Downloads WindowsSpyBlocker<br>• Applies telemetry blocklists<br>• Configures firewall rules<br>• Cleans up installation files |
-| `CTT_Winutil.ps1`        | Additional tweaks | • Downloads patched WinUtil<br>• Applies system tweaks only<br>• Validates JSON config<br>• Handles download errors<br>• Cleans up after execution |
+| `WindowsOptimizer.ps1`   | System optimization | • Downloads and runs [Optimizer](https://github.com/hellzerg/optimizer)<br>• Applies dynamic config based on OS<br>• Validates downloads<br>• Implements execution timeout<br>• Cleans up temporary files |
+| `WindowsSpyBlocker.ps1`  | Privacy protection | • Downloads [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker)<br>• Applies telemetry blocklists<br>• Configures firewall rules<br>• Cleans up installation files |
+| `CTT_Winutil.ps1`        | Additional tweaks | • Downloads patched [WinUtil](https://christitus.com/win)<br>• Applies system tweaks only<br>• Validates JSON config<br>• Handles download errors<br>• Cleans up after execution |
 
 ---
 
@@ -32,7 +32,7 @@ All scripts are compatible with tools like [schneegans.de](https://schneegans.de
 - 🔁 Safe to re-run — idempotent logic
 - 🧠 Detects Windows 10 vs 11 automatically
 - 🧩 Modular — use only what you need
-- 🌐 Pulls community tools: Optimizer, WinUtil, SpyBlocker
+- 🌐 Pulls community tools: [Optimizer](https://github.com/hellzerg/optimizer), [WinUtil](https://christitus.com/win), [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker)
 - 💾 Winget bootstrap + install support
 - 🧱 Designed specifically for **Autounattend.xml automation**
 - 📝 Detailed logging with progress tracking
