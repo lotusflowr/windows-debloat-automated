@@ -94,12 +94,27 @@ Write-LoggedOperation {
         '*CandyCrush*'
         '*Netflix*'
     )
-    Get-AppxProvisionedPackage -Online | Where-Object {
-        $provisionedApps -contains $_.DisplayName -or 
-        $provisionedApps | Where-Object { $_ -like "*" -and $_.DisplayName -like $_ }
-    } | Remove-AppxProvisionedPackage -AllUsers -Online
-} "Removing provisioned apps (PUWs)"
 
+    $packages = Get-AppxProvisionedPackage -Online
+    $total = $packages.Count
+    $current = 0
+
+    $packages | ForEach-Object {
+        $current++
+        $progress = [math]::Round(($current / $total) * 100, 2)
+        Write-Progress -Activity "Removing provisioned apps" -Status "$progress% Complete" -PercentComplete $progress
+
+        if ($provisionedApps -contains $_.DisplayName -or 
+            $provisionedApps | Where-Object { $_ -like "*" -and $_.DisplayName -like $_ }) {
+            try {
+                Remove-AppxProvisionedPackage -AllUsers -Online -PackageName $_.PackageName -ErrorAction Stop
+                Write-Host "[INFO] Removed: $($_.DisplayName)"
+            } catch {
+                Write-Host "[WARNING] Failed to remove $($_.DisplayName): $($_.Exception.Message)"
+            }
+        }
+    }
+} "Removing provisioned apps (PUWs)"
 
 # === REMOVE OPTIONAL FEATURES ===
 Write-LoggedOperation {
@@ -110,9 +125,25 @@ Write-LoggedOperation {
         'App.StepsRecorder'
         'Microsoft.Windows.WordPad'
     )
-    Get-WindowsCapability -Online | Where-Object {
-        ($_.Name -split '~')[0] -in $optionalFeatures
-    } | Remove-WindowsCapability -Online
+
+    $capabilities = Get-WindowsCapability -Online
+    $total = $capabilities.Count
+    $current = 0
+
+    $capabilities | ForEach-Object {
+        $current++
+        $progress = [math]::Round(($current / $total) * 100, 2)
+        Write-Progress -Activity "Removing optional features" -Status "$progress% Complete" -PercentComplete $progress
+
+        if (($_.Name -split '~')[0] -in $optionalFeatures) {
+            try {
+                Remove-WindowsCapability -Online -Name $_.Name -ErrorAction Stop
+                Write-Host "[INFO] Removed: $($_.Name)"
+            } catch {
+                Write-Host "[WARNING] Failed to remove $($_.Name): $($_.Exception.Message)"
+            }
+        }
+    }
 } "Removing optional Windows features"
 
 # === WRAP UP ===
