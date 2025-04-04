@@ -13,16 +13,16 @@ All scripts are compatible with tools like [schneegans.de](https://schneegans.de
 
 ## 📦 Script Breakdown
 
-| Script                   | Purpose |
-|--------------------------|---------|
-| `SystemSetup.ps1`        | Core system tweaks (performance, Defender, telemetry, power plans). ✅ Can run as SYSTEM or Administrator. |
-| `UI_Tweaks.ps1`          | Taskbar layout, File Explorer, privacy and telemetry hardening, plus startup cleanup (e.g., SecurityHealth, EdgeAutoLaunch). |
-| `SysPrep_Debloater.ps1`  | Removes provisioned apps (PUWs), OneDrive, Teams, and optional features. Sysprep/FirstLogon safe. |
-| `Winget_Apps.ps1`        | Auto-installs `winget` + dependencies and your curated app list. |
-| `UserSetup.ps1`          | Applies user-level personalization, shell tweaks, and associations. |
-| `WindowsOptimizer.ps1`   | Downloads [Optimizer](https://github.com/hellzerg/optimizer), injects dynamic config (Win10/11), applies system tweaks silently, removes tray bloat, then cleans up. |
-| `WindowsSpyBlocker.ps1`  | Adds [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker) firewall rules to block Microsoft tracking. |
-| `CTT_Winutil.ps1`        | Executes a **patched version** of [ChrisTitusTech WinUtil](https://christitus.com/win) applying only system tweaks (no software installs). |
+| Script                   | Purpose | Key Features |
+|--------------------------|---------|--------------|
+| `SystemSetup.ps1`        | Core system tweaks | • Disables telemetry tasks and services<br>• Activates Ultimate Performance power plan<br>• Optimizes network and RAM settings<br>• Configures gaming priorities<br>• Disables error reporting and ads<br>• Clears Start menu tiles<br>• Enables ICMP for network diagnostics |
+| `UI_Tweaks.ps1`          | User interface optimization | • Removes Widgets and Meet Now<br>• Configures File Explorer behavior<br>• Disables News and Interests<br>• Hardens privacy settings<br>• Removes Edge desktop shortcut<br>• Disables telemetry and feedback |
+| `SysPrep_Debloater.ps1`  | App and feature removal | • Removes provisioned apps (PUWs)<br>• Uninstalls optional features<br>• Progress tracking for removals<br>• Error handling for failed removals<br>• Safe for Sysprep/FirstLogon |
+| `Winget_Apps.ps1`        | Package management | • Auto-installs winget and dependencies<br>• Installs curated app list<br>• Handles shortcut cleanup<br>• Validates installations<br>• Progress tracking |
+| `UserSetup.ps1`          | User personalization | • Configures keyboard layout<br>• Sets wallpaper preferences<br>• Removes startup apps<br>• Creates network shortcuts<br>• Downloads system tools |
+| `WindowsOptimizer.ps1`   | System optimization | • Downloads and runs Optimizer<br>• Applies dynamic config based on OS<br>• Validates downloads<br>• Implements execution timeout<br>• Cleans up temporary files |
+| `WindowsSpyBlocker.ps1`  | Privacy protection | • Downloads WindowsSpyBlocker<br>• Applies telemetry blocklists<br>• Configures firewall rules<br>• Cleans up installation files |
+| `CTT_Winutil.ps1`        | Additional tweaks | • Downloads patched WinUtil<br>• Applies system tweaks only<br>• Validates JSON config<br>• Handles download errors<br>• Cleans up after execution |
 
 ---
 
@@ -35,6 +35,9 @@ All scripts are compatible with tools like [schneegans.de](https://schneegans.de
 - 🌐 Pulls community tools: Optimizer, WinUtil, SpyBlocker
 - 💾 Winget bootstrap + install support
 - 🧱 Designed specifically for **Autounattend.xml automation**
+- 📝 Detailed logging with progress tracking
+- 🛡️ Error handling and validation throughout
+- 🔄 Progress tracking for long operations
 
 ---
 
@@ -55,7 +58,7 @@ Winget_Apps.ps1        → Install app stack (auto-installs winget if needed)
 UserSetup.ps1          → Per-user personalization
 WindowsOptimizer.ps1   → Full Optimizer pass with embedded config
 WindowsSpyBlocker.ps1  → Apply telemetry blocklists
-CTT_Winutil.ps1        → If you want to add/change more things that weren't included in the previous scripts.
+CTT_Winutil.ps1        → Additional system tweaks
 ```
 
 ### 📦 Autounattend Integration
@@ -92,6 +95,7 @@ More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/w
 
 - Always test this suite in a virtual machine (VM) or disposable environment before deploying it to production or real hardware.
 - These scripts apply deep system-level changes and may behave differently depending on your Windows version, edition, or configuration. Make sure to create backups before attempting any changes.
+- Internet connectivity is required for several features. However, you can definitely adapt them to make them run offline.
 - Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.  
 
 > Feedback and forks welcome — this is an evolving deployment suite.
