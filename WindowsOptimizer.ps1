@@ -123,9 +123,14 @@ $templateJson = @"
 
 # === APPLY OS VERSION ===
 $pattern = '"WindowsVersion":\s*"__OSVERSION__"'
-$osVersion = if ([System.Environment]::OSVersion.Version.Build -ge 22000) { "11" } else { "10" }
-$replacement = '"WindowsVersion": "' + $osVersion + '"'
-$templateJson = $templateJson -replace $pattern, $replacement
+try {
+    $osVersion = if ([System.Environment]::OSVersion.Version.Build -ge 22000) { "11" } else { "10" }
+    $replacement = '"WindowsVersion": "' + $osVersion + '"'
+    $templateJson = $templateJson -replace $pattern, $replacement
+} catch {
+    Write-Host "[WARNING] Could not determine OS version, defaulting to Windows 10"
+    $templateJson = $templateJson -replace $pattern, '"WindowsVersion": "10"'
+}
 
 # === PREP ===
 Write-LoggedOperation {
