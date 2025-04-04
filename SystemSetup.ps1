@@ -61,8 +61,23 @@ Write-LoggedOperation {
         "Microsoft\Windows\Maps\MapsUpdateTask",
         "Microsoft\Windows\Windows Feeds\UpdateFeeds"
     )
+    
+    $total = $tasks.Count
+    $current = 0
+    
     foreach ($task in $tasks) {
-        schtasks /Change /TN $task /Disable | Out-Null
+        $current++
+        $progress = [math]::Round(($current / $total) * 100, 2)
+        Write-Progress -Activity "Disabling telemetry tasks" -Status "$progress% Complete" -PercentComplete $progress
+        
+        try {
+            schtasks /Change /TN $task /Disable | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "[WARNING] Failed to disable task: $task"
+            }
+        } catch {
+            Write-Host "[WARNING] Error processing task $task : $($_.Exception.Message)"
+        }
     }
 } "Disabling telemetry and customer experience tasks"
 
@@ -77,15 +92,40 @@ Write-LoggedOperation {
         "{8A9C643C-3D74-4099-B6BD-9C6D170898B1}",
         "{E3176A65-4E44-4ED3-AA73-3283660ACB9C}"
     )
+    
+    $total = $taskGUIDs.Count
+    $current = 0
+    
     foreach ($guid in $taskGUIDs) {
-        reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\$guid" /f | Out-Null
+        $current++
+        $progress = [math]::Round(($current / $total) * 100, 2)
+        Write-Progress -Activity "Clearing task cache" -Status "$progress% Complete" -PercentComplete $progress
+        
+        try {
+            reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\$guid" /f | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "[WARNING] Failed to delete task cache: $guid"
+            }
+        } catch {
+            Write-Host "[WARNING] Error processing task cache $guid : $($_.Exception.Message)"
+        }
     }
 } "Clearing telemetry task cache from registry"
 
 # === POWER & PERFORMANCE ===
 Write-LoggedOperation {
-    (powercfg.exe /DUPLICATESCHEME e9a42b02-d5df-448d-aa00-03f14749eb61) -match '\s([a-f0-9-]{36})\s' | Out-Null
-    powercfg.exe /SETACTIVE $Matches[1]
+    try {
+        $result = powercfg.exe /DUPLICATESCHEME e9a42b02-d5df-448d-aa00-03f14749eb61
+        if (-not ($result -match '\s([a-f0-9-]{36})\s')) {
+            throw "Failed to duplicate power scheme"
+        }
+        $setResult = powercfg.exe /SETACTIVE $Matches[1]
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to set active power scheme: $setResult"
+        }
+    } catch {
+        throw "Power plan configuration failed: $($_.Exception.Message)"
+    }
 } "Activating Ultimate Performance power plan"
 
 Write-LoggedOperation {
@@ -93,8 +133,15 @@ Write-LoggedOperation {
 } "Increasing IRP Stack Size for better network performance"
 
 Write-LoggedOperation {
-    $ramKB = (Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1KB
-    Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control -Name SvcHostSplitThresholdInKB -Value [int]$ramKB -Force
+    try {
+        $ramKB = (Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1KB
+        if ($ramKB -le 0) {
+            throw "Invalid RAM calculation result"
+        }
+        Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control -Name SvcHostSplitThresholdInKB -Value [int]$ramKB -Force
+    } catch {
+        throw "RAM optimization failed: $($_.Exception.Message)"
+    }
 } "Optimizing svchost split threshold based on system RAM"
 
 Write-LoggedOperation { powercfg -hibernate off } "Disabling hibernation"
