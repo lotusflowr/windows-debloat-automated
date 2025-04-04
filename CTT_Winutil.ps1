@@ -111,16 +111,6 @@ Write-LoggedOperation {
     Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
 } "Running WinUtil with configuration"
 
-# === FALLBACK TO LOCAL ===
-if (-not (Test-Path $winutilPath)) {
-    Write-Host "[WARN] Remote script failed. Trying fallback."
-    Write-LoggedOperation {
-        $exitPatch = 'Write-Host "--     Tweaks are Finished    ---"; Start-Sleep -Seconds 1; Stop-Process -Id $PID -Force'
-        (Get-Content -Raw $winutilPath) -replace 'Write-Host "--     Tweaks are Finished    ---"', $exitPatch | Set-Content $winutilPath
-        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
-    } "Running local WinUtil fallback"
-}
-
 # === CLEANUP ===
 Write-LoggedOperation {
     Remove-Item -LiteralPath $winutilPath -Force -ErrorAction SilentlyContinue
