@@ -3,6 +3,7 @@
 ![OS](https://img.shields.io/badge/Windows-10%20%7C%2011-blue)
 ![Shell](https://img.shields.io/badge/Shell-PowerShell-008fc7)
 ![Autounattend](https://img.shields.io/badge/Autounattend-Compatible-green)
+![License](https://img.shields.io/badge/License-GPL--3.0-green)
 
 A fully automated PowerShell toolkit to **debloat**, **optimize**, and **harden Windows** — from install to ready-to-use.
 
