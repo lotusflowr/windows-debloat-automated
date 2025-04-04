@@ -86,7 +86,7 @@ Write-LoggedOperation {
 
 # === DOWNLOAD + PATCH SCRIPT ===
 Write-LoggedOperation {
-    irm 'https://christitus.com/win' -OutFile $winutilPath
+    Invoke-RestMethod 'https://christitus.com/win' -OutFile $winutilPath
 
     if (-not (Test-Path $winutilPath)) {
         throw "Failed to download WinUtil script."
