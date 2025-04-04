@@ -24,27 +24,27 @@ $start = Get-Date
     📁 Logs actions to $env:TEMP\00_SystemSetup.log
 #>
 
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description applied."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
 # === WINDOWS UPDATE ===
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v SearchOrderConfig /t REG_DWORD /d 1 /f
 } "Setting Windows Update to prioritize driver searches"
 
 # === SCHEDULED TASKS: TELEMETRY CLEANUP ===
-Try-Run {
+Write-LoggedOperation {
     $tasks = @(
         "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser",
         "Microsoft\Windows\Application Experience\ProgramDataUpdater",
@@ -66,7 +66,7 @@ Try-Run {
     }
 } "Disabling telemetry and customer experience tasks"
 
-Try-Run {
+Write-LoggedOperation {
     $taskGUIDs = @(
         "{0600DD45-FAF2-4131-A006-0B17509B9F78}",
         "{4738DE7A-BCC1-4E2D-B1B0-CADB044BFA81}",
@@ -83,65 +83,65 @@ Try-Run {
 } "Clearing telemetry task cache from registry"
 
 # === POWER & PERFORMANCE ===
-Try-Run {
+Write-LoggedOperation {
     $guid = (powercfg.exe /DUPLICATESCHEME e9a42b02-d5df-448d-aa00-03f14749eb61) -match '\s([a-f0-9-]{36})\s'
     powercfg.exe /SETACTIVE $Matches[1]
 } "Activating Ultimate Performance power plan"
 
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v IRPStackSize /t REG_DWORD /d 30 /f
 } "Increasing IRP Stack Size for better network performance"
 
-Try-Run {
+Write-LoggedOperation {
     $ramKB = (Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1KB
     Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control -Name SvcHostSplitThresholdInKB -Value [int]$ramKB -Force
 } "Optimizing svchost split threshold based on system RAM"
 
-Try-Run { powercfg -hibernate off } "Disabling hibernation"
-Try-Run { powercfg /change standby-timeout-ac 0 } "Disabling AC standby timeout"
-Try-Run { powercfg /change standby-timeout-dc 0 } "Disabling DC standby timeout"
-Try-Run { powercfg /change monitor-timeout-ac 0 } "Disabling monitor timeout (AC)"
-Try-Run { powercfg /change monitor-timeout-dc 0 } "Disabling monitor timeout (DC)"
+Write-LoggedOperation { powercfg -hibernate off } "Disabling hibernation"
+Write-LoggedOperation { powercfg /change standby-timeout-ac 0 } "Disabling AC standby timeout"
+Write-LoggedOperation { powercfg /change standby-timeout-dc 0 } "Disabling DC standby timeout"
+Write-LoggedOperation { powercfg /change monitor-timeout-ac 0 } "Disabling monitor timeout (AC)"
+Write-LoggedOperation { powercfg /change monitor-timeout-dc 0 } "Disabling monitor timeout (DC)"
 
 # === GAMING PRIORITY ===
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d 8 /f
 } "Setting GPU priority to 8 for gaming"
 
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Priority /t REG_DWORD /d 6 /f
 } "Setting CPU scheduling priority to 6 for games"
 
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d "High" /f
 } "Setting scheduling category to High for gaming tasks"
 
 # === POLICY HARDENING ===
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
 } "Disabling Windows Error Reporting"
 
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v DisabledByGroupPolicy /t REG_DWORD /d 1 /f
 } "Disabling Advertising ID globally"
 
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoPinningStoreToTaskbar /t REG_DWORD /d 1 /f
 } "Preventing Microsoft Store from being pinned to taskbar"
 
 # === START MENU & FEEDS ===
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins /t REG_SZ /d '{ "pinnedList": [] }' /f
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins_ProviderSet /t REG_DWORD /d 1 /f
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins_WinningProvider /t REG_SZ /d B5292708-1619-419B-9923-E5D9F3925E71 /f
 } "Clearing Start menu pinned tiles"
 
-Try-Run {
+Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v EnableFeeds /t REG_DWORD /d 0 /f
 } "Disabling News and Interests from taskbar"
 
 # === FIREWALL ALLOW ICMP ===
-Try-Run {
+Write-LoggedOperation {
     New-NetFirewallRule -DisplayName 'ICMPv4' -Profile Any -Protocol ICMPv4
     New-NetFirewallRule -DisplayName 'ICMPv6' -Profile Any -Protocol ICMPv6
 } "Allowing ICMP ping (v4 + v6) through the firewall"

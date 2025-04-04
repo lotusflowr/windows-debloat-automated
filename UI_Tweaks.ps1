@@ -22,7 +22,7 @@ $start = Get-Date
 #>
 
 # === FUNCTION: EXECUTION WRAPPER ===
-function Try-Run {
+function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
         [string]$Description
@@ -37,7 +37,7 @@ function Try-Run {
 }
 
 # === EXPLORER & UI TWEAKS ===
-Try-Run {
+Write-LoggedOperation {
     Write-Host "→ Removing Widgets"
     reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarDa /t REG_DWORD /d 0 /f
 
@@ -58,12 +58,12 @@ Try-Run {
     reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoPinningStoreToTaskbar /t REG_DWORD /d 1 /f
 } "Applying File Explorer and taskbar behavior tweaks"
 
-Try-Run {
+Write-LoggedOperation {
     Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
 } "Removing Microsoft Edge shortcut from Desktop"
 
 # === TASKBAR ICONS & NEWS ===
-Try-Run {
+Write-LoggedOperation {
     Write-Host "→ Disabling News and Interests panel"
     reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsEnabled /t REG_DWORD /d 0 /f
 
@@ -75,7 +75,7 @@ Try-Run {
 } "Disabling taskbar news, widgets, and chat icons"
 
 # === PRIVACY & TELEMETRY ===
-Try-Run {
+Write-LoggedOperation {
     Write-Host "→ Disabling language list sharing with websites"
     reg.exe add "HKCU\Control Panel\International\User Profile" /v HttpAcceptLanguageOptOut /t REG_DWORD /d 1 /f
 

@@ -30,17 +30,17 @@ $start = Get-Date
     https://github.com/ChrisTitusTech/winutil
 #>
 
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description completed."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
@@ -80,12 +80,12 @@ $configPath  = "$env:TEMP\winutil_config.json"
 $winutilPath = "$env:TEMP\winutil.ps1"
 
 # === SAVE CONFIG ===
-Try-Run {
+Write-LoggedOperation {
     $configJson | Out-File -FilePath $configPath -Encoding utf8 -Force
 } "Saving WinUtil configuration to $configPath"
 
 # === DOWNLOAD + PATCH SCRIPT ===
-Try-Run {
+Write-LoggedOperation {
     irm 'https://christitus.com/win' -OutFile $winutilPath
 
     if (-not (Test-Path $winutilPath)) {
@@ -107,14 +107,14 @@ Try-Run {
 } "Downloading and patching WinUtil script"
 
 # === RUN WINUTIL ===
-Try-Run {
+Write-LoggedOperation {
     Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
 } "Running WinUtil with configuration"
 
 # === FALLBACK TO LOCAL ===
 if (-not (Test-Path $winutilPath)) {
     Write-Host "[WARN] Remote script failed. Trying fallback."
-    Try-Run {
+    Write-LoggedOperation {
         $exitPatch = 'Write-Host "--     Tweaks are Finished    ---"; Start-Sleep -Seconds 1; Stop-Process -Id $PID -Force'
         (Get-Content -Raw $winutilPath) -replace 'Write-Host "--     Tweaks are Finished    ---"', $exitPatch | Set-Content $winutilPath
         Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
@@ -122,7 +122,7 @@ if (-not (Test-Path $winutilPath)) {
 }
 
 # === CLEANUP ===
-Try-Run {
+Write-LoggedOperation {
     Remove-Item -LiteralPath $winutilPath -Force -ErrorAction SilentlyContinue
 } "Deleting WinUtil script"
 

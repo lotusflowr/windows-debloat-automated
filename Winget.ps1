@@ -46,17 +46,17 @@ $shortcutFragments = $appList | ForEach-Object { ($_ -split '\.')[1] } | Where-O
 
 # === FUNCTIONS ===
 
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description completed."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
@@ -77,7 +77,7 @@ function Remove-Shortcut {
                 Where-Object { $_.Name -match [regex]::Escape($fragment) } |
                 ForEach-Object {
                     Write-Host "`n[INFO] Found shortcut matching '$fragment': $($_.FullName)"
-                    Try-Run {
+                    Write-LoggedOperation {
                         Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
                     } "Removing shortcut: $($_.Name)"
                 }
@@ -97,19 +97,19 @@ $wingetUrl    = "https://api.github.com/repos/microsoft/winget-cli/releases/late
 
 # === INSTALL DEPENDENCIES ===
 
-Try-Run {
+Write-LoggedOperation {
     & curl.exe -L -o $VCLibs $VCLibsUrl
     Add-AppxPackage -Path $VCLibs
 } "Installing Microsoft.VCLibs (UWP C++ runtime)"
 
-Try-Run {
+Write-LoggedOperation {
     & curl.exe -L -o $UIXaml $UIXamlUrl
     Add-AppxPackage -Path $UIXaml
 } "Installing Microsoft.UI.Xaml (UI framework)"
 
 # === INSTALL WINGET ===
 
-Try-Run {
+Write-LoggedOperation {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $bundle = (Invoke-RestMethod $wingetUrl).assets | Where-Object { $_.name -like "*.msixbundle" } | Select-Object -First 1
     & curl.exe -L -J -o $winget $bundle.browser_download_url
@@ -124,7 +124,7 @@ Try-Run {
 # === VERIFY WINGET ===
 
 Set-Variable -Name wingetAvailable -Value $false -Scope Script
-Try-Run {
+Write-LoggedOperation {
     winget --version | Out-Null
     $script:wingetAvailable = $true
 } "Verifying winget is available"
@@ -132,22 +132,22 @@ Try-Run {
 if ($wingetAvailable) {
 
     # === CLEANUP TEMP FILES ===
-    Try-Run {
+    Write-LoggedOperation {
         Remove-Item -LiteralPath $winget -Force -ErrorAction SilentlyContinue
         Remove-Item -LiteralPath $UIXaml -Force -ErrorAction SilentlyContinue
         Remove-Item -LiteralPath $VCLibs -Force -ErrorAction SilentlyContinue
-    } "Cleaning up temporary installer files"
+    } "Cleaning up temporary files"
 
     # === INSTALL APPLICATIONS ===
     foreach ($app in $appList) {
-        Try-Run {
+        Write-LoggedOperation {
             winget install --id=$app -e --accept-source-agreements --accept-package-agreements
         } "Installing $app"
     }
 
     # === OPTIONAL SHORTCUT CLEANUP ===
     if ($RemoveShortcuts) {
-        Try-Run {
+        Write-LoggedOperation {
             Remove-Shortcut -NameFragments $shortcutFragments
         } "Removing desktop shortcuts for installed apps"
     }

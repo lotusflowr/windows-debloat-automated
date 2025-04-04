@@ -26,22 +26,22 @@ $start = Get-Date
 #>
 
 # === UTILITY: Safe Execution Wrapper ===
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description completed."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
 # === REMOVE BLOATWARE (PUWs) ===
-Try-Run {
+Write-LoggedOperation {
     Write-Host "[DETAIL] Removing provisioned apps..."
     $provisionedApps = @(
         'Microsoft.Microsoft3DViewer'
@@ -101,7 +101,7 @@ Try-Run {
 
 
 # === REMOVE OPTIONAL FEATURES ===
-Try-Run {
+Write-LoggedOperation {
     Write-Host "[DETAIL] Uninstalling legacy and optional features..."
     $optionalFeatures = @(
         'MathRecognizer'

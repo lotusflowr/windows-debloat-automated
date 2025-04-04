@@ -24,29 +24,29 @@ $start = Get-Date
     https://github.com/crazy-max/WindowsSpyBlocker
 #>
 
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description completed."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
 # Download WindowsSpyBlocker
-Try-Run {
+Write-LoggedOperation {
     $release = Invoke-RestMethod "https://api.github.com/repos/crazy-max/WindowsSpyBlocker/releases/latest" -Headers @{ "User-Agent" = "PS" }
     $exeUrl = ($release.assets | Where-Object name -like "*.exe").browser_download_url
     Invoke-WebRequest -Uri $exeUrl -OutFile "$env:TEMP\WindowsSpyBlocker.exe"
 } "Downloading WindowsSpyBlocker.exe"
 
 # Run WindowsSpyBlocker
-Try-Run {
+Write-LoggedOperation {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = "$env:TEMP\WindowsSpyBlocker.exe"
     $psi.RedirectStandardInput  = $true
@@ -92,7 +92,7 @@ Try-Run {
 } "Running WindowsSpyBlocker silently"
 
 # Cleanup
-Try-Run {
+Write-LoggedOperation {
     $pathsToDelete = @(
         "$env:TEMP\libs",
         "$env:TEMP\logs",

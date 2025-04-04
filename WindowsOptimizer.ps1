@@ -22,17 +22,17 @@ $start = Get-Date
     📁 Logs saved to $env:TEMP\05_WindowsOptimizer.log
 #>
 
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description completed."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
@@ -128,14 +128,14 @@ $replacement = '"WindowsVersion": "' + $osVersion + '"'
 $templateJson = $templateJson -replace $pattern, $replacement
 
 # === PREP ===
-Try-Run {
+Write-LoggedOperation {
     if (-not (Test-Path $tempDir)) {
         New-Item -ItemType Directory -Path $tempDir | Out-Null
     }
 } "Preparing Optimizer temp directory"
 
 # === DOWNLOAD OPTIMIZER ===
-Try-Run {
+Write-LoggedOperation {
     $release = Invoke-WebRequest -Uri "https://api.github.com/repos/hellzerg/optimizer/releases/latest" -UseBasicParsing
     $json = $release.Content | ConvertFrom-Json
     $latestExeUrl = $json.assets | Where-Object { $_.name -match '^Optimizer-\d+.*\.exe$' } | Select-Object -First 1 -ExpandProperty browser_download_url
@@ -147,17 +147,17 @@ Try-Run {
 } "Downloading latest Optimizer executable"
 
 # === WRITE CONFIG ===
-Try-Run {
+Write-LoggedOperation {
     $templateJson | Out-File -FilePath $configPath -Encoding utf8 -Force
 } "Saving embedded config to file"
 
 # === EXECUTE OPTIMIZER ===
-Try-Run {
+Write-LoggedOperation {
     Start-Process -FilePath $exePath -ArgumentList "/config=$configPath" -Wait -WindowStyle Hidden
 } "Launching Optimizer with config"
 
 # === CLEANUP ===
-Try-Run {
+Write-LoggedOperation {
     Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
 } "Cleaning up temporary Optimizer files"
 

@@ -28,22 +28,22 @@ $start = Get-Date
 #>
 
 
-function Try-Run {
+function Write-LoggedOperation {
     param (
-        [scriptblock]$Script,
+        [scriptblock]$Block,
         [string]$Description
     )
     Write-Host "`n[INFO] $Description"
     try {
-        & $Script
-        Write-Host "[SUCCESS] $Description completed."
+        & $Block
+        Write-Host "[SUCCESS] $Description completed.`n"
     } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)"
+        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
 
 # === KEYBOARD LAYOUT ===
-Try-Run {
+Write-LoggedOperation {
     # To customize: Run Get-WinUserLanguageList to view input/language codes
     # Replace 'en-CA' and '1009:00011009' with your own layout if desired
     $langList = New-WinUserLanguageList "en-CA"
@@ -56,7 +56,7 @@ Try-Run {
 $W10_Wallpaper = "C:\Windows\Web\Wallpaper\Theme1\img4.jpg"
 $W11_Wallpaper = "C:\Windows\Web\Wallpaper\ThemeA\img20.jpg"
 
-Try-Run {
+Write-LoggedOperation {
     $wallpaperToApply = if (Test-Path $W10_Wallpaper) {
         Write-Host "[INFO] Using Windows 10 wallpaper."
         $W10_Wallpaper
@@ -75,12 +75,12 @@ Try-Run {
 } "Applying default wallpaper"
 
 # === REMOVE MICROSOFT EDGE SHORTCUT ===
-Try-Run {
+Write-LoggedOperation {
     Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
 } "Removing Microsoft Edge shortcut from Desktop"
 
 # === STARTUP APPS ===
-Try-Run {
+Write-LoggedOperation {
 	Write-Host "→ Removing SecurityHealth Notification startup"
 	reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v SecurityHealth /f
 	
@@ -94,9 +94,10 @@ Try-Run {
 			Write-Host "Removing Edge auto-start entry: $name"
 			Remove-ItemProperty -Path "Registry::$runKey" -Name $name -Force
 		} 
+} "Setting up user preferences"
 
 # === NETWORK CONNECTIONS SHORTCUT ===
-Try-Run {
+Write-LoggedOperation {
     $ncpa = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\Network Connections.lnk")
     $ncpa.TargetPath       = "$env:windir\explorer.exe"
     $ncpa.Arguments        = "shell:::{992CFFA0-F557-101A-88EC-00DD010CCC48}"
@@ -106,12 +107,12 @@ Try-Run {
 } "Creating 'Network Connections' shortcut on Desktop"
 
 # === AUTOLOGON TOOL ===
-Try-Run {
+Write-LoggedOperation {
     curl.exe -L -s https://live.sysinternals.com/Autologon.exe -o "$env:USERPROFILE\Desktop\Autologon.exe"
 } "Downloading Sysinternals Autologon to Desktop"
 
 # === ACTIVATE WINDOWS VIA TSFORGE ===
-Try-Run {
+Write-LoggedOperation {
     Write-Host "[DETAIL] Downloading and running TSForge activation script..."
     $tsPath = "$env:TEMP\TSforge_Activation.cmd"
     curl.exe -L -s https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/master/MAS/Separate-Files-Version/Activators/TSforge_Activation.cmd -o $tsPath
