@@ -95,7 +95,8 @@ Write-LoggedOperation {
         '*Netflix*'
     )
     Get-AppxProvisionedPackage -Online | Where-Object {
-        $provisionedApps -contains $_.DisplayName -or ($provisionedApps | Where-Object { $_ -like "*" })
+        $provisionedApps -contains $_.DisplayName -or 
+        $provisionedApps | Where-Object { $_ -like "*" -and $_.DisplayName -like $_ }
     } | Remove-AppxProvisionedPackage -AllUsers -Online
 } "Removing provisioned apps (PUWs)"
 
