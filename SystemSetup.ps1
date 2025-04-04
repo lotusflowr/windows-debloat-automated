@@ -146,7 +146,6 @@ Write-LoggedOperation {
     New-NetFirewallRule -DisplayName 'ICMPv6' -Profile Any -Protocol ICMPv6
 } "Allowing ICMP ping (v4 + v6) through the firewall"
 
-
 # === WRAP UP ===
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
