@@ -1,5 +1,7 @@
 # === LOGGING ===
-Start-Transcript -Path "$env:TEMP\00_SystemSetup.log" -Append -Force
+$logDir = "C:\Windows\Temp\Logs"
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+Start-Transcript -Path "$logDir\00_SystemSetup.log" -Append -Force
 $start = Get-Date
 
 <#
