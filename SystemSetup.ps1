@@ -1,7 +1,11 @@
+# === MODULE IMPORT ===
+Import-Module -Name (Join-Path $PSScriptRoot "WinDebloat.psm1") -Force
+
 # === LOGGING ===
-$logDir = "C:\Windows\Temp\Logs"
+$logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
-Start-Transcript -Path "$logDir\00_SystemSetup.log" -Append -Force
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+Start-Transcript -Path (Join-Path $logDir "00_SystemSetup_$timestamp.log") -Append -Force
 $start = Get-Date
 
 <#
@@ -23,7 +27,7 @@ $start = Get-Date
 .NOTES
     ⚠️ Must be run as SYSTEM (e.g. via SetupComplete or Task Scheduler)
     ✅ Safe to run repeatedly (idempotent registry and scheduled task commands)
-    📁 Logs actions to $env:TEMP\00_SystemSetup.log
+    📁 Logs actions to $env:TEMP\WinDebloatLogs\00_SystemSetup_YYYYMMDD_HHMMSS.log
 #>
 
 function Write-LoggedOperation {
@@ -84,15 +88,16 @@ Write-LoggedOperation {
 } "Disabling telemetry and customer experience tasks"
 
 Write-LoggedOperation {
+    # List of telemetry-related task GUIDs to remove
     $taskGUIDs = @(
-        "{0600DD45-FAF2-4131-A006-0B17509B9F78}",
-        "{4738DE7A-BCC1-4E2D-B1B0-CADB044BFA81}",
-        "{6FAC31FA-4A85-4E64-BFD5-2154FF4594B3}",
-        "{FC931F16-B50A-472E-B061-B6F79A71EF59}",
-        "{0671EB05-7D95-4153-A32B-1426B9FE61DB}",
-        "{87BF85F4-2CE1-4160-96EA-52F554AA28A2}",
-        "{8A9C643C-3D74-4099-B6BD-9C6D170898B1}",
-        "{E3176A65-4E44-4ED3-AA73-3283660ACB9C}"
+        "{0600DD45-FAF2-4131-A006-0B17509B9F78}", # Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser
+        "{4738DE7A-BCC1-4E2D-B1B0-CADB044BFA81}", # Microsoft\Windows\Application Experience\ProgramDataUpdater
+        "{6FAC31FA-4A85-4E64-BFD5-2154FF4594B3}", # Microsoft\Windows\Application Experience\StartupAppTask
+        "{FC931F16-B50A-472E-B061-B6F79A71EF59}", # Microsoft\Windows\Application Experience\AitAgent
+        "{0671EB05-7D95-4153-A32B-1426B9FE61DB}", # Microsoft\Windows\Application Experience\PcaPatchDbTask
+        "{87BF85F4-2CE1-4160-96EA-52F554AA28A2}", # Microsoft\Windows\Application Experience\Sdbinst
+        "{8A9C643C-3D74-4099-B6BD-9C6D170898B1}", # Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser
+        "{E3176A65-4E44-4ED3-AA73-3283660ACB9C}"  # Microsoft\Windows\Application Experience\StartupAppTask
     )
     
     $total = $taskGUIDs.Count
@@ -117,6 +122,7 @@ Write-LoggedOperation {
 # === POWER & PERFORMANCE ===
 Write-LoggedOperation {
     try {
+        # Duplicate and activate Ultimate Performance power plan
         $result = powercfg.exe /DUPLICATESCHEME e9a42b02-d5df-448d-aa00-03f14749eb61
         if (-not ($result -match '\s([a-f0-9-]{36})\s')) {
             throw "Failed to duplicate power scheme"
@@ -136,6 +142,7 @@ Write-LoggedOperation {
 
 Write-LoggedOperation {
     try {
+        # Calculate optimal svchost split threshold based on system RAM
         $ramKB = (Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1KB
         if ($ramKB -le 0) {
             throw "Invalid RAM calculation result"
@@ -146,24 +153,41 @@ Write-LoggedOperation {
     }
 } "Optimizing svchost split threshold based on system RAM"
 
-Write-LoggedOperation { powercfg -hibernate off } "Disabling hibernation"
-Write-LoggedOperation { powercfg /change standby-timeout-ac 0 } "Disabling AC standby timeout"
-Write-LoggedOperation { powercfg /change standby-timeout-dc 0 } "Disabling DC standby timeout"
-Write-LoggedOperation { powercfg /change monitor-timeout-ac 0 } "Disabling monitor timeout (AC)"
-Write-LoggedOperation { powercfg /change monitor-timeout-dc 0 } "Disabling monitor timeout (DC)"
+# === POWER SETTINGS ===
+Write-LoggedOperation {
+    # Disable hibernation
+    Write-Host "→ Disabling hibernation"
+    powercfg -hibernate off
+
+    # Disable standby timeouts
+    Write-Host "→ Disabling AC standby timeout"
+    powercfg /change standby-timeout-ac 0
+
+    Write-Host "→ Disabling DC standby timeout"
+    powercfg /change standby-timeout-dc 0
+
+    # Disable monitor timeouts
+    Write-Host "→ Disabling monitor timeout (AC)"
+    powercfg /change monitor-timeout-ac 0
+
+    Write-Host "→ Disabling monitor timeout (DC)"
+    powercfg /change monitor-timeout-dc 0
+} "Configuring power settings for maximum performance"
 
 # === GAMING PRIORITY ===
 Write-LoggedOperation {
-    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d 8 /f
-} "Setting GPU priority to 8 for gaming"
+    # GPU Priority
+    Write-Host "→ Setting GPU priority to 8 for gaming"
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v GPU Priority /t REG_DWORD /d 8 /f
 
-Write-LoggedOperation {
+    # CPU Priority
+    Write-Host "→ Setting CPU scheduling priority to 6 for games"
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Priority /t REG_DWORD /d 6 /f
-} "Setting CPU scheduling priority to 6 for games"
 
-Write-LoggedOperation {
-    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d "High" /f
-} "Setting scheduling category to High for gaming tasks"
+    # Scheduling Category
+    Write-Host "→ Setting scheduling category to High for gaming tasks"
+    reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Scheduling Category /t REG_SZ /d High /f
+} "Configuring gaming priority settings"
 
 # === POLICY HARDENING ===
 Write-LoggedOperation {
@@ -180,6 +204,7 @@ Write-LoggedOperation {
 
 # === START MENU & FEEDS ===
 Write-LoggedOperation {
+    # Clear Start menu pinned tiles
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins /t REG_SZ /d '{ "pinnedList": [] }' /f
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins_ProviderSet /t REG_DWORD /d 1 /f
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins_WinningProvider /t REG_SZ /d B5292708-1619-419B-9923-E5D9F3925E71 /f

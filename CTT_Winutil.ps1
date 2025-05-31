@@ -1,5 +1,8 @@
 # === LOGGING ===
-Start-Transcript -Path "$env:TEMP\07_CTT_Winutil_Tweaks.log" -Append -Force
+$logDir = Join-Path $env:TEMP "WinDebloatLogs"
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+Start-Transcript -Path (Join-Path $logDir "07_CTT_Winutil_Tweaks_$timestamp.log") -Append -Force
 $start = Get-Date
 
 <#

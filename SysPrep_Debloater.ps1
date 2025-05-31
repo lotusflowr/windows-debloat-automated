@@ -1,5 +1,8 @@
 # === LOGGING ===
-Start-Transcript -Path "$env:TEMP\02_SysPrep_Debloater.log" -Append -Force
+$logDir = Join-Path $env:TEMP "WinDebloatLogs"
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+Start-Transcript -Path (Join-Path $logDir "02_SysPrep_Debloater_$timestamp.log") -Append -Force
 $start = Get-Date
 
 <#
