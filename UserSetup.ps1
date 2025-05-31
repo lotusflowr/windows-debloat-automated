@@ -1,6 +1,22 @@
-# === LOGGING ===
+# ============================================================================
+# Windows Debloat - User Setup Script
+# ============================================================================
+# Purpose: Configures keyboard layout, sets default wallpaper, removes clutter,
+#          adds helpful shortcuts, and activates Windows automatically.
+# ============================================================================
+# ⚠️ WARNING: This script includes Windows activation via TSForge.
+#             This may not be suitable for business environments.
+#             Review and remove the Windows Activation section if needed.
+# ============================================================================
+
+#region Logging Setup
+# ============================================================================
+# Initialize logging with timestamp
+# ============================================================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+if (-not (Test-Path $logDir)) { 
+    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
+}
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "04_UserSetup_$timestamp.log") -Append -Force
 $start = Get-Date
@@ -29,8 +45,12 @@ $start = Get-Date
     https://learn.microsoft.com/en-us/sysinternals/downloads/autologon
     https://github.com/massgravel/Microsoft-Activation-Scripts
 #>
+#endregion
 
-
+#region Helper Functions
+# ============================================================================
+# Utility Functions
+# ============================================================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -44,8 +64,12 @@ function Write-LoggedOperation {
         Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
+#endregion
 
-# === KEYBOARD LAYOUT ===
+#region Keyboard Layout
+# ============================================================================
+# Configure Keyboard Layout
+# ============================================================================
 Write-LoggedOperation {
     # To customize: Run Get-WinUserLanguageList to view input/language codes
     # Replace 'en-CA' and '1009:00011009' with your own layout if desired
@@ -54,8 +78,12 @@ Write-LoggedOperation {
     $langList[0].InputMethodTips.Add("1009:00011009")  # Canadian Multilingual Standard
     Set-WinUserLanguageList $langList -Force
 } "Setting keyboard layout to English (Canada) - Canadian Multilingual"
+#endregion
 
-# === WALLPAPER ===
+#region Wallpaper
+# ============================================================================
+# Set Default Wallpaper
+# ============================================================================
 $W10_Wallpaper = "C:\Windows\Web\Wallpaper\Theme1\img4.jpg"
 $W11_Wallpaper = "C:\Windows\Web\Wallpaper\ThemeA\img20.jpg"
 
@@ -76,30 +104,16 @@ Write-LoggedOperation {
     Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name TileWallpaper -Value "0"     # No Tile
     Start-Process -FilePath rundll32.exe -ArgumentList 'user32.dll,UpdatePerUserSystemParameters' -NoNewWindow -Wait
 } "Applying default wallpaper"
+#endregion
 
-# === REMOVE MICROSOFT EDGE SHORTCUT ===
+#region Shortcut Management
+# ============================================================================
+# Manage Desktop Shortcuts
+# ============================================================================
 Write-LoggedOperation {
     Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
 } "Removing Microsoft Edge shortcut from Desktop"
 
-# === STARTUP APPS ===
-Write-LoggedOperation {
-	Write-Host "→ Removing SecurityHealth Notification startup"
-	reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v SecurityHealth /f
-	
-	Write-Host "→ Removing Edge autolaunch startup"
-	$runKey = "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-	Get-ItemProperty -Path "Registry::$runKey" | 
-		Get-Member -MemberType NoteProperty |
-		Where-Object { $_.Name -like "MicrosoftEdgeAutoLaunch_*" } |
-		ForEach-Object {
-			$name = $_.Name
-			Write-Host "Removing Edge auto-start entry: $name"
-			Remove-ItemProperty -Path "Registry::$runKey" -Name $name -Force
-		} 
-} "Setting up user preferences"
-
-# === NETWORK CONNECTIONS SHORTCUT ===
 Write-LoggedOperation {
     $ncpa = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\Network Connections.lnk")
     $ncpa.TargetPath       = "$env:windir\explorer.exe"
@@ -108,13 +122,42 @@ Write-LoggedOperation {
     $ncpa.IconLocation     = "$env:SystemRoot\System32\netshell.dll"
     $ncpa.Save()
 } "Creating 'Network Connections' shortcut on Desktop"
+#endregion
 
-# === AUTOLOGON TOOL ===
+#region Startup Apps
+# ============================================================================
+# Configure Startup Applications
+# ============================================================================
+Write-LoggedOperation {
+    Write-Host "→ Removing SecurityHealth Notification startup"
+    reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v SecurityHealth /f
+    
+    Write-Host "→ Removing Edge autolaunch startup"
+    $runKey = "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+    Get-ItemProperty -Path "Registry::$runKey" | 
+        Get-Member -MemberType NoteProperty |
+        Where-Object { $_.Name -like "MicrosoftEdgeAutoLaunch_*" } |
+        ForEach-Object {
+            $name = $_.Name
+            Write-Host "Removing Edge auto-start entry: $name"
+            Remove-ItemProperty -Path "Registry::$runKey" -Name $name -Force
+        } 
+} "Setting up user preferences"
+#endregion
+
+#region Tools
+# ============================================================================
+# Download and Setup Tools
+# ============================================================================
 Write-LoggedOperation {
     curl.exe -L -s https://live.sysinternals.com/Autologon.exe -o "$env:USERPROFILE\Desktop\Autologon.exe"
 } "Downloading Sysinternals Autologon to Desktop"
+#endregion
 
-# === ACTIVATE WINDOWS VIA TSFORGE ===
+#region Windows Activation
+# ============================================================================
+# Activate Windows
+# ============================================================================
 Write-LoggedOperation {
     Write-Host "[DETAIL] Downloading and running TSForge activation script..."
     $tsPath = "$env:TEMP\TSforge_Activation.cmd"
@@ -122,13 +165,17 @@ Write-LoggedOperation {
     & $tsPath /Z-Windows
     Remove-Item $tsPath -Force -ErrorAction SilentlyContinue
 } "Running TSForge activation"
+#endregion
 
-# === RESTART EXPLORER TO APPLY CHANGES ===
+#region Wrap Up
+# ============================================================================
+# Script Completion
+# ============================================================================
 Write-Host "→ Restarting Explorer to apply changes"
 taskkill /f /im explorer.exe | Out-Null
 Start-Process explorer.exe
 
-# === WRAP UP ===
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
+#endregion

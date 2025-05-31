@@ -1,9 +1,18 @@
-# === MODULE IMPORT ===
-Import-Module -Name (Join-Path $PSScriptRoot "WinDebloat.psm1") -Force
+# ============================================================================
+# Windows Debloat - System Setup Script
+# ============================================================================
+# Purpose: Applies deep system tweaks focused on performance, telemetry reduction,
+#          power tuning, and gaming responsiveness. Designed to run in SYSTEM context.
+# ============================================================================
 
-# === LOGGING ===
+#region Logging Setup
+# ============================================================================
+# Initialize logging with timestamp
+# ============================================================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+if (-not (Test-Path $logDir)) { 
+    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
+}
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "00_SystemSetup_$timestamp.log") -Append -Force
 $start = Get-Date
@@ -29,7 +38,12 @@ $start = Get-Date
     ✅ Safe to run repeatedly (idempotent registry and scheduled task commands)
     📁 Logs actions to $env:TEMP\WinDebloatLogs\00_SystemSetup_YYYYMMDD_HHMMSS.log
 #>
+#endregion
 
+#region Helper Functions
+# ============================================================================
+# Utility Functions
+# ============================================================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -43,13 +57,21 @@ function Write-LoggedOperation {
         Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
+#endregion
 
-# === WINDOWS UPDATE ===
+#region Windows Update
+# ============================================================================
+# Windows Update Configuration
+# ============================================================================
 Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v SearchOrderConfig /t REG_DWORD /d 1 /f
 } "Setting Windows Update to prioritize driver searches"
+#endregion
 
-# === SCHEDULED TASKS: TELEMETRY CLEANUP ===
+#region Scheduled Tasks
+# ============================================================================
+# Telemetry Task Management
+# ============================================================================
 Write-LoggedOperation {
     $tasks = @(
         "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser",
@@ -118,8 +140,12 @@ Write-LoggedOperation {
         }
     }
 } "Clearing telemetry task cache from registry"
+#endregion
 
-# === POWER & PERFORMANCE ===
+#region Power & Performance
+# ============================================================================
+# Power Plan and Performance Settings
+# ============================================================================
 Write-LoggedOperation {
     try {
         # Duplicate and activate Ultimate Performance power plan
@@ -152,8 +178,12 @@ Write-LoggedOperation {
         throw "RAM optimization failed: $($_.Exception.Message)"
     }
 } "Optimizing svchost split threshold based on system RAM"
+#endregion
 
-# === POWER SETTINGS ===
+#region Power Settings
+# ============================================================================
+# Power Management Configuration
+# ============================================================================
 Write-LoggedOperation {
     # Disable hibernation
     Write-Host "→ Disabling hibernation"
@@ -173,8 +203,12 @@ Write-LoggedOperation {
     Write-Host "→ Disabling monitor timeout (DC)"
     powercfg /change monitor-timeout-dc 0
 } "Configuring power settings for maximum performance"
+#endregion
 
-# === GAMING PRIORITY ===
+#region Gaming Priority
+# ============================================================================
+# Gaming Performance Settings
+# ============================================================================
 Write-LoggedOperation {
     # GPU Priority
     Write-Host "→ Setting GPU priority to 8 for gaming"
@@ -188,8 +222,12 @@ Write-LoggedOperation {
     Write-Host "→ Setting scheduling category to High for gaming tasks"
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Scheduling Category /t REG_SZ /d High /f
 } "Configuring gaming priority settings"
+#endregion
 
-# === POLICY HARDENING ===
+#region Policy Hardening
+# ============================================================================
+# System Policy Configuration
+# ============================================================================
 Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
 } "Disabling Windows Error Reporting"
@@ -201,8 +239,12 @@ Write-LoggedOperation {
 Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v NoPinningStoreToTaskbar /t REG_DWORD /d 1 /f
 } "Preventing Microsoft Store from being pinned to taskbar"
+#endregion
 
-# === START MENU & FEEDS ===
+#region Start Menu & Feeds
+# ============================================================================
+# Start Menu and Taskbar Configuration
+# ============================================================================
 Write-LoggedOperation {
     # Clear Start menu pinned tiles
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins /t REG_SZ /d '{ "pinnedList": [] }' /f
@@ -213,14 +255,23 @@ Write-LoggedOperation {
 Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v EnableFeeds /t REG_DWORD /d 0 /f
 } "Disabling News and Interests from taskbar"
+#endregion
 
-# === FIREWALL ALLOW ICMP ===
+#region Firewall
+# ============================================================================
+# Firewall Configuration
+# ============================================================================
 Write-LoggedOperation {
     New-NetFirewallRule -DisplayName 'ICMPv4' -Profile Any -Protocol ICMPv4
     New-NetFirewallRule -DisplayName 'ICMPv6' -Profile Any -Protocol ICMPv6
 } "Allowing ICMP ping (v4 + v6) through the firewall"
+#endregion
 
-# === WRAP UP ===
+#region Wrap Up
+# ============================================================================
+# Script Completion
+# ============================================================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
+#endregion

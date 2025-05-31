@@ -1,23 +1,34 @@
-# === LOGGING ===
+# ============================================================================
+# Windows Debloat - SysPrep Debloater Script
+# ============================================================================
+# Purpose: Removes bloatware and unnecessary components from Windows
+#          during the SysPrep phase.
+# ============================================================================
+
+#region Logging Setup
+# ============================================================================
+# Initialize logging with timestamp
+# ============================================================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+if (-not (Test-Path $logDir)) { 
+    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
+}
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "02_SysPrep_Debloater_$timestamp.log") -Append -Force
 $start = Get-Date
 
 <#
 .TITLE
-    Script 02 – Sysprep Debloater & Cleanup
+    Script 02 – Sysprep Debloater
 
 .SYNOPSIS
-    Post-setup script to clean Windows from unnecessary preinstalled software, apps, and features.
+    Removes bloatware and unnecessary components from Windows during the SysPrep phase.
 
 .DESCRIPTION
-    - Strips common PUWs (Provisioned Windows Apps)
-    - Removes optional Windows features
-    - Fully uninstalls Microsoft Teams
-    - Blocks Dev Home and New Outlook auto-installation
-    - Removes OneDrive using asheroto's PowerShell script
+    - Removes Windows Store apps
+    - Disables unnecessary services
+    - Removes scheduled tasks
+    - Cleans up temporary files
 
 .NOTES
     ✅ Internet access is required for online components (OneDrive removal)
@@ -27,8 +38,12 @@ $start = Get-Date
 .LINK
     https://github.com/asheroto/UninstallOneDrive
 #>
+#endregion
 
-# === UTILITY: Safe Execution Wrapper ===
+#region Helper Functions
+# ============================================================================
+# Utility Functions
+# ============================================================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -42,11 +57,15 @@ function Write-LoggedOperation {
         Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
+#endregion
 
-# === REMOVE BLOATWARE (PUWs) ===
+#region App Removal
+# ============================================================================
+# Remove Windows Store Apps
+# ============================================================================
 Write-LoggedOperation {
     Write-Host "[DETAIL] Removing provisioned apps..."
-    $provisionedApps = @(
+    $appsToRemove = @(
         'Microsoft.Microsoft3DViewer'
         'Microsoft.BingSearch'
         'Microsoft.BingFinance'
@@ -98,58 +117,85 @@ Write-LoggedOperation {
         '*Netflix*'
     )
 
-    $packages = Get-AppxProvisionedPackage -Online
-    $total = $packages.Count
-    $current = 0
-
-    $packages | ForEach-Object {
-        $current++
-        $progress = [math]::Round(($current / $total) * 100, 2)
-        Write-Progress -Activity "Removing provisioned apps" -Status "$progress% Complete" -PercentComplete $progress
-
-        if ($provisionedApps -contains $_.DisplayName -or 
-            $provisionedApps | Where-Object { $_ -like "*" -and $_.DisplayName -like $_ }) {
-            try {
-                Remove-AppxProvisionedPackage -AllUsers -Online -PackageName $_.PackageName -ErrorAction Stop
-                Write-Host "[INFO] Removed: $($_.DisplayName)"
-            } catch {
-                Write-Host "[WARNING] Failed to remove $($_.DisplayName): $($_.Exception.Message)"
-            }
-        }
+    foreach ($app in $appsToRemove) {
+        Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -ErrorAction SilentlyContinue
     }
-} "Removing provisioned apps (PUWs)"
+} "Removing Windows Store apps"
+#endregion
 
-# === REMOVE OPTIONAL FEATURES ===
+#region Service Disabling
+# ============================================================================
+# Disable Unnecessary Services
+# ============================================================================
 Write-LoggedOperation {
-    Write-Host "[DETAIL] Uninstalling legacy and optional features..."
-    $optionalFeatures = @(
-        'MathRecognizer'
-        'OpenSSH.Client'
-        'App.StepsRecorder'
-        'Microsoft.Windows.WordPad'
+    $servicesToDisable = @(
+        "DiagTrack"
+        "dmwappushservice"
+        "HomeGroupListener"
+        "HomeGroupProvider"
+        "lfsvc"
+        "MapsBroker"
+        "NetTcpPortSharing"
+        "RemoteAccess"
+        "RemoteRegistry"
+        "SharedAccess"
+        "TrkWks"
+        "WbioSrvc"
+        "WMPNetworkSvc"
+        "WwanSvc"
     )
 
-    $capabilities = Get-WindowsCapability -Online
-    $total = $capabilities.Count
-    $current = 0
-
-    $capabilities | ForEach-Object {
-        $current++
-        $progress = [math]::Round(($current / $total) * 100, 2)
-        Write-Progress -Activity "Removing optional features" -Status "$progress% Complete" -PercentComplete $progress
-
-        if (($_.Name -split '~')[0] -in $optionalFeatures) {
-            try {
-                Remove-WindowsCapability -Online -Name $_.Name -ErrorAction Stop
-                Write-Host "[INFO] Removed: $($_.Name)"
-            } catch {
-                Write-Host "[WARNING] Failed to remove $($_.Name): $($_.Exception.Message)"
-            }
-        }
+    foreach ($service in $servicesToDisable) {
+        Stop-Service -Name $service -Force -ErrorAction SilentlyContinue
+        Set-Service -Name $service -StartupType Disabled -ErrorAction SilentlyContinue
     }
-} "Removing optional Windows features"
+} "Disabling unnecessary services"
+#endregion
 
-# === WRAP UP ===
+#region Task Removal
+# ============================================================================
+# Remove Scheduled Tasks
+# ============================================================================
+Write-LoggedOperation {
+    $tasksToRemove = @(
+        "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
+        "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
+        "\Microsoft\Windows\Application Experience\StartupAppTask"
+        "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
+        "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
+        "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
+    )
+
+    foreach ($task in $tasksToRemove) {
+        Unregister-ScheduledTask -TaskName $task -Confirm:$false -ErrorAction SilentlyContinue
+    }
+} "Removing scheduled tasks"
+#endregion
+
+#region Cleanup
+# ============================================================================
+# Cleanup Temporary Files
+# ============================================================================
+Write-LoggedOperation {
+    # Clear Windows Update Cache
+    Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
+    Remove-Item "$env:windir\SoftwareDistribution\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Start-Service -Name wuauserv -ErrorAction SilentlyContinue
+
+    # Clear Temporary Files
+    Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$env:windir\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+    # Clear Windows Error Reports
+    Remove-Item "$env:ProgramData\Microsoft\Windows\WER\*" -Recurse -Force -ErrorAction SilentlyContinue
+} "Cleaning up temporary files"
+#endregion
+
+#region Wrap Up
+# ============================================================================
+# Script Completion
+# ============================================================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
+#endregion

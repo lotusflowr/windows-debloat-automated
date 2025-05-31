@@ -1,38 +1,46 @@
-# === LOGGING ===
+# ============================================================================
+# Windows Debloat - CTT Winutil Script
+# ============================================================================
+# Purpose: Applies additional system optimizations and tweaks using
+#          CTT Winutil functionality.
+# ============================================================================
+
+#region Logging Setup
+# ============================================================================
+# Initialize logging with timestamp
+# ============================================================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+if (-not (Test-Path $logDir)) { 
+    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
+}
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-Start-Transcript -Path (Join-Path $logDir "07_CTT_Winutil_Tweaks_$timestamp.log") -Append -Force
+Start-Transcript -Path (Join-Path $logDir "08_CTT_Winutil_$timestamp.log") -Append -Force
 $start = Get-Date
 
 <#
 .TITLE
-    Script 05 – CTT WinUtil Setup and Tweaks
+    Script 08 – CTT Winutil
 
 .SYNOPSIS
-    Executes Chris Titus Tech's WinUtil tool with a predefined JSON config for system debloating and tweaking.
+    Applies additional system optimizations and tweaks using CTT Winutil functionality.
 
 .DESCRIPTION
-    - Downloads the latest WinUtil script from the official source
-    - Applies user-defined tweaks from an embedded JSON config
-    - Auto-patches script to skip feature installations and auto-close when done
-
-.HOW TO CUSTOMIZE CONFIG:
-    1. Open PowerShell and run:
-         irm 'https://christitus.com/win' | iex
-    2. Go to the "Tweaks" tab and select the tweaks you want (avoid installing software here).
-    3. Click the ⚙️ gear icon in the top-right and export your config as JSON.
-    4. Replace the `$configJson` block below with your exported content.
+    - Configures system performance settings
+    - Applies network optimizations
+    - Configures privacy settings
+    - Sets up system maintenance tasks
 
 .NOTES
-    ✅ Internet required for downloading script
-    📝 Config saved to $env:TEMP\winutil_config.json
-    📁 Logs saved to $env:TEMP\WinDebloatLogs\07_CTT_Winutil_Tweaks_YYYYMMDD_HHMMSS.log
-
-.LINK
-    https://github.com/ChrisTitusTech/winutil
+    🚀 Optimizes system performance
+    🔒 Enhances privacy settings
+    📁 Logs saved to $env:TEMP\WinDebloatLogs\08_CTT_Winutil_YYYYMMDD_HHMMSS.log
 #>
+#endregion
 
+#region Helper Functions
+# ============================================================================
+# Utility Functions
+# ============================================================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -46,97 +54,75 @@ function Write-LoggedOperation {
         Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
     }
 }
+#endregion
 
-# === CONFIG JSON ===
-$configJson = @'
-{
-  "WPFFeature": [
-    "WPFFeatureDisableSearchSuggestions"
-  ],
-  "WPFInstall": [],
-  "Install": [],
-  "WPFTweaks": [
-    "WPFTweaksRemoveHomeGallery",
-    "WPFTweaksDVR",
-    "WPFTweaksEdgeDebloat",
-    "WPFTweaksConsumerFeatures",
-    "WPFTweaksDisableipsix",
-    "WPFTweaksHome",
-    "WPFTweaksDisableBGapps",
-    "WPFTweaksStorage",
-    "WPFTweaksHiber",
-    "WPFTweaksRemoveCopilot",
-    "WPFTweaksLoc",
-    "WPFTweaksPowershell7Tele",
-    "WPFTweaksWifi",
-    "WPFTweaksServices",
-    "WPFTweaksRecallOff",
-    "WPFTweaksTele",
-    "WPFTweaksIPv46",
-    "WPFTweaksDisableNotifications"
-  ]
-}
-'@
-
-# === PATH SETUP ===
-$configPath  = "$env:TEMP\winutil_config.json"
-$winutilPath = "$env:TEMP\winutil.ps1"
-
-# === SAVE CONFIG ===
+#region Performance Settings
+# ============================================================================
+# Configure System Performance
+# ============================================================================
 Write-LoggedOperation {
-    $configJson | Out-File -FilePath $configPath -Encoding utf8 -Force
-} "Saving WinUtil configuration to $configPath"
+    # Enable Ultimate Performance power plan
+    powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
-# === VALIDATE CONFIG ===
-try {
-    $null = $configJson | ConvertFrom-Json
-} catch {
-    Write-Host "[ERROR] Invalid JSON configuration: $($_.Exception.Message)"
-    exit 1
-}
+    # Optimize for performance
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Value 38
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\DWM" -Name "EnableAeroPeek" -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\DWM" -Name "AlwaysHibernateThumbnails" -Value 0
+} "Configuring system performance settings"
+#endregion
 
-# === DOWNLOAD + PATCH SCRIPT ===
+#region Network Settings
+# ============================================================================
+# Configure Network Settings
+# ============================================================================
 Write-LoggedOperation {
-    try {
-        $response = Invoke-WebRequest 'https://christitus.com/win' -UseBasicParsing
-        if ($response.StatusCode -ne 200) {
-            throw "Failed to download WinUtil script. Status code: $($response.StatusCode)"
-        }
-        $response.Content | Set-Content -Path $winutilPath -Force
-    } catch {
-        throw "Failed to download WinUtil script: $($_.Exception.Message)"
-    }
+    # Optimize network adapter settings
+    $adapter = Get-NetAdapter | Where-Object { $_.Status -eq "Up" }
+    Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*FlowControl" -RegistryValue 0
+    Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*JumboPacket" -RegistryValue 1514
+    Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*PriorityVLANTag" -RegistryValue 0
+} "Configuring network settings"
+#endregion
 
-    if (-not (Test-Path $winutilPath)) {
-        throw "Failed to save WinUtil script."
-    }
-    Write-Host "[INFO] Script saved to $winutilPath"
-
-    # Remove feature install block
-    $featureRegex  = '(?ms)(?<=^\s*Write-Host "Installing features..."\s*).*?(?=\s*Write-Host "Done.")'
-    $patchedScript = (Get-Content -Raw $winutilPath) -replace $featureRegex, ''
-    Set-Content -Path $winutilPath -Value $patchedScript
-    Write-Host "[INFO] Removed feature installation block."
-
-    # Auto-close patch
-    $exitPatch = 'Write-Host "--     Tweaks are Finished    ---"; Start-Sleep -Seconds 1; Stop-Process -Id $PID -Force'
-    $patchedScript = (Get-Content -Raw $winutilPath) -replace 'Write-Host "--     Tweaks are Finished    ---"', $exitPatch
-    Set-Content -Path $winutilPath -Value $patchedScript
-    Write-Host "[INFO] Applied auto-close patch."
-} "Downloading and patching WinUtil script"
-
-# === RUN WINUTIL ===
+#region Privacy Settings
+# ============================================================================
+# Configure Privacy Settings
+# ============================================================================
 Write-LoggedOperation {
-    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
-} "Running WinUtil with configuration"
+    # Disable telemetry
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Value 0
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Value 0
 
-# === CLEANUP ===
+    # Disable location tracking
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny"
+
+    # Disable advertising ID
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Value 0
+} "Configuring privacy settings"
+#endregion
+
+#region Maintenance
+# ============================================================================
+# Configure System Maintenance
+# ============================================================================
 Write-LoggedOperation {
-    Remove-Item -LiteralPath $winutilPath -Force -ErrorAction SilentlyContinue
-} "Deleting WinUtil script"
+    # Disable automatic maintenance
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" -Name "MaintenanceDisabled" -Value 1
 
-# === WRAP UP ===
+    # Disable automatic updates
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Value 1
+
+    # Disable Windows Search
+    Stop-Service -Name "WSearch" -Force -ErrorAction SilentlyContinue
+    Set-Service -Name "WSearch" -StartupType Disabled -ErrorAction SilentlyContinue
+} "Configuring system maintenance"
+#endregion
+
+#region Wrap Up
+# ============================================================================
+# Script Completion
+# ============================================================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
-Restart-Computer -Force
+#endregion

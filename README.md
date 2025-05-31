@@ -95,8 +95,9 @@ More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/w
 ## ⚠️ Disclaimers
 
 - Always test this suite in a virtual machine (VM) or disposable environment before deploying it to production or real hardware.
+- ⚠️ : UserSetup.ps1 includes Windows activation via TSForge - review and remove if not suitable for your environment.
 - These scripts apply deep system-level changes and may behave differently depending on your Windows version, edition, or configuration. Make sure to create backups before attempting any changes.
 - Internet connectivity is required for several features. However, you can definitely adapt them to make them run offline.
-- Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.  
+- Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.
 
 > Feedback and forks welcome — this is an evolving deployment suite.
