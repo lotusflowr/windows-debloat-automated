@@ -175,7 +175,6 @@ Write-LoggedOperation {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = "$env:TEMP\Optimizer.exe"
     $psi.Arguments = "/config=$configPath"
-    $psi.RedirectStandardInput  = $true
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError  = $true
     $psi.UseShellExecute = $false
@@ -185,7 +184,6 @@ Write-LoggedOperation {
     $proc.StartInfo = $psi
     $null = $proc.Start()
 
-    $stdin  = $proc.StandardInput
     $stdout = $proc.StandardOutput
     $stderr = $proc.StandardError
 
