@@ -1,14 +1,14 @@
-# ============================================================================
+# ======================================================================
 # Windows Debloat - UI Tweaks Script
-# ============================================================================
+# ======================================================================
 # Purpose: Applies Explorer and taskbar behavior tweaks and disables various
 #          telemetry and ad-related settings via the registry.
-# ============================================================================
+# ======================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -39,9 +39,9 @@ $start = Get-Date
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -58,9 +58,9 @@ function Write-LoggedOperation {
 #endregion
 
 #region Explorer & UI Tweaks
-# ============================================================================
+# ===================================
 # File Explorer and Taskbar Configuration
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Taskbar and Widgets
     Write-Host "→ Removing Widgets"
@@ -89,18 +89,18 @@ Write-LoggedOperation {
 #endregion
 
 #region Desktop Cleanup
-# ============================================================================
+# ===================================
 # Remove Unwanted Desktop Items
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
 } "Removing Microsoft Edge shortcut from Desktop"
 #endregion
 
 #region Taskbar Icons & News
-# ============================================================================
+# ===================================
 # Configure Taskbar Features and News
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # News and Interests Panel
     Write-Host "→ Disabling News and Interests panel"
@@ -117,9 +117,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Privacy & Telemetry
-# ============================================================================
+# ===================================
 # Privacy and Telemetry Settings
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Language and Personalization
     Write-Host "→ Disabling language list sharing with websites"
@@ -148,9 +148,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Telemetry & Customer Experience
-# ============================================================================
+# ===================================
 # Customer Experience and Telemetry Settings
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Disable Customer Experience Improvement Program
     Write-Host "→ Disabling Customer Experience Improvement Program"
@@ -175,9 +175,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

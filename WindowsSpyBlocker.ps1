@@ -1,14 +1,14 @@
-# ============================================================================
+# ======================================================================
 # Windows Debloat - WindowsSpyBlocker Automation Script
-# ============================================================================
+# ======================================================================
 # Purpose: Silently installs and runs the latest WindowsSpyBlocker to apply
 #          telemetry blocking rules, then cleans up.
-# ============================================================================
+# ======================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -41,9 +41,9 @@ $start = Get-Date
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -60,9 +60,9 @@ function Write-LoggedOperation {
 #endregion
 
 #region Download
-# ============================================================================
+# ===================================
 # Download WindowsSpyBlocker
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $release = Invoke-RestMethod "https://api.github.com/repos/crazy-max/WindowsSpyBlocker/releases/latest" -Headers @{ "User-Agent" = "PS" }
     $exeUrl = ($release.assets | Where-Object name -like "*.exe").browser_download_url
@@ -71,9 +71,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Execution
-# ============================================================================
+# ===================================
 # Run WindowsSpyBlocker
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = "$env:TEMP\WindowsSpyBlocker.exe"
@@ -121,9 +121,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Cleanup
-# ============================================================================
+# ===================================
 # Cleanup Temporary Files
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $pathsToDelete = @(
         "$env:TEMP\libs",
@@ -141,9 +141,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

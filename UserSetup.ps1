@@ -1,18 +1,18 @@
-# ============================================================================
+# ======================================================================
 # Windows Debloat - User Setup Script
-# ============================================================================
+# ======================================================================
 # Purpose: Configures keyboard layout, sets default wallpaper, removes clutter,
 #          adds helpful shortcuts, and activates Windows automatically.
-# ============================================================================
+# ======================================================================
 # ⚠️ WARNING: This script includes Windows activation via TSForge.
 #             This may not be suitable for business environments.
 #             Review and remove the Windows Activation section if needed.
-# ============================================================================
+# ======================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -48,9 +48,9 @@ $start = Get-Date
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -67,9 +67,9 @@ function Write-LoggedOperation {
 #endregion
 
 #region Keyboard Layout
-# ============================================================================
+# ===================================
 # Configure Keyboard Layout
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # To customize: Run Get-WinUserLanguageList to view input/language codes
     # Replace 'en-CA' and '1009:00011009' with your own layout if desired
@@ -81,9 +81,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wallpaper
-# ============================================================================
+# ===================================
 # Set Default Wallpaper
-# ============================================================================
+# ===================================
 $W10_Wallpaper = "C:\Windows\Web\Wallpaper\Theme1\img4.jpg"
 $W11_Wallpaper = "C:\Windows\Web\Wallpaper\ThemeA\img20.jpg"
 
@@ -107,9 +107,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Shortcut Management
-# ============================================================================
+# ===================================
 # Manage Desktop Shortcuts
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
 } "Removing Microsoft Edge shortcut from Desktop"
@@ -125,9 +125,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Startup Apps
-# ============================================================================
+# ===================================
 # Configure Startup Applications
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     Write-Host "→ Removing SecurityHealth Notification startup"
     reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v SecurityHealth /f
@@ -146,18 +146,18 @@ Write-LoggedOperation {
 #endregion
 
 #region Tools
-# ============================================================================
+# ===================================
 # Download and Setup Tools
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     curl.exe -L -s https://live.sysinternals.com/Autologon.exe -o "$env:USERPROFILE\Desktop\Autologon.exe"
 } "Downloading Sysinternals Autologon to Desktop"
 #endregion
 
 #region Windows Activation
-# ============================================================================
+# ===================================
 # Activate Windows
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     Write-Host "[DETAIL] Downloading and running TSForge activation script..."
     $tsPath = "$env:TEMP\TSforge_Activation.cmd"
@@ -168,9 +168,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 Write-Host "→ Restarting Explorer to apply changes"
 taskkill /f /im explorer.exe | Out-Null
 Start-Process explorer.exe

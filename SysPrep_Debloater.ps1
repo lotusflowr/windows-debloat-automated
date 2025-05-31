@@ -1,14 +1,14 @@
-# ============================================================================
+# ======================================================================
 # Windows Debloat - SysPrep Debloater Script
-# ============================================================================
+# ======================================================================
 # Purpose: Removes bloatware and unnecessary components from Windows
 #          during the SysPrep phase.
-# ============================================================================
+# ======================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -41,9 +41,9 @@ $start = Get-Date
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -60,9 +60,9 @@ function Write-LoggedOperation {
 #endregion
 
 #region App Removal
-# ============================================================================
+# ===================================
 # Remove Windows Store Apps
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     Write-Host "[DETAIL] Removing provisioned apps..."
     $appsToRemove = @(
@@ -124,9 +124,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Service Disabling
-# ============================================================================
+# ===================================
 # Disable Unnecessary Services
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $servicesToDisable = @(
         "DiagTrack"
@@ -153,9 +153,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Task Removal
-# ============================================================================
+# ===================================
 # Remove Scheduled Tasks
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $tasksToRemove = @(
         "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
@@ -173,9 +173,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Cleanup
-# ============================================================================
+# ===================================
 # Cleanup Temporary Files
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Clear Windows Update Cache
     Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
@@ -192,9 +192,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

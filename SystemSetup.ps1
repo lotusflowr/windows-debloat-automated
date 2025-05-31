@@ -1,14 +1,14 @@
-# ============================================================================
+# ===================================================================================
 # Windows Debloat - System Setup Script
-# ============================================================================
+# ===================================================================================
 # Purpose: Applies deep system tweaks focused on performance, telemetry reduction,
 #          power tuning, and gaming responsiveness. Designed to run in SYSTEM context.
-# ============================================================================
+# ===================================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -41,9 +41,9 @@ $start = Get-Date
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -60,18 +60,18 @@ function Write-LoggedOperation {
 #endregion
 
 #region Windows Update
-# ============================================================================
+# ===================================
 # Windows Update Configuration
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v SearchOrderConfig /t REG_DWORD /d 1 /f
 } "Setting Windows Update to prioritize driver searches"
 #endregion
 
 #region Scheduled Tasks
-# ============================================================================
+# ===================================
 # Telemetry Task Management
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $tasks = @(
         "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser",
@@ -143,9 +143,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Power & Performance
-# ============================================================================
+# ===================================
 # Power Plan and Performance Settings
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     try {
         # Duplicate and activate Ultimate Performance power plan
@@ -181,9 +181,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Power Settings
-# ============================================================================
+# ===================================
 # Power Management Configuration
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Disable hibernation
     Write-Host "→ Disabling hibernation"
@@ -206,9 +206,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Gaming Priority
-# ============================================================================
+# ===================================
 # Gaming Performance Settings
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # GPU Priority
     Write-Host "→ Setting GPU priority to 8 for gaming"
@@ -225,9 +225,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Policy Hardening
-# ============================================================================
+# ===================================
 # System Policy Configuration
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
 } "Disabling Windows Error Reporting"
@@ -242,9 +242,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Start Menu & Feeds
-# ============================================================================
+# ===================================
 # Start Menu and Taskbar Configuration
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Clear Start menu pinned tiles
     reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\Current\Device\Start" /v ConfigureStartPins /t REG_SZ /d '{ "pinnedList": [] }' /f
@@ -258,9 +258,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Firewall
-# ============================================================================
+# ===================================
 # Firewall Configuration
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     New-NetFirewallRule -DisplayName 'ICMPv4' -Profile Any -Protocol ICMPv4
     New-NetFirewallRule -DisplayName 'ICMPv6' -Profile Any -Protocol ICMPv6
@@ -268,9 +268,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

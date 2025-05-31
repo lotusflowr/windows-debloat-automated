@@ -1,14 +1,14 @@
-# ============================================================================
+# ======================================================================
 # Windows Debloat - Windows Optimizer Script
-# ============================================================================
+# ======================================================================
 # Purpose: Downloads and runs the latest Optimizer.exe with predefined
 #          configurations for system optimization.
-# ============================================================================
+# ======================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -40,9 +40,9 @@ $start = Get-Date
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -59,9 +59,9 @@ function Write-LoggedOperation {
 #endregion
 
 #region Configuration
-# ============================================================================
+# ===================================
 # Optimization Configuration
-# ============================================================================
+# ===================================
 $configJson = @'
 {
     "WindowsVersion": "__OSVERSION__",
@@ -152,9 +152,9 @@ try {
 #endregion
 
 #region Download
-# ============================================================================
+# ===================================
 # Download Optimizer
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     $release = Invoke-RestMethod "https://api.github.com/repos/hellzerg/optimizer/releases/latest" -Headers @{ "User-Agent" = "PS" }
     $exeUrl = ($release.assets | Where-Object name -like "*.exe").browser_download_url
@@ -163,9 +163,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Execution
-# ============================================================================
+# ===================================
 # Run Optimizer
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     # Save config to file
     $configPath = "$env:TEMP\optimizer_config.json"
@@ -208,9 +208,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Cleanup
-# ============================================================================
+# ===================================
 # Cleanup Temporary Files
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     Remove-Item "$env:TEMP\Optimizer.exe" -Force -ErrorAction SilentlyContinue
     Remove-Item "$env:TEMP\optimizer_config.json" -Force -ErrorAction SilentlyContinue
@@ -218,9 +218,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

@@ -1,14 +1,14 @@
-# ============================================================================
+# ======================================================================
 # Windows Debloat - Winget Application Installation Script
-# ============================================================================
+# ======================================================================
 # Purpose: Installs Winget if not present, ensures required dependencies, and
 #          installs a set of applications. Optionally removes desktop shortcuts.
-# ============================================================================
+# ======================================================================
 
 #region Logging Setup
-# ============================================================================
+# ===================================
 # Initialize logging with timestamp
-# ============================================================================
+# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { 
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
@@ -45,9 +45,9 @@ $start = Get-Date
 #endregion
 
 #region Configuration
-# ============================================================================
+# ===================================
 # Script Configuration Settings
-# ============================================================================
+# ===================================
 # Remove .lnk shortcuts after installing?
 $RemoveShortcuts = $true
 
@@ -64,9 +64,9 @@ $shortcutFragments = $appList | ForEach-Object { ($_ -split '\.')[1] } | Where-O
 #endregion
 
 #region Helper Functions
-# ============================================================================
+# ===================================
 # Utility Functions
-# ============================================================================
+# ===================================
 function Write-LoggedOperation {
     param (
         [scriptblock]$Block,
@@ -108,9 +108,9 @@ function Remove-Shortcut {
 #endregion
 
 #region Path Setup
-# ============================================================================
+# ===================================
 # Installer Paths and URLs
-# ============================================================================
+# ===================================
 $VCLibs       = "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx"
 $UIXaml       = "$env:TEMP\Microsoft.UI.Xaml.2.8.x64.appx"
 $winget       = "$env:TEMP\winget.msixbundle"
@@ -121,9 +121,9 @@ $wingetUrl    = "https://api.github.com/repos/microsoft/winget-cli/releases/late
 #endregion
 
 #region Dependencies
-# ============================================================================
+# ===================================
 # Install Required Dependencies
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     & curl.exe -L -o $VCLibs $VCLibsUrl
     Add-AppxPackage -Path $VCLibs
@@ -136,9 +136,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Winget Installation
-# ============================================================================
+# ===================================
 # Install Windows Package Manager
-# ============================================================================
+# ===================================
 Write-LoggedOperation {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $bundle = (Invoke-RestMethod $wingetUrl).assets | Where-Object { $_.name -like "*.msixbundle" } | Select-Object -First 1
@@ -153,9 +153,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Winget Verification
-# ============================================================================
+# ===================================
 # Verify Winget Installation
-# ============================================================================
+# ===================================
 Set-Variable -Name wingetAvailable -Value $false -Scope Script
 Write-LoggedOperation {
     winget --version | Out-Null
@@ -164,9 +164,9 @@ Write-LoggedOperation {
 #endregion
 
 #region Application Installation
-# ============================================================================
+# ===================================
 # Install Applications and Cleanup
-# ============================================================================
+# ===================================
 if ($wingetAvailable) {
     # Cleanup temporary files
     Write-LoggedOperation {
@@ -194,9 +194,9 @@ if ($wingetAvailable) {
 #endregion
 
 #region Wrap Up
-# ============================================================================
+# ===================================
 # Script Completion
-# ============================================================================
+# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
