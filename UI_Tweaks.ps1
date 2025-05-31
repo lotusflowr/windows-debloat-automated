@@ -49,7 +49,6 @@ Write-LoggedOperation {
 
     Write-Host "→ Setting Alt+Tab to show only open windows"
     reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v MultiTaskingAltTabFilter /t REG_DWORD /d 3 /f
-    reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v AltTabSettings /t REG_DWORD /d 1 /f
 
     Write-Host "→ Disabling Snap Assist Flyout"
     reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v SnapAssist /t REG_DWORD /d 0 /f
