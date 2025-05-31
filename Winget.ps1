@@ -22,7 +22,7 @@ $start = Get-Date
 .NOTES
     ✅ Internet connection required
     🧪 Customize `$appList` for your software stack
-    📁 Logs actions to $env:TEMP\03_Winget_Apps.log
+    📁 Logs actions to $env:TEMP\WinDebloatLogs\03_Winget_Apps_YYYYMMDD_HHMMSS.log
 
 .LINK
     https://learn.microsoft.com/en-us/windows/package-manager/

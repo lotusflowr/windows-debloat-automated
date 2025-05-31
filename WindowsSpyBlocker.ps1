@@ -21,7 +21,7 @@ $start = Get-Date
 .NOTES
     ✅ Internet required for downloading executable
     🧼 Only firewall rules remain after cleanup
-    📁 Logs saved to $env:TEMP\06_WindowsSpyBlocker.log
+    📁 Logs saved to $env:TEMP\WinDebloatLogs\06_WindowsSpyBlocker_YYYYMMDD_HHMMSS.log
 
 .LINK
     https://github.com/crazy-max/WindowsSpyBlocker

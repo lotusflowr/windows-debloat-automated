@@ -22,7 +22,7 @@ $start = Get-Date
 
 .NOTES
     ✅ Internet required for TSForge activation and Autologon download
-    📁 Logs actions to $env:TEMP\04_UserSetup.log
+    📁 Logs actions to $env:TEMP\WinDebloatLogs\04_UserSetup_YYYYMMDD_HHMMSS.log
     🛠️ Use `Get-WinUserLanguageList` to discover language/input codes
 
 .LINK

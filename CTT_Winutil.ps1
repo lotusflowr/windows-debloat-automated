@@ -27,7 +27,7 @@ $start = Get-Date
 .NOTES
     ✅ Internet required for downloading script
     📝 Config saved to $env:TEMP\winutil_config.json
-    📁 Logs saved to $env:TEMP\07_CTT_Winutil_Tweaks.log
+    📁 Logs saved to $env:TEMP\WinDebloatLogs\07_CTT_Winutil_Tweaks_YYYYMMDD_HHMMSS.log
 
 .LINK
     https://github.com/ChrisTitusTech/winutil

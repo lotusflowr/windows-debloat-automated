@@ -22,7 +22,7 @@ $start = Get-Date
 
 .NOTES
     🌐 Internet required
-    📁 Logs saved to $env:TEMP\05_WindowsOptimizer.log
+    📁 Logs saved to $env:TEMP\WinDebloatLogs\05_WindowsOptimizer_YYYYMMDD_HHMMSS.log
 #>
 
 function Write-LoggedOperation {

@@ -22,7 +22,7 @@ $start = Get-Date
 .NOTES
     ✅ Internet access is required for online components (OneDrive removal)
     👤 Safe to run under a standard user context (FirstLogonCommands)
-    📁 Logs are saved to $env:TEMP\02_SysPrep_Debloater.log
+    📁 Logs are saved to $env:TEMP\WinDebloatLogs\02_SysPrep_Debloater_YYYYMMDD_HHMMSS.log
 
 .LINK
     https://github.com/asheroto/UninstallOneDrive
