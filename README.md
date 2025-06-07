@@ -20,7 +20,7 @@ All scripts are compatible with tools like [schneegans.de](https://schneegans.de
 | `UI_Tweaks.ps1`          | User interface optimization | • Removes Widgets and Meet Now<br>• Configures File Explorer behavior<br>• Disables News and Interests<br>• Hardens privacy settings<br>• Removes Edge desktop shortcut<br>• Disables telemetry and feedback |
 | `SysPrep_Debloater.ps1`  | App and feature removal | • Removes provisioned apps (PUWs)<br>• Uninstalls optional features<br>• Progress tracking for removals<br>• Error handling for failed removals<br>• Safe for Sysprep/FirstLogon |
 | `Winget_Apps.ps1`        | Package management | • Auto-installs winget and dependencies<br>• Installs curated app list<br>• Handles shortcut cleanup<br>• Validates installations<br>• Progress tracking |
-| `UserSetup.ps1`          | User personalization | • Configures keyboard layout<br>• Sets wallpaper preferences<br>• Removes startup apps<br>• Creates network shortcuts<br>• Downloads system tools |
+| `UserSetup.ps1`          | User personalization | • Configures keyboard layout<br>• Sets wallpaper preferences<br>• Removes startup apps<br>• Creates network shortcuts<br>• Downloads system tools<br>• Activates Windows via [TSForge](https://massgrave.dev/tsforge) |
 | `WindowsOptimizer.ps1`   | System optimization | • Downloads and runs [Optimizer](https://github.com/hellzerg/optimizer)<br>• Applies dynamic config based on OS<br>• Validates downloads<br>• Implements execution timeout<br>• Cleans up temporary files |
 | `WindowsSpyBlocker.ps1`  | Privacy protection | • Downloads [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker)<br>• Applies telemetry blocklists<br>• Configures firewall rules<br>• Cleans up installation files |
 | `CTT_Winutil.ps1`        | Additional tweaks | • Downloads patched [WinUtil](https://christitus.com/win)<br>• Applies system tweaks only<br>• Validates JSON config<br>• Handles download errors<br>• Cleans up after execution |
@@ -95,7 +95,7 @@ More info in the [Wiki/Autounattend-Integration](https://github.com/lotusflowr/w
 ## ⚠️ Disclaimers
 
 - Always test this suite in a virtual machine (VM) or disposable environment before deploying it to production or real hardware.
-- ⚠️ : UserSetup.ps1 includes Windows activation via TSForge - review and remove if not suitable for your environment.
+- ⚠️ : UserSetup.ps1 includes Windows activation via [TSForge](https://massgrave.dev/tsforge) - review and remove if not suitable for your environment.
 - These scripts apply deep system-level changes and may behave differently depending on your Windows version, edition, or configuration. Make sure to create backups before attempting any changes.
 - Internet connectivity is required for several features. However, you can definitely adapt them to make them run offline.
 - Most inline comments in the scripts and this wiki were generated using ChatGPT and may be incomplete or slightly inaccurate.
