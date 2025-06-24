@@ -1,67 +1,20 @@
-# ======================================================================
 # Windows Debloat - Windows Optimizer Script
-# ======================================================================
-# Purpose: Downloads and runs the latest Optimizer.exe with predefined
-#          configurations for system optimization.
-# ======================================================================
+# Downloads and runs the latest Optimizer.exe with predefined configurations
 
-#region Logging Setup
-# ===================================
-# Initialize logging with timestamp
-# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { 
-    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
-}
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "05_WindowsOptimizer_$timestamp.log") -Append -Force
 $start = Get-Date
 
-<#
-.TITLE
-    Script 05 – Windows Optimizer
-
-.SYNOPSIS
-    Downloads and runs the latest Optimizer.exe with predefined configurations.
-
-.DESCRIPTION
-    - Downloads the latest Optimizer.exe from GitHub
-    - Applies predefined optimization settings via JSON config
-    - Cleans up temporary files after completion
-
-.NOTES
-    ✅ Internet required for downloading executable
-    🧪 Uses predefined optimization settings
-    📁 Logs saved to $env:TEMP\WinDebloatLogs\05_WindowsOptimizer_YYYYMMDD_HHMMSS.log
-
-.LINK
-    https://github.com/hellzerg/optimizer
-#>
-#endregion
-
-#region Helper Functions
-# ===================================
-# Utility Functions
-# ===================================
 function Write-LoggedOperation {
-    param (
-        [scriptblock]$Block,
-        [string]$Description
-    )
+    param ([scriptblock]$Block, [string]$Description)
     Write-Host "`n[INFO] $Description"
-    try {
-        & $Block
-        Write-Host "[SUCCESS] $Description completed.`n"
-    } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
-    }
+    try { & $Block; Write-Host "[SUCCESS] $Description completed" } 
+    catch { Write-Host "[ERROR] $Description failed: $($_.Exception.Message)" }
 }
-#endregion
 
-#region Configuration
-# ===================================
-# Optimization Configuration
-# ===================================
+# Configuration
 $configJson = @'
 {
     "WindowsVersion": "__OSVERSION__",
@@ -149,23 +102,15 @@ try {
     Write-Host "[WARNING] Could not determine OS version, defaulting to Windows 10"
     $configJson = $configJson -replace '"WindowsVersion":\s*"__OSVERSION__"', '"WindowsVersion": "10"'
 }
-#endregion
 
-#region Download
-# ===================================
-# Download Optimizer
-# ===================================
+# Download
 Write-LoggedOperation {
     $release = Invoke-RestMethod "https://api.github.com/repos/hellzerg/optimizer/releases/latest" -Headers @{ "User-Agent" = "PS" }
     $exeUrl = ($release.assets | Where-Object name -like "*.exe").browser_download_url
     Invoke-WebRequest -Uri $exeUrl -OutFile "$env:TEMP\Optimizer.exe"
 } "Downloading Optimizer.exe"
-#endregion
 
-#region Execution
-# ===================================
-# Run Optimizer
-# ===================================
+# Execution
 Write-LoggedOperation {
     # Save config to file
     $configPath = "$env:TEMP\optimizer_config.json"
@@ -201,27 +146,15 @@ Write-LoggedOperation {
     }
 
     $errors = $stderr.ReadToEnd()
-    if ($errors) {
-        Write-Host "`n=== STDERR ===`n$errors"
-    }
-} "Running Optimizer with configuration"
-#endregion
+    if ($errors) { Write-Host "`n=== STDERR ===`n$errors" }
+} "Running Optimizer with config"
 
-#region Cleanup
-# ===================================
-# Cleanup Temporary Files
-# ===================================
+# Cleanup
 Write-LoggedOperation {
     Remove-Item "$env:TEMP\Optimizer.exe" -Force -ErrorAction SilentlyContinue
     Remove-Item "$env:TEMP\optimizer_config.json" -Force -ErrorAction SilentlyContinue
-} "Cleaning up Optimizer files"
-#endregion
+} "Cleaning up temporary files"
 
-#region Wrap Up
-# ===================================
-# Script Completion
-# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
-#endregion

@@ -1,66 +1,20 @@
-# ======================================================================
 # Windows Debloat - UI Tweaks Script
-# ======================================================================
-# Purpose: Applies Explorer and taskbar behavior tweaks and disables various
-#          telemetry and ad-related settings via the registry.
-# ======================================================================
+# Applies Explorer and taskbar behavior tweaks and privacy settings
 
-#region Logging Setup
-# ===================================
-# Initialize logging with timestamp
-# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { 
-    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
-}
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "01_UI_Tweaks_$timestamp.log") -Append -Force
 $start = Get-Date
 
-<#
-.TITLE
-    Script 01 – UI, Taskbar, and Privacy Tweaks
-
-.SYNOPSIS
-    Applies Explorer and taskbar behavior tweaks and disables various telemetry 
-    and ad-related settings via the registry.
-
-.DESCRIPTION
-    - Optimizes File Explorer and taskbar behavior
-    - Removes unwanted UI components (e.g. Widgets, Meet Now)
-    - Disables suggestions, feedback, and advertising telemetry
-    - Hardens privacy for first-logon or automated Windows deployments
-
-.NOTES
-    ✅ Safe to run repeatedly (idempotent registry writes)
-    🛠️ Intended for use during FirstLogon or SetupComplete
-    📁 Logs all actions to $env:TEMP\WinDebloatLogs\01_UI_Tweaks_YYYYMMDD_HHMMSS.log
-#>
-#endregion
-
-#region Helper Functions
-# ===================================
-# Utility Functions
-# ===================================
 function Write-LoggedOperation {
-    param (
-        [scriptblock]$Block,
-        [string]$Description
-    )
+    param ([scriptblock]$Block, [string]$Description)
     Write-Host "`n[INFO] $Description"
-    try {
-        & $Block
-        Write-Host "[SUCCESS] $Description completed.`n"
-    } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
-    }
+    try { & $Block; Write-Host "[SUCCESS] $Description completed" } 
+    catch { Write-Host "[ERROR] $Description failed: $($_.Exception.Message)" }
 }
-#endregion
 
-#region Explorer & UI Tweaks
-# ===================================
-# File Explorer and Taskbar Configuration
-# ===================================
+# Explorer & UI Tweaks
 Write-LoggedOperation {
     # Taskbar and Widgets
     Write-Host "→ Removing Widgets"
@@ -88,19 +42,12 @@ Write-LoggedOperation {
 } "Applying File Explorer and taskbar behavior tweaks"
 #endregion
 
-#region Desktop Cleanup
-# ===================================
-# Remove Unwanted Desktop Items
-# ===================================
+# Desktop cleanup
 Write-LoggedOperation {
     Remove-Item "$env:USERPROFILE\Desktop\Microsoft Edge.lnk" -Force -ErrorAction SilentlyContinue
 } "Removing Microsoft Edge shortcut from Desktop"
-#endregion
 
-#region Taskbar Icons & News
-# ===================================
-# Configure Taskbar Features and News
-# ===================================
+# Taskbar icons & news
 Write-LoggedOperation {
     # News and Interests Panel
     Write-Host "→ Disabling News and Interests panel"
@@ -114,12 +61,8 @@ Write-LoggedOperation {
     Write-Host "→ Hiding Meet Now button from taskbar"
     reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAMeetNow /t REG_DWORD /d 1 /f
 } "Disabling taskbar news, widgets, and chat icons"
-#endregion
 
-#region Privacy & Telemetry
-# ===================================
-# Privacy and Telemetry Settings
-# ===================================
+# Privacy & telemetry
 Write-LoggedOperation {
     # Language and Personalization
     Write-Host "→ Disabling language list sharing with websites"
@@ -172,13 +115,7 @@ Write-LoggedOperation {
     Write-Host "→ Disabling Application Telemetry"
     reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v DisableUAR /t REG_DWORD /d 1 /f
 } "Disabling telemetry and customer experience tasks"
-#endregion
 
-#region Wrap Up
-# ===================================
-# Script Completion
-# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
-#endregion

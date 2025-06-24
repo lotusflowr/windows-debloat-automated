@@ -1,79 +1,27 @@
-# ======================================================================
 # Windows Debloat - WindowsSpyBlocker Automation Script
-# ======================================================================
-# Purpose: Silently installs and runs the latest WindowsSpyBlocker to apply
-#          telemetry blocking rules, then cleans up.
-# ======================================================================
+# Silently installs and runs the latest WindowsSpyBlocker to apply telemetry blocking rules
 
-#region Logging Setup
-# ===================================
-# Initialize logging with timestamp
-# ===================================
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
-if (-not (Test-Path $logDir)) { 
-    New-Item -ItemType Directory -Path $logDir -Force | Out-Null 
-}
+if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "06_WindowsSpyBlocker_$timestamp.log") -Append -Force
 $start = Get-Date
 
-<#
-.TITLE
-    Script 06 – WindowsSpyBlocker Firewall Automation
-
-.SYNOPSIS
-    Silently installs and runs the latest WindowsSpyBlocker to apply telemetry blocking rules, then cleans up.
-
-.DESCRIPTION
-    - Downloads the latest WindowsSpyBlocker executable from GitHub
-    - Automatically runs the tool with input to apply "spy" firewall rules
-    - Streams output live to console and log to avoid missing buffered output
-    - Cleans up all leftover files except the transcript log
-
-.NOTES
-    ✅ Internet required for downloading executable
-    🧼 Only firewall rules remain after cleanup
-    📁 Logs saved to $env:TEMP\WinDebloatLogs\06_WindowsSpyBlocker_YYYYMMDD_HHMMSS.log
-
-.LINK
-    https://github.com/crazy-max/WindowsSpyBlocker
-#>
-#endregion
-
-#region Helper Functions
-# ===================================
-# Utility Functions
-# ===================================
 function Write-LoggedOperation {
-    param (
-        [scriptblock]$Block,
-        [string]$Description
-    )
+    param ([scriptblock]$Block, [string]$Description)
     Write-Host "`n[INFO] $Description"
-    try {
-        & $Block
-        Write-Host "[SUCCESS] $Description completed.`n"
-    } catch {
-        Write-Host "[ERROR] $Description failed: $($_.Exception.Message)`n"
-    }
+    try { & $Block; Write-Host "[SUCCESS] $Description completed" } 
+    catch { Write-Host "[ERROR] $Description failed: $($_.Exception.Message)" }
 }
-#endregion
 
-#region Download
-# ===================================
-# Download WindowsSpyBlocker
-# ===================================
+# Download
 Write-LoggedOperation {
     $release = Invoke-RestMethod "https://api.github.com/repos/crazy-max/WindowsSpyBlocker/releases/latest" -Headers @{ "User-Agent" = "PS" }
     $exeUrl = ($release.assets | Where-Object name -like "*.exe").browser_download_url
     Invoke-WebRequest -Uri $exeUrl -OutFile "$env:TEMP\WindowsSpyBlocker.exe"
 } "Downloading WindowsSpyBlocker.exe"
-#endregion
 
-#region Execution
-# ===================================
-# Run WindowsSpyBlocker
-# ===================================
+# Execution
 Write-LoggedOperation {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = "$env:TEMP\WindowsSpyBlocker.exe"
@@ -114,16 +62,10 @@ Write-LoggedOperation {
     }
 
     $errors = $stderr.ReadToEnd()
-    if ($errors) {
-        Write-Host "`n=== STDERR ===`n$errors"
-    }
+    if ($errors) { Write-Host "`n=== STDERR ===`n$errors" }
 } "Running WindowsSpyBlocker silently"
-#endregion
 
-#region Cleanup
-# ===================================
-# Cleanup Temporary Files
-# ===================================
+# Cleanup
 Write-LoggedOperation {
     $pathsToDelete = @(
         "$env:TEMP\libs",
@@ -138,13 +80,7 @@ Write-LoggedOperation {
         }
     }
 } "Cleaning up WindowsSpyBlocker files"
-#endregion
 
-#region Wrap Up
-# ===================================
-# Script Completion
-# ===================================
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript
-#endregion
