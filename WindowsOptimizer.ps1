@@ -60,7 +60,7 @@ $configJson = @'
         "DisableGameBar": true,
         "DisableWindowsInk": true,
         "DisableSpellingTyping": true,
-        "DisableCloudClipboard": true
+        "DisableCloudClipboard": false
     },
     "AdvancedTweaks": {
         "SvchostProcessSplitting": {
