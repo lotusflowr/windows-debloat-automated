@@ -1,6 +1,7 @@
 # Windows Debloat - System Setup Script
 # Applies system tweaks for performance, telemetry reduction, and gaming
 
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -136,6 +137,7 @@ Write-LoggedOperation {
 #    New-NetFirewallRule -DisplayName 'ICMPv6' -Profile Any -Protocol ICMPv6
 #} "Allowing ICMP ping"
 
+# Wrapup
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

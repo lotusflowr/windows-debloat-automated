@@ -1,6 +1,7 @@
 # Windows Debloat - Windows Optimizer Script
 # Downloads and runs the latest Optimizer.exe with predefined configurations
 
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -155,6 +156,7 @@ Write-LoggedOperation {
     Remove-Item "$env:TEMP\optimizer_config.json" -Force -ErrorAction SilentlyContinue
 } "Cleaning up temporary files"
 
+# Wrapup
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

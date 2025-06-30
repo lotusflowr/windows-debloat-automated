@@ -1,24 +1,12 @@
 # Windows Debloat - Winget Application Installation Script
 # Installs Winget if not present and installs a set of applications
 
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "03_Winget_Apps_$timestamp.log") -Append -Force
 $start = Get-Date
-
-# Configuration
-$RemoveShortcuts = $true
-$appList = @(
-    "EpicGames.EpicGamesLauncher"
-    "Valve.Steam"
-    "Discord.Discord"
-    "Spotify.Spotify"
-    "Zen-Team.Zen-Browser"
-    "Microsoft.WindowsTerminal"
-    "voidtools.Everything"
-)
-$shortcutFragments = $appList | ForEach-Object { ($_ -split '\.')[1] } | Where-Object { $_ }
 
 function Write-LoggedOperation {
     param (
@@ -29,6 +17,16 @@ function Write-LoggedOperation {
     try { & $Block; Write-Host "[SUCCESS] $Description completed" } 
     catch { Write-Host "[ERROR] $Description failed: $($_.Exception.Message)" }
 }
+
+# Configuration
+$RemoveShortcuts = $true
+$appList = @(
+    "Spotify.Spotify"
+    "Zen-Team.Zen-Browser"
+    "Microsoft.WindowsTerminal"
+    "voidtools.Everything"
+)
+$shortcutFragments = $appList | ForEach-Object { ($_ -split '\.')[1] } | Where-Object { $_ }
 
 function Remove-Shortcut {
     param (
@@ -116,6 +114,7 @@ if ($wingetAvailable) {
     Write-Host "`n[WARNING] winget is not available. Skipping app installations and cleanup."
 }
 
+# Wrapup
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

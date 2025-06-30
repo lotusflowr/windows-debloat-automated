@@ -1,37 +1,12 @@
-# === LOGGING ===
+# Windows Debloat - CTT WinUtil Setup and Tweaks
+# Executes Chris Titus Tech's WinUtil tool with a predefined JSON config for system debloating and tweaking
+
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 Start-Transcript -Path (Join-Path $logDir "07_CTT_Winutil_Tweaks_$timestamp.log") -Append -Force
 $start = Get-Date
-
-<#
-.TITLE
-    Script 05 – CTT WinUtil Setup and Tweaks
-
-.SYNOPSIS
-    Executes Chris Titus Tech's WinUtil tool with a predefined JSON config for system debloating and tweaking.
-
-.DESCRIPTION
-    - Downloads the latest WinUtil script from the official source
-    - Applies user-defined tweaks from an embedded JSON config
-    - Auto-patches script to skip feature installations and auto-close when done
-
-.HOW TO CUSTOMIZE CONFIG:
-    1. Open PowerShell and run:
-         irm 'https://christitus.com/win' | iex
-    2. Go to the "Tweaks" tab and select the tweaks you want (avoid installing software here).
-    3. Click the ⚙️ gear icon in the top-right and export your config as JSON.
-    4. Replace the `$configJson` block below with your exported content.
-
-.NOTES
-    ✅ Internet required for downloading script
-    📝 Config saved to $env:TEMP\winutil_config.json
-    📁 Logs saved to $env:TEMP\WinDebloatLogs\07_CTT_Winutil_Tweaks_YYYYMMDD_HHMMSS.log
-
-.LINK
-    https://github.com/ChrisTitusTech/winutil
-#>
 
 function Write-LoggedOperation {
     param (
@@ -47,7 +22,7 @@ function Write-LoggedOperation {
     }
 }
 
-# === CONFIG JSON ===
+# Configuration
 $configJson = @'
 {
   "WPFFeature": [
@@ -78,16 +53,16 @@ $configJson = @'
 }
 '@
 
-# === PATH SETUP ===
+# Path
 $configPath  = "$env:TEMP\winutil_config.json"
 $winutilPath = "$env:TEMP\winutil.ps1"
 
-# === SAVE CONFIG ===
+# Save config
 Write-LoggedOperation {
     $configJson | Out-File -FilePath $configPath -Encoding utf8 -Force
 } "Saving WinUtil configuration to $configPath"
 
-# === VALIDATE CONFIG ===
+# Validate config
 try {
     $null = $configJson | ConvertFrom-Json
 } catch {
@@ -95,7 +70,7 @@ try {
     exit 1
 }
 
-# === DOWNLOAD + PATCH SCRIPT ===
+# Download and patch script
 Write-LoggedOperation {
     try {
         $response = Invoke-WebRequest 'https://christitus.com/win' -UseBasicParsing
@@ -125,17 +100,17 @@ Write-LoggedOperation {
     Write-Host "[INFO] Applied auto-close patch."
 } "Downloading and patching WinUtil script"
 
-# === RUN WINUTIL ===
+# Run patched winutil
 Write-LoggedOperation {
     Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$winutilPath`" -Config `"$configPath`" -Run" -Wait
 } "Running WinUtil with configuration"
 
-# === CLEANUP ===
+# Cleanup
 Write-LoggedOperation {
     Remove-Item -LiteralPath $winutilPath -Force -ErrorAction SilentlyContinue
 } "Deleting WinUtil script"
 
-# === WRAP UP ===
+# Wrapup
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

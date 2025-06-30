@@ -1,6 +1,7 @@
 # Windows Debloat - WindowsSpyBlocker Automation Script
 # Silently installs and runs the latest WindowsSpyBlocker to apply telemetry blocking rules
 
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -81,6 +82,7 @@ Write-LoggedOperation {
     }
 } "Cleaning up WindowsSpyBlocker files"
 
+# Wrapup
 $runtime = (Get-Date) - $start
 Write-Host "`nCompleted in $([math]::Round($runtime.TotalSeconds, 2)) seconds."
 Stop-Transcript

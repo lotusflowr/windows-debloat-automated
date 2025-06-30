@@ -1,6 +1,7 @@
 # Windows Debloat - User Setup Script
 # Configures keyboard layout, wallpaper, shortcuts, and Windows activation
 
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -80,6 +81,7 @@ Write-LoggedOperation {
     Remove-Item $tsPath -Force -ErrorAction SilentlyContinue
 } "Running TSForge activation"
 
+# Wrapup
 Write-Host "→ Restarting Explorer to apply changes"
 taskkill /f /im explorer.exe | Out-Null
 Start-Process explorer.exe

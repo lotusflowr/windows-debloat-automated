@@ -1,6 +1,7 @@
 # Windows Debloat - SysPrep Debloater Script
 # Removes bloatware and unnecessary components from Windows
 
+# Logging
 $logDir = Join-Path $env:TEMP "WinDebloatLogs"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
