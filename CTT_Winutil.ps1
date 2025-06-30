@@ -93,11 +93,11 @@ Write-LoggedOperation {
     Set-Content -Path $winutilPath -Value $patchedScript
     Write-Host "[INFO] Removed feature installation block."
 
-    # Auto-close patch
+    # Auto-close winutil after tweaks are done
     $exitPatch = 'Write-Host "--     Tweaks are Finished    ---"; Start-Sleep -Seconds 1; Stop-Process -Id $PID -Force'
     $patchedScript = (Get-Content -Raw $winutilPath) -replace 'Write-Host "--     Tweaks are Finished    ---"', $exitPatch
     Set-Content -Path $winutilPath -Value $patchedScript
-    Write-Host "[INFO] Applied auto-close patch."
+    Write-Host "[INFO] Applied auto-close after tweaks patch."
 } "Downloading and patching WinUtil script"
 
 # Run patched winutil
